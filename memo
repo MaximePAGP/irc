@@ -1,0 +1,28 @@
+doc -> https://datatracker.ietf.org/doc/html/rfc1459#section-1.1
+
+
+les "operateurs" sont des super admins qui peuvent faire des actions suppl
+
+
+
+operator (NOUS)
+    lancer le serveur
+    fermer le serveur
+    kick un utilisateur du server
+
+
+user (client)
+    doit contenir un nickname unique de 9 charactere max
+
+channel mods 
+    +i (invite-only) peut recevoir le channel seulement sur invitation
+
+
+channel
+    doit forcement commencer par & pu #
+    les chans qui ont & en prefix sont creee par le serveur
+    les chans qui ont # sont creee par les utilisateurs
+    creer lorsquun utlisateur rejoins un channel
+    detruit lorsque plus personne nest sur le channel
+    commence forcement par un & ou # et doit avoir maximum 200 len doit pas contenir despace et de , ni ^G
+    limit de 10
