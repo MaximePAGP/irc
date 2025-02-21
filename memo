@@ -4,6 +4,14 @@ doc -> https://datatracker.ietf.org/doc/html/rfc1459#section-1.1
 les "operateurs" sont des super admins qui peuvent faire des actions suppl
 
 
+server
+    le serveur renvoie forcement une reponse apres chaque requete recue par le client (non bloquante)
+    exemple
+        je me connecte
+            001 JohnDoe :Welcome to the Internet Relay Network JohnDoe
+        je me connecte avec un nickname deja pris
+            433 JohnDoe :Nickname is already in use
+
 
 operator (NOUS)
     lancer le serveur
@@ -13,9 +21,18 @@ operator (NOUS)
 
 user (client)
     doit contenir un nickname unique de 9 charactere max
+    exemple des messages prives
+        envoie | PRIVMSG <nickname> : <message> 
+            le nombre despace importe peu entre les args
+        recu | PRIVMSG <nickname src> : <message>
+            le nombre despace importe peu entre les args
+
 
 channel mods 
+    ladmin du chan est reperable par un @ au debut du pseudo
     +i (invite-only) peut recevoir le channel seulement sur invitation
+    commandes pouvant etre utilise par un admin du chan
+    KICk - MODE - INVITE - TOPIC
 
 
 channel
@@ -26,3 +43,42 @@ channel
     detruit lorsque plus personne nest sur le channel
     commence forcement par un & ou # et doit avoir maximum 200 len doit pas contenir despace et de , ni ^G
     limit de 10
+
+un message sans prefix ca vient du serveur et avec :nickname ca vient dun autre client
+
+un message ne peut pas depasser 512 character \n inclut 
+
+
+charactere speciaux traite de maniere similaire
+    { ] sont equivalent 
+    } ] sont equivalent
+    \ | sont equivalent
+
+    gestion des retours derreur
+        https://datatracker.ietf.org/doc/html/rfc1459#section-6
+
+
+pour se connecter au server irc depuis hexchat
+
+/connect <DNS>
+    ! le serveur kick s'il ne recoit pas de mot de passe si demande
+/pass <PASSWORD>
+/nick <nickname>
+
+
+/USER cf: s'identifier (savoir a qui on parle) au server   https://datatracker.ietf.org/doc/html/rfc1459#section-4.1.3
+/PASS  cf: se connecter au server https://datatracker.ietf.org/doc/html/rfc1459#section-4.1.1
+/NICK  cf: changer son nickname https://datatracker.ietf.org/doc/html/rfc1459#section-4.1.2
+/QUIT  cf: deconnection du client au server https://datatracker.ietf.org/doc/html/rfc1459#section-4.1.6
+/JOIN cf: rejoindre un canal https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.1
+/MODE cf: changer les modes du chan https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.3.1
+    seulement sur ces modes la
+        * — i : Définir/supprimer le canal sur invitation uniquement
+        * — t : Définir/supprimer les restrictions de la commande TOPIC pour les opérateurs de canaux
+        * — k : Définir/supprimer la clé du canal (mot de passe)
+        * — o : Donner/retirer le privilège de l’opérateur de canal
+        * — l : Définir/supprimer la limite d’utilisateurs pour le canal
+/TOPIC cf:  Modifier ou afficher le thème du channel  https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.4
+/INVTE cf: inviter un user dans la room https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.7
+/KICK  https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.8
+/KILL coupe la co d'un client https://datatracker.ietf.org/doc/html/rfc1459#section-4.6.1
