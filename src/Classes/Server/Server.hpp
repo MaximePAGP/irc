@@ -9,6 +9,9 @@ class Server
 	private:
 		std::string password;
 		std::string portname;
+		// chan
+		// flags
+		int
 		Server();
 	public:
 
