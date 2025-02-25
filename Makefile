@@ -2,19 +2,17 @@ NAME				= ircserv
 
 CC 					= c++
 
-HEADERS				=	
 
 SRCS 				= 	src/main.cpp \
+						src/Class/User/User.cpp \
 
 OBJS_DIR			= .objs
-
 OBJS				= ${SRCS:%.cpp=$(OBJS_DIR)/%.o}
-
 DEPS				= ${OBJS:.o=.d}
 
-CFLAGS				= -Wall -Wextra -Werror -std=c++98 -MMD
+CFLAGS				= -Wall -Wextra -Werror -std=c++98 -MMD -MP
 
-$(OBJS_DIR)/%.o: %.cpp ${HEADERS} Makefile
+$(OBJS_DIR)/%.o: %.cpp Makefile
 			@mkdir -p $(dir $@)
 			${CC} ${CFLAGS} -c $< -o $@
 
@@ -34,3 +32,5 @@ fclean:		clean
 re:			fclean all
 
 .PHONY:		all clean fclean re
+
+
