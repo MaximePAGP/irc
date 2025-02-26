@@ -28,8 +28,8 @@ class Flag
 		Flag &operator=(Flag const &rhs);
 		virtual ~Flag();
 
-		bool addFlag(int flag);
-		bool removeFlag(int flag);
+		std::pair<std::set<int>::iterator, bool> addFlag(int flag);
+		std::size_t removeFlag(int flag);
 };	
 
 #endif

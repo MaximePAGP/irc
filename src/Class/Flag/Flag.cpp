@@ -13,10 +13,12 @@ Flag &Flag::operator=(Flag const &rhs) {
     return *this;
 }
 
-bool	Flag::addFlag(int flag) {
+std::pair<std::set<int>::iterator, bool>	Flag::addFlag(int flag) {
 	return this->flags.insert(flag);
 }
 
-bool	Flag::removeFlag(int flag) {
+
+// work exactly like bool
+std::size_t	Flag::removeFlag(int flag) {
 	return this->flags.erase(flag);
 }
