@@ -1,20 +1,23 @@
 #ifndef SERVER_CLASS_HPP
 #define SERVER_CLASS_HPP
 
-#include <stdbool.h>
+#include "../Canal/Canal.hpp"
+#include "../User/User.hpp"
 #include <string>
 
 class Server
 {
 	private:
-		std::string password;
-		std::string portname;
-		// flags
-		// chans
 		Server();
+		std::string 			password;
+		std::string 			portname;
+		std::set<User>			serverOps;
+		std::set<Canal>			canals;
 	public:
-
-		~Server();
+		Server(std::string portname, std::string password);
+		virtual	~Server();
+		Server(Server const &copy);
+		Server &operator=(Server const &rhs);
 };
 
 

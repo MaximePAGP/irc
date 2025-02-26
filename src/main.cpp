@@ -21,9 +21,15 @@ static	int	handle_args(int argc, char **argv)
 	return (1);
 }
 
+#include <set>
+
 int main(int argc, char **argv)
 {
 	if (!handle_args(argc, argv))
 		return 1;
+	std::set<int> test;
+	test.insert(50);
+	std::cout << test.erase(50) << std::endl;
+
 	return 0;
 }

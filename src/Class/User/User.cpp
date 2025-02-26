@@ -16,9 +16,9 @@ User::User(User const &cpy): nickName(cpy.nickName), password(cpy.password) {}
 
 
 User	&User::operator=(User const &rhs) {
-	if (&rhs == this)
-		return *this;
-	this->password = rhs.password;
-	this->nickName = rhs.nickName;
+	if (this != &rhs) {
+		this->password = rhs.password;
+		this->nickName = rhs.nickName;
+	}
 	return *this;
 }
