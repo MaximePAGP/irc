@@ -4,15 +4,15 @@ User::User(): nickName("default"), userName("default"), password(NULL)
 	{}
 
 
-User::User(std::string &nickName, std::string &userName, std::string password)
-	: nickName("default"), userName("default"), password(password)
+User::User(std::string &nickName, std::string const &userName, std::string password)
+	: nickName(nickName), userName(userName), password(password)
 	{}
 
 
 User::~User() {}
 
 
-User::User(User const &cpy): userName(cpy.userName), password(password) {}
+User::User(User const &cpy): nickName(cpy.nickName), password(cpy.password) {}
 
 
 User	&User::operator=(User const &rhs) {
