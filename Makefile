@@ -6,6 +6,7 @@ CC 					= c++
 SRCS 				= 	src/main.cpp \
 						src/Class/User/User.cpp \
 						src/Class/Flag/Flag.cpp \
+						src/Class/Canal/Canal.cpp \
 
 OBJS_DIR			= .objs
 OBJS				= ${SRCS:%.cpp=$(OBJS_DIR)/%.o}
