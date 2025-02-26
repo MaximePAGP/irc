@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include "Class/Server/Server.hpp"
 
 static	int	handle_args(int argc, char **argv)
 {
@@ -27,6 +28,7 @@ int main(int argc, char **argv)
 {
 	if (!handle_args(argc, argv))
 		return 1;
+	Server  server(std::string(argv[1], strlen(argv[1])), std::string(argv[2], strlen(argv[2])));
 	std::set<int> test;
 	test.insert(50);
 	std::cout << test.erase(50) << std::endl;

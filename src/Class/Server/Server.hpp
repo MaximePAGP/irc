@@ -10,7 +10,7 @@ class Server
 	private:
 		Server();
 		std::string 			password;
-		std::string 			portname;
+		std::string	const 		portname;
 		std::set<User>			serverOps;
 		std::set<Canal>			canals;
 	public:
