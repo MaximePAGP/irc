@@ -1,11 +1,11 @@
 #include "User.hpp"
 
-User::User(): nickName("default"), userName("default"), password(NULL), fd(-1)
+User::User(): fd(-1), nickName("default"), userName("default"), password(NULL)
 	{}
 
 
 User::User(std::string &nickName, std::string const &userName, std::string password, int fd)
-	: nickName(nickName), userName(userName), password(password), fd(fd)
+	: fd(fd), nickName(nickName), userName(userName), password(password)
 	{}
 
 
@@ -36,14 +36,32 @@ std::string	User::getUserName() const {
 	return this->userName;
 }
 
+int		User::getFd() const {
+	return this->fd;
+}
+
 void	User::setPassword(std::string newPassord) {
 	this->password = newPassord;
 }
 
 void	User::setFd(int newfd) {
-	this->fd = fd;
+	this->fd = newfd;
 }
 
 void	User::setNickName(std::string newNickName) {
-	this->nickName = nickName;
+	this->nickName = newNickName;
+}
+
+bool	User::operator<(const User &other) const {
+	return other.nickName < other.getNickName();
+}
+
+std::ostream &operator<<(std::ostream &out, User const &rhs) {
+	out << rhs.getFd() << " " << rhs.getNickName() << " " << rhs.getUserName() << " " << rhs.getPassword() << "\n";
+	return out;
+}
+
+void	printUsers(std::set<User> users) {
+	for (std::set<User>::iterator it = users.begin(); it != users.end(); ++it)
+    	std::cout << *it;
 }

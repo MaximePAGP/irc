@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <set>
 
 class User
 {
@@ -25,7 +26,12 @@ class User
 		void			setNickName(std::string newNickname);
 		void			setPassword(std::string newPassord);
 		void			setFd(int newFd);
+	
+		bool			operator<(const User &other)const;
 };
+
+void	printUsers(std::set<User>);
+std::ostream &operator<<(std::ostream &out, User const &rhs);
 
 
 #endif
