@@ -21,3 +21,30 @@ Server &Server::operator=(Server const &rhs) {
 	}
 	return *this;
 }
+
+
+std::string Server::getPassord() const {
+	return this->password;
+}
+
+std::string Server::getPortname() const {
+	return this->portname;
+}
+
+std::set<User>	Server::getServerOps() const {
+	return this->serverOps;
+}
+
+
+std::set<Canal>	Server::getCanals() const {
+	return this->canals;
+}
+
+
+std::ostream &operator<<(std::ostream &out, Server const &rhs) {
+	out << "Server portname : " << rhs.getPortname() << "\n";
+	out << "Server passord : " << rhs.getPassord() << "\n";
+	out << "Server Portname : " << rhs.getServerOps() << "\n";
+	out << "Server Portname : " << rhs.portname << "\n";
+	return out;
+}

@@ -18,7 +18,13 @@ class Server
 		virtual	~Server();
 		Server(Server const &copy);
 		Server &operator=(Server const &rhs);
+
+		std::string 			getPassord() const;
+		std::string				getPortname() const;
+		std::set<User>			getServerOps() const;
+		std::set<Canal>			getCanals() const;
 };
 
+std::ostream &operator<<(std::ostream &out, Server const &rhs);
 
 #endif
