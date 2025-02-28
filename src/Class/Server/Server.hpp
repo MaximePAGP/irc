@@ -4,6 +4,9 @@
 #include "../Canal/Canal.hpp"
 #include "../User/User.hpp"
 #include <string>
+#include <set>
+
+void	printUsers(std::set<User>);
 
 class Server
 {
@@ -23,6 +26,16 @@ class Server
 		std::string				getPortname() const;
 		std::set<User>			getServerOps() const;
 		std::set<Canal>			getCanals() const;
+
+		void					setPassword(std::string newPassword);
+
+		std::pair<std::set<User>::iterator, bool>
+								addServerOps(User newServOP);
+		std::size_t				removeServerOps(User target);
+		
+		std::pair<std::set<Canal>::iterator, bool>
+								addCanal(Canal newCanal);
+		std::size_t				removeCanal(Canal target);
 };
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs);

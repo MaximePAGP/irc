@@ -35,16 +35,31 @@ std::set<User>	Server::getServerOps() const {
 	return this->serverOps;
 }
 
-
 std::set<Canal>	Server::getCanals() const {
 	return this->canals;
+}
+
+std::pair<std::set<Canal>::iterator, bool>	Server::addCanal(Canal newCanal) {
+	return this->canals.insert(newCanal);
+}
+
+std::size_t	Server::removeCanal(Canal target) {
+	return this->canals.erase(target);
+}
+
+std::pair<std::set<User>::iterator, bool>	Server::addServerOps(User newServerOp) {
+	return this->serverOps.insert(newServerOp);
+}
+
+std::size_t	Server::removeServerOps(User target) {
+	return this->serverOps.erase(target);
 }
 
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server portname : " << rhs.getPortname() << "\n";
 	out << "Server passord : " << rhs.getPassord() << "\n";
-	out << "Server Portname : " << rhs.getServerOps() << "\n";
-	out << "Server Portname : " << rhs.portname << "\n";
+	out << "Server Server ops : " << rhs.getServerOps().size() << "\n";
+	printUsers(rhs.getServerOps());
 	return out;
 }
