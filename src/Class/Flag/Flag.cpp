@@ -22,3 +22,12 @@ std::pair<std::set<int>::iterator, bool>	Flag::addFlag(int flag) {
 std::size_t	Flag::removeFlag(int flag) {
 	return this->flags.erase(flag);
 }
+
+
+bool	Flag::hasFlag(ChanFlag flag) {
+	return this->flags.find(flag) != this->flags.end() ? true : false;
+}
+
+bool	Flag::hasFlag(UserFlag flag) {
+	return this->flags.find(flag) != this->flags.end() ? true : false;
+}

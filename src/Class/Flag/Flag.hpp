@@ -30,6 +30,9 @@ class Flag
 
 		std::pair<std::set<int>::iterator, bool> addFlag(int flag);
 		std::size_t removeFlag(int flag);
+		bool		hasFlag(ChanFlag flag);
+		bool		hasFlag(UserFlag flag);
+
 };	
 
 #endif
