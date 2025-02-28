@@ -7,15 +7,24 @@
 class User
 {
 	private:
+		int			fd;
 		std::string nickName; // Required and can be changed
 		std::string const userName; // Required and unique and cannot be changed
 		std::string password; // Optionnal maybe usless
 		User();
 	public:
-		User(std::string &nickName, std::string const &userName, std::string password);
+		User(std::string &nickName, std::string const &userName, std::string password, int fd);
 		virtual ~User();
 		User (User const &cpy);
 		User &operator=(User const &rhs);
+
+		std::string		getNickName() const;
+		std::string		getUserName() const;
+		std::string		getPassword() const;
+		int				getFd() const;
+		void			setNickName(std::string newNickname);
+		void			setPassword(std::string newPassord);
+		void			setFd(int newFd);
 };
 
 
