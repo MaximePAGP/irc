@@ -61,5 +61,7 @@ std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server passord : " << rhs.getPassord() << "\n";
 	out << "Server Server ops : " << rhs.getServerOps().size() << "\n";
 	printUsers(rhs.getServerOps());
+	out << "Server canals : " << rhs.getServerOps().size() << "\n";
+	printCanal(rhs.getCanals());
 	return out;
 }
