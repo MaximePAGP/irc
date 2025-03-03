@@ -1,5 +1,6 @@
 #include "Server.hpp"
 
+static	Server *server = NULL;
 
 Server::Server():  password(NULL), portname(NULL) {}
 
@@ -22,6 +23,15 @@ Server &Server::operator=(Server const &rhs) {
 	return *this;
 }
 
+Server &Server::init(std::string portname, std::string password) {
+    if (!server)
+        server = new Server(portname, password);
+    return *server;
+}
+
+Server &Server::getServer() {
+    return *server;
+}
 
 std::string Server::getPassord() const {
 	return this->password;

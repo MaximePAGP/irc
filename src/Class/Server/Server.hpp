@@ -12,16 +12,18 @@ class Server
 {
 	private:
 		Server();
+		Server(std::string portname, std::string password);
+		Server(Server const &copy);
+		Server &operator=(Server const &rhs);
+		
 		std::string 			password;
 		std::string	const 		portname;
 		std::set<User>			serverOps;
 		std::set<Canal>			canals;
 	public:
-		Server(std::string portname, std::string password);
 		virtual	~Server();
-		Server(Server const &copy);
-		Server &operator=(Server const &rhs);
-
+		static	Server			&init(std::string portname, std::string password);
+		static	Server			&getServer();
 		std::string 			getPassord() const;
 		std::string				getPortname() const;
 		std::set<User>			getServerOps() const;
@@ -36,6 +38,7 @@ class Server
 		std::pair<std::set<Canal>::iterator, bool>
 								addCanal(Canal newCanal);
 		std::size_t				removeCanal(Canal target);
+
 };
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs);
