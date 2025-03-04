@@ -12,20 +12,20 @@ class Server
 {
 	private:
 		Server();
-		Server(std::string portname, std::string password);
+		Server(int portname, std::string password);
 		Server(Server const &copy);
 		Server &operator=(Server const &rhs);
 		
 		std::string 			password;
-		std::string	const 		portname;
+		int 					portname;
 		std::set<User>			serverOps;
 		std::set<Canal>			canals;
 	public:
 		virtual	~Server();
-		static	Server			&init(std::string portname, std::string password);
+		static	Server			&init(int portname, std::string password);
 		static	Server			&getServer();
 		std::string 			getPassord() const;
-		std::string				getPortname() const;
+		int						getPortname() const;
 		std::set<User>			getServerOps() const;
 		std::set<Canal>			getCanals() const;
 
