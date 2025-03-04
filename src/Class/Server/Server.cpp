@@ -2,11 +2,11 @@
 
 static	Server *server = NULL;
 
-Server::Server():  password(NULL), portname(0) {}
+Server::Server():  password(NULL), portname(NULL) {}
 
 Server::~Server() {}
 
-Server::Server(int portname, std::string password): 
+Server::Server(std::string portname, std::string password): 
 	password(password), portname(portname) {}
 
 Server::Server(Server const &copy):
@@ -18,17 +18,14 @@ Server &Server::operator=(Server const &rhs) {
 	if (this != &rhs) {
 		this->canals = rhs.canals;
 		this->password = rhs.password;
-		this->portname = rhs.portname;
 		this->serverOps = rhs.serverOps;
 	}
 	return *this;
 }
 
-Server &Server::init(int portname, std::string password) {
+Server &Server::init(std::string portname, std::string password) {
     if (!server)
-	{
-        server = new Server(portname, password);	
-	}
+        server = new Server(portname, password);
     return *server;
 }
 
@@ -40,7 +37,7 @@ std::string Server::getPassord() const {
 	return this->password;
 }
 
-int	Server::getPortname() const {
+std::string Server::getPortname() const {
 	return this->portname;
 }
 
