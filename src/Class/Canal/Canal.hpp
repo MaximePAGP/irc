@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <poll.h>
 #include <set>
 #include "../Flag/Flag.hpp"
 #include "../User/User.hpp"
@@ -14,7 +15,7 @@ class Canal
 	private:
 		Canal();
 
-		int						fd;
+		struct	pollfd			fd;
 		int						userLimit;
 		Flag					flags;
 		std::string	const		name;
@@ -24,12 +25,12 @@ class Canal
 		std::set<User>			invUsers;
 		std::set<User>			chanOp;
 	public:
-		Canal(int fd, std::string &name);
+		Canal(struct pollfd &fd, std::string &name);
 		virtual ~Canal();
 		Canal(Canal const &copy);
 		Canal &operator=(Canal const &rhs);
 
-		int				getFd() const;
+		struct	pollfd	getFd() const;
 		int				getUserLimits() const;
 		Flag			getFlag() const;
 		std::string		getName() const;
@@ -39,7 +40,7 @@ class Canal
 		std::set<User>	getUserInvitation() const;
 		std::set<User>	getChanOps() const;
 
-		void			setFd(int value);
+		void			setFd(const struct pollfd &value);
 		void			setUserlimit(int value);
 		void			setPassword(std::string value);
 		void			setTopic(std::string value);

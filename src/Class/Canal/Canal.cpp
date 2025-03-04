@@ -1,8 +1,12 @@
 #include "Canal.hpp"
 
-Canal::Canal(): fd(-1), userLimit(10), name("DEFAULT") {}
+Canal::Canal(): userLimit(10), name("DEFAULT") {
+	fd.events = POLLIN;
+	fd.fd = -1;
+	fd.revents = 0;
+}
 
-Canal::Canal(int fd, std::string &name): fd(fd), userLimit(10), name(name) {}
+Canal::Canal(struct pollfd &fd, std::string &name): fd(fd), userLimit(10), name(name) {}
 
 Canal::~Canal() {}
 
@@ -26,7 +30,7 @@ Canal	&Canal::operator=(Canal const &rhs) {
 }
 
 
-int	Canal::getFd() const {
+struct	pollfd	Canal::getFd() const {
 	return this->fd;
 }
 
@@ -62,6 +66,21 @@ std::set<User> Canal::getChanOps() const {
 	return this->chanOp;
 }
 
+void	Canal::setFd(const struct pollfd &value) {
+	this->fd = value;
+}
+
+void	Canal::setUserlimit(int value) {
+	this->userLimit = value;
+}
+
+void	Canal::setPassword(std::string value) {
+	this->password = value;
+}
+
+void	Canal::setTopic(std::string value) {
+	this->topic = value;
+}
 
 std::pair<std::set<User>::iterator, bool> Canal::addChanOps(User value) {
 	return this->chanOp.insert(value);
@@ -93,7 +112,7 @@ bool	Canal::operator<(const Canal &other) const {
 }
 
 std::ostream &operator<<(std::ostream &out, Canal const &rhs) {
-	out << rhs.getFd() << " " << rhs.getPassword() << " " << rhs.getTopic() << " "
+	out << rhs.getPassword() << " " << rhs.getTopic() << " "
 		<< rhs.getUserLimits() << " ";
 	out << "ChanOps : ";
 	printUsers(rhs.getChanOps());

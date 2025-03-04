@@ -68,6 +68,10 @@ std::size_t	Server::removeServerOps(User target) {
 }
 
 
+void	Server::running() {
+	
+}
+
 std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server portname : " << rhs.getPortname() << "\n";
 	out << "Server passord : " << rhs.getPassord() << "\n";

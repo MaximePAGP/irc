@@ -39,6 +39,7 @@ class Server
 								addCanal(Canal newCanal);
 		std::size_t				removeCanal(Canal target);
 
+		void					running();
 };
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs);
