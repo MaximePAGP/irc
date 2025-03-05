@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string>
+#include <stdbool.h>
 #include "../Canal/Canal.hpp"
 #include "../User/User.hpp"
 #include "ServerExepction.hpp"
@@ -25,6 +26,7 @@ class Server: public ServerExepction
 		std::string 			password;
 		int 					portname;
 		int						socketFd;
+		bool					isRunning;
 		std::set<User>			serverOps;
 		std::set<Canal>			canals;
 		void					createSocket(); // By default we use TCP and IPV4
@@ -36,10 +38,12 @@ class Server: public ServerExepction
 		static	Server			&getServer();
 		std::string 			getPassord() const;
 		int						getPortname() const;
+		bool					getState() const;
 		std::set<User>			getServerOps() const;
 		std::set<Canal>			getCanals() const;
 
 		void					setPassword(std::string newPassword);
+		void					setState(bool value);
 
 		std::pair<std::set<User>::iterator, bool>
 								addServerOps(User newServOP);

@@ -2,7 +2,7 @@
 
 static	Server *server = NULL;
 
-Server::Server(): password(NULL), portname(0), socketFd(-1) {}
+Server::Server(): password(NULL), portname(0), socketFd(-1), isRunning(false) {}
 
 Server::~Server() {}
 
@@ -21,6 +21,7 @@ Server &Server::operator=(Server const &rhs) {
 		this->password = rhs.password;
 		this->portname = rhs.portname;
 		this->serverOps = rhs.serverOps;
+		this->isRunning = rhs.isRunning;
 	}
 	return *this;
 }
@@ -51,6 +52,18 @@ int Server::getPortname() const {
 	return this->portname;
 }
 
+bool Server::getState() const {
+	return this->isRunning;
+}
+
+void Server::setState(bool value) {
+	this->isRunning = value;
+}
+
+void Server::setPassword(std::string value) {
+	this->password = value;
+}
+
 std::set<User>	Server::getServerOps() const {
 	return this->serverOps;
 }
@@ -78,8 +91,9 @@ std::size_t	Server::removeServerOps(User target) {
 void	Server::running() {
 	this->createSocket();
 	this->bindAndListenPort();
+	this->setState(true);
 	std::cout << "Server is running on port : " << this->getPortname() << std::endl;
-	while (true) {
+	while (this->getState()) {
 		int clientFd;
 		struct sockaddr_in clientAddr;
 

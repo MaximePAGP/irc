@@ -9,6 +9,7 @@ SRCS 				= 	src/main.cpp \
 						src/Class/Flag/Flag.cpp \
 						src/Class/Canal/Canal.cpp \
 						src/Class/Server/Server.cpp \
+						src/Manager/signals_manager.cpp \
 
 OBJS_DIR			= .objs
 OBJS				= ${SRCS:%.cpp=$(OBJS_DIR)/%.o}
