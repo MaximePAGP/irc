@@ -1,14 +1,17 @@
 #ifndef SERVER_CLASS_HPP
 #define SERVER_CLASS_HPP
 
+#include <set>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <string>
 #include "../Canal/Canal.hpp"
 #include "../User/User.hpp"
-#include <string>
-#include <set>
+#include "ServerExepction.hpp"
 
 void	printUsers(std::set<User>);
 
-class Server
+class Server: public ServerExepction
 {
 	private:
 		Server();
@@ -18,8 +21,11 @@ class Server
 		
 		std::string 			password;
 		int 					portname;
+		int						socketFd;
 		std::set<User>			serverOps;
 		std::set<Canal>			canals;
+		void					createSocket(); // By default we use TCP and IPV4
+		void					bindAndListenPort();
 	public:
 		virtual	~Server();
 		static	Server			&init(int portname, std::string password);
@@ -40,6 +46,7 @@ class Server
 		std::size_t				removeCanal(Canal target);
 
 		void					running();
+		void					kill();
 };
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs);

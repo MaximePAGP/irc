@@ -2,7 +2,7 @@
 
 static	Server *server = NULL;
 
-Server::Server():  password(NULL), portname(0) {}
+Server::Server(): password(NULL), portname(0), socketFd(-1) {}
 
 Server::~Server() {}
 
@@ -29,6 +29,14 @@ Server &Server::init(int portname, std::string password) {
     if (!server)
         server = new Server(portname, password);
     return *server;
+}
+
+void	Server::kill() {
+	if (!server)
+		return ;
+	if (this->socketFd > 0)
+		close(this->socketFd);
+	delete server;
 }
 
 Server &Server::getServer() {
@@ -67,9 +75,29 @@ std::size_t	Server::removeServerOps(User target) {
 	return this->serverOps.erase(target);
 }
 
-
 void	Server::running() {
-	
+	this->createSocket();
+	this->bindAndListenPort();
+}
+
+
+void	Server::bindAndListenPort() {
+	struct sockaddr_in address;
+
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(this->getPortname());
+
+	if (bind(this->socketFd, (struct sockaddr*) &address, sizeof(address)) == -1)
+		throw ServerExepction::CannotBindPortException();
+    if (listen(this->socketFd, 10) == -1)
+		throw ServerExepction::CannotListenException();
+}
+
+void	Server::createSocket() {
+	this->socketFd = socket(AF_INET, SOCK_STREAM, 0);
+	if (this->socketFd == -1)
+		throw SocketCreationException();
 }
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs) {
