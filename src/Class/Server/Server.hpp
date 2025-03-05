@@ -9,6 +9,9 @@
 #include "../User/User.hpp"
 #include "ServerExepction.hpp"
 
+
+#define	MSG_LEN 512
+
 void	printUsers(std::set<User>);
 
 class Server: public ServerExepction
@@ -26,6 +29,7 @@ class Server: public ServerExepction
 		std::set<Canal>			canals;
 		void					createSocket(); // By default we use TCP and IPV4
 		void					bindAndListenPort();
+		void					handleClient(int clientFd);
 	public:
 		virtual	~Server();
 		static	Server			&init(int portname, std::string password);
