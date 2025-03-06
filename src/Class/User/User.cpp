@@ -1,10 +1,10 @@
 #include "User.hpp"
 
-User::User(): fd(-1), nickName("default"), userName("default"), password(NULL)
+User::User(): nickName("default"), userName("default"), password(NULL)
 	{}
 
 
-User::User(std::string &nickName, std::string const &userName, std::string password, int fd)
+User::User(std::string &nickName, std::string const &userName, std::string password, struct	pollfd fd)
 	: fd(fd), nickName(nickName), userName(userName), password(password)
 	{}
 
@@ -19,6 +19,7 @@ User	&User::operator=(User const &rhs) {
 	if (this != &rhs) {
 		this->password = rhs.password;
 		this->nickName = rhs.nickName;
+		this->fd = rhs.fd;
 	}
 	return *this;
 }
@@ -36,7 +37,7 @@ std::string	User::getUserName() const {
 	return this->userName;
 }
 
-int		User::getFd() const {
+struct	pollfd	User::getFd() const {
 	return this->fd;
 }
 
@@ -44,7 +45,7 @@ void	User::setPassword(std::string newPassord) {
 	this->password = newPassord;
 }
 
-void	User::setFd(int newfd) {
+void	User::setFd(struct pollfd newfd) {
 	this->fd = newfd;
 }
 
@@ -57,7 +58,7 @@ bool	User::operator<(const User &other) const {
 }
 
 std::ostream &operator<<(std::ostream &out, User const &rhs) {
-	out << rhs.getFd() << " " << rhs.getNickName() << " " << rhs.getUserName() << " " << rhs.getPassword() << "\n";
+	out << " " << rhs.getNickName() << " " << rhs.getUserName() << " " << rhs.getPassword() << "\n";
 	return out;
 }
 

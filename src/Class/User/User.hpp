@@ -4,17 +4,19 @@
 #include <iostream>
 #include <string>
 #include <set>
+#include <poll.h>
+
 
 class User
 {
 	private:
-		int			fd;
-		std::string nickName; // Required and can be changed
-		std::string const userName; // Required and unique and cannot be changed
-		std::string password; // Optionnal maybe usless
+		struct	pollfd	fd;
+		std::string 	nickName; // Required and can be changed
+		std::string 	const userName; // Required and unique and cannot be changed
+		std::string 	password; // Optionnal maybe usless
 		User();
 	public:
-		User(std::string &nickName, std::string const &userName, std::string password, int fd);
+		User(std::string &nickName, std::string const &userName, std::string password, struct pollfd fd);
 		virtual ~User();
 		User (User const &cpy);
 		User &operator=(User const &rhs);
@@ -22,10 +24,10 @@ class User
 		std::string		getNickName() const;
 		std::string		getUserName() const;
 		std::string		getPassword() const;
-		int				getFd() const;
+		struct	pollfd	getFd() const;
 		void			setNickName(std::string newNickname);
 		void			setPassword(std::string newPassord);
-		void			setFd(int newFd);
+		void			setFd(struct pollfd newFd);
 	
 		bool			operator<(const User &other)const;
 };
