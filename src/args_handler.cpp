@@ -44,10 +44,20 @@ static	bool	hasCorrectParamsNumber(int argc) {
 	return true;
 }
 
+static	bool	isValidPort(int portname) {
+	if (portname < 1 || portname > 65535) {
+		std::cout << "Port should be in the range to 1 and 65535" << std::endl;
+		return false;
+	}
+	return true;
+}
+
 int	checkPassingArguments(int argc, char **argv)
 {
 	if (!hasCorrectParamsNumber(argc))
 		return 0;
+	if (!isValidPort(std::atoi(argv[1])))
+		return (0);
 	if (!isDigitOnly(argv[1]))
 		return 0;
 	if (portnameIsEmpty(argv[1]) || passwordIsEmpty(argv[2]))
