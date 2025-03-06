@@ -122,6 +122,8 @@ void	Server::bindAndListenPort() {
 		throw ServerExepction::CannotBindPortException();
 	if (listen(this->socketFd, 10) < 0)
 		throw ServerExepction::CannotListenException();
+	if (fcntl(this->socketFd, F_SETFL, fcntl(this->socketFd, F_GETFL, 0) | O_NONBLOCK) == -1)
+		throw ServerExepction::CannotSetFdOptionsException();
 }
 
 void	Server::createSocket() {

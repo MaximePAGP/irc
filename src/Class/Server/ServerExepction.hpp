@@ -40,6 +40,14 @@ class ServerExepction
 					return "Socket creation failed";
 				}
 		};
+		class CannotSetFdOptionsException : public std::exception
+		{
+			public:
+				virtual const char* what() const throw()
+				{
+					return "FCNTL failed";
+				}
+		};
 };
 
 
