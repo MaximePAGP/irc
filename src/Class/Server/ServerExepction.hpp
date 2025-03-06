@@ -8,6 +8,14 @@ class ServerExepction
 	public:
 		ServerExepction() {};
 		virtual ~ServerExepction() {};
+		class PortOutOfRangeException : public std::exception
+		{
+			public:
+				virtual const char* what() const throw()
+				{
+					return "Portname should be in range to 1 and 65535";
+				}
+		};
 		class CannotBindPortException : public std::exception
 		{
 			public:

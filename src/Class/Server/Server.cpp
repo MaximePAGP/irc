@@ -7,7 +7,10 @@ Server::Server(): password(NULL), portname(0), socketFd(-1), isRunning(false) {}
 Server::~Server() {}
 
 Server::Server(int portname, std::string password): 
-	password(password), portname(portname) {}
+	password(password), portname(portname) {
+		if (portname < 1 || portname > 65535)
+			throw PortOutOfRangeException();
+}
 
 Server::Server(Server const &copy):
 	password(copy.password),
