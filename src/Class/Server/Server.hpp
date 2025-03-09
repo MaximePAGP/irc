@@ -2,9 +2,11 @@
 #define SERVER_CLASS_HPP
 
 #include <set>
+#include <vector>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string>
+#include <poll.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include "../Canal/Canal.hpp"
@@ -21,18 +23,18 @@ class Server: public ServerExepction
 	private:
 		Server();
 		Server(int portname, std::string password);
-		Server(Server const &copy);
-		Server &operator=(Server const &rhs);
 		
 		std::string 			password;
 		int 					portname;
-		int						socketFd;
 		bool					isRunning;
 		std::set<User>			serverOps;
 		std::set<Canal>			canals;
-		void					createSocket(); // By default we use TCP and IPV4
+		std::vector
+			<struct pollfd>		sockets;
+		void					createNewClient();
+		void					initServerSocket(); // By default we use TCP and IPV4
 		void					bindAndListenPort();
-		void					handleClient(int clientFd);
+		void					handleClientMsg(int clientFd);
 	public:
 		virtual	~Server();
 		static	Server			&init(int portname, std::string password);
