@@ -31,6 +31,7 @@ class Server: public ServerExepction
 		std::set<Canal>			canals;
 		std::vector
 			<struct pollfd>		sockets;
+		void					handleClientLogout(int clientFd);
 		void					createNewClient();
 		void					initServerSocket(); // By default we use TCP and IPV4
 		void					bindAndListenPort();

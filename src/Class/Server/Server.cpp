@@ -133,6 +133,22 @@ void	Server::handleClientMsg(int clientFd) {
 		std::cout << "Received : " << buffer << std::endl;
 		send(clientFd, "Message received", 16, 0);
 	}
+	if (bytesRead == 0) {
+		this->handleClientLogout(clientFd);
+	}
+}
+
+void	Server::handleClientLogout(int clientFd) {
+	size_t i = 0;
+	while (this->sockets.begin() != this->sockets.end()) {
+		if (this->sockets[i].fd == clientFd)
+		this->sockets.erase(this->sockets.begin() + i);
+		i ++;
+		break;
+	}
+	
+	close(clientFd);
+
 }
 
 void Server::createNewClient() {
