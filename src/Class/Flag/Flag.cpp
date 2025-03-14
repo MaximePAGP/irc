@@ -25,9 +25,9 @@ std::size_t	Flag::removeFlag(int flag) {
 
 
 bool	Flag::hasFlag(ChanFlag flag) {
-	return this->flags.find(flag) != this->flags.end() ? true : false;
+	return this->flags.find(flag) != this->flags.end();
 }
 
 bool	Flag::hasFlag(UserFlag flag) {
-	return this->flags.find(flag) != this->flags.end() ? true : false;
+	return this->flags.find(flag) != this->flags.end();
 }

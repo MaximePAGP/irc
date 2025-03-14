@@ -4,8 +4,8 @@ User::User(): nickName("default"), userName("default"), password(NULL)
 	{}
 
 
-User::User(std::string &nickName, std::string const &userName, std::string password, struct	pollfd fd)
-	: fd(fd), nickName(nickName), userName(userName), password(password)
+User::User(std::string const &nickName, std::string const &userName, std::string password)
+	: nickName(nickName), userName(userName), password(password)
 	{}
 
 
@@ -19,7 +19,9 @@ User	&User::operator=(User const &rhs) {
 	if (this != &rhs) {
 		this->password = rhs.password;
 		this->nickName = rhs.nickName;
-		this->fd = rhs.fd;
+		this->fd.events = rhs.fd.events;
+		this->fd.fd = rhs.fd.fd;
+		this->fd.revents = rhs.fd.revents;
 	}
 	return *this;
 }
@@ -54,7 +56,7 @@ void	User::setNickName(std::string newNickName) {
 }
 
 bool	User::operator<(const User &other) const {
-	return other.nickName < other.getNickName();
+	return this->getNickName() < other.getNickName();
 }
 
 std::ostream &operator<<(std::ostream &out, User const &rhs) {

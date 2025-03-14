@@ -54,6 +54,10 @@ std::set<User>	Server::getServerOps() const {
 	return this->serverOps;
 }
 
+std::set<User>	Server::getAuthentificatedUsers() const {
+	return this->authUsers;
+}
+
 std::set<Canal>	Server::getCanals() const {
 	return this->canals;
 }
@@ -64,6 +68,14 @@ std::pair<std::set<Canal>::iterator, bool>	Server::addCanal(Canal newCanal) {
 
 std::size_t	Server::removeCanal(Canal target) {
 	return this->canals.erase(target);
+}
+
+std::pair<std::set<User>::iterator, bool>	Server::addAuthentificatedUser(User newUser) {
+	return this->authUsers.insert(newUser);
+}
+
+std::size_t	Server::removeAuthentificatedUser(User target) {
+	return this->authUsers.erase(target);
 }
 
 std::pair<std::set<User>::iterator, bool>	Server::addServerOps(User newServerOp) {
@@ -174,6 +186,9 @@ void Server::createNewClient() {
 	this->sockets.push_back(newClient);
 }
 
+bool Server::hasUser(std::set<User> usersContainer, User &target) {
+	return usersContainer.find(target) != usersContainer.end();
+}
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server portname : " << rhs.getPortname() << "\n";

@@ -16,7 +16,7 @@ class User
 		std::string 	password; // Optionnal maybe usless
 		User();
 	public:
-		User(std::string &nickName, std::string const &userName, std::string password, struct pollfd fd);
+		User(std::string const &nickName, std::string const &userName, std::string password);
 		virtual ~User();
 		User (User const &cpy);
 		User &operator=(User const &rhs);
