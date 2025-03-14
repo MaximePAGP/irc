@@ -122,7 +122,6 @@ void	Server::running() {
 					this->createNewClient();
 				else
 					this->handleClientMsg(this->sockets[i].fd);
-				this->setState(false);
 			}
 		}
 	}
