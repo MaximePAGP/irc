@@ -32,7 +32,7 @@ class User
 		bool			operator<(const User &other)const;
 };
 
-void	printUsers(std::set<User>);
+void	printUsers(std::set<User*>);
 std::ostream &operator<<(std::ostream &out, User const &rhs);
 
 

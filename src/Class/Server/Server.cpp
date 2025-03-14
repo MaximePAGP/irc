@@ -4,7 +4,24 @@ static	Server *server = NULL;
 
 Server::Server(): password(NULL), portname(0), isRunning(false) {}
 
-Server::~Server() {}
+Server::~Server() {
+
+	for (size_t i = 0; i < this->sockets.size(); i++)
+	{
+		close(this->sockets[i].fd);
+	}
+	
+	for (std::set<User *>::iterator it = this->authUsers.begin(); it != this->authUsers.end(); ++it) {
+		delete *it; 
+	}
+
+	for (std::set<Canal *>::iterator it = this->canals.begin(); it != this->canals.end(); ++it) {
+		delete *it; 
+	}
+	
+
+    this->authUsers.clear();
+}
 
 Server::Server(int portname, std::string password): 
 	password(password), portname(portname) {
@@ -21,9 +38,8 @@ Server &Server::init(int portname, std::string password) {
 void	Server::kill() {
 	if (!server)
 		return ;
-	if (this->sockets[0].fd > 0)
-		close(this->sockets[0].fd);
-	delete server;
+	this->setState(false);
+	delete server;	
 }
 
 Server &Server::getServer() {
@@ -50,40 +66,40 @@ void Server::setPassword(std::string value) {
 	this->password = value;
 }
 
-std::set<User>	Server::getServerOps() const {
+std::set<User*>	Server::getServerOps() const {
 	return this->serverOps;
 }
 
-std::set<User>	Server::getAuthentificatedUsers() const {
+std::set<User*>	Server::getAuthentificatedUsers() const {
 	return this->authUsers;
 }
 
-std::set<Canal>	Server::getCanals() const {
+std::set<Canal*>	Server::getCanals() const {
 	return this->canals;
 }
 
-std::pair<std::set<Canal>::iterator, bool>	Server::addCanal(Canal newCanal) {
-	return this->canals.insert(newCanal);
+std::pair<std::set<Canal*>::iterator, bool>	Server::addCanal(Canal &newCanal) {
+	return this->canals.insert(&newCanal);
 }
 
-std::size_t	Server::removeCanal(Canal target) {
-	return this->canals.erase(target);
+std::size_t	Server::removeCanal(Canal &target) {
+	return this->canals.erase(&target);
 }
 
-std::pair<std::set<User>::iterator, bool>	Server::addAuthentificatedUser(User newUser) {
-	return this->authUsers.insert(newUser);
+std::pair<std::set<User*>::iterator, bool>	Server::addAuthentificatedUser(User &newUser) {
+	return this->authUsers.insert(&newUser);
 }
 
-std::size_t	Server::removeAuthentificatedUser(User target) {
-	return this->authUsers.erase(target);
+std::size_t	Server::removeAuthentificatedUser(User &target) {
+	return this->authUsers.erase(&target);
 }
 
-std::pair<std::set<User>::iterator, bool>	Server::addServerOps(User newServerOp) {
-	return this->serverOps.insert(newServerOp);
+std::pair<std::set<User*>::iterator, bool>	Server::addServerOps(User &newServerOp) {
+	return this->serverOps.insert(&newServerOp);
 }
 
-std::size_t	Server::removeServerOps(User target) {
-	return this->serverOps.erase(target);
+std::size_t	Server::removeServerOps(User &target) {
+	return this->serverOps.erase(&target);
 }
 
 void	Server::running() {
@@ -106,6 +122,7 @@ void	Server::running() {
 					this->createNewClient();
 				else
 					this->handleClientMsg(this->sockets[i].fd);
+				this->setState(false);
 			}
 		}
 	}
@@ -196,6 +213,6 @@ std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server Server ops : " << rhs.getServerOps().size() << "\n";
 	printUsers(rhs.getServerOps());
 	out << "Server canals : " << rhs.getServerOps().size() << "\n";
-	printCanal(rhs.getCanals());
+	printCanals(rhs.getCanals());
 	return out;
 }

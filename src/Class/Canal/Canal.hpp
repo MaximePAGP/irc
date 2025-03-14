@@ -8,7 +8,7 @@
 #include "../Flag/Flag.hpp"
 #include "../User/User.hpp"
 
-void	printUsers(std::set<User> users);
+void	printUsers(std::set<User*> users);
 
 class Canal
 {
@@ -21,9 +21,9 @@ class Canal
 		std::string	const		name;
 		std::string				password;
 		std::string				topic;
-		std::set<User>			curUsers;
-		std::set<User>			invUsers;
-		std::set<User>			chanOp;
+		std::set<User*>			curUsers;
+		std::set<User*>			invUsers;
+		std::set<User*>			chanOp;
 	public:
 		Canal(struct pollfd &fd, std::string &name);
 		virtual ~Canal();
@@ -36,31 +36,31 @@ class Canal
 		std::string		getName() const;
 		std::string		getPassword() const;
 		std::string		getTopic() const;
-		std::set<User>	getCurrentUsers() const;
-		std::set<User>	getUserInvitation() const;
-		std::set<User>	getChanOps() const;
+		std::set<User*>	getCurrentUsers() const;
+		std::set<User*>	getUserInvitation() const;
+		std::set<User*>	getChanOps() const;
 
 		void			setFd(const struct pollfd &value);
 		void			setUserlimit(int value);
 		void			setPassword(std::string value);
 		void			setTopic(std::string value);
 
-		std::pair<std::set<User>::iterator, bool>
-						addChanOps(User value);
-		std::pair<std::set<User>::iterator, bool>
-						addUserInvitation(User value);
-		std::pair<std::set<User>::iterator, bool>
-						addUser(User value);
+		std::pair<std::set<User*>::iterator, bool>
+						addChanOps(User &value);
+		std::pair<std::set<User*>::iterator, bool>
+						addUserInvitation(User &value);
+		std::pair<std::set<User*>::iterator, bool>
+						addUser(User &value);
 		
-		std::size_t		removeChanOps(User value);
-		std::size_t		removeUserInvitation(User value);
-		std::size_t		removeUser(User value);
+		std::size_t		removeChanOps(User &value);
+		std::size_t		removeUserInvitation(User &value);
+		std::size_t		removeUser(User &value);
 	
 		bool			operator<(const Canal &other) const;
 };
 
 std::ostream &operator<<(std::ostream &out, Canal const &rhs);
-void	printCanal(std::set<Canal>);
+void	printCanals(std::set<Canal*>);
 
 
 #endif

@@ -16,7 +16,8 @@
 
 #define	MSG_LEN 512
 
-void	printUsers(std::set<User>);
+void	printUsers(std::set<User*>);
+void	printCanals(std::set<Canal*>);
 
 class Server: public ServerExepction
 {
@@ -27,9 +28,9 @@ class Server: public ServerExepction
 		std::string 			password;
 		int 					portname;
 		bool					isRunning;
-		std::set<User>			authUsers;
-		std::set<User>			serverOps;
-		std::set<Canal>			canals;
+		std::set<User*>			authUsers;
+		std::set<User*>			serverOps;
+		std::set<Canal*>			canals;
 		std::vector
 			<struct pollfd>		sockets;
 		void					handleClientLogout(int clientFd);
@@ -44,24 +45,24 @@ class Server: public ServerExepction
 		std::string 			getPassord() const;
 		int						getPortname() const;
 		bool					getState() const;
-		std::set<User>			getServerOps() const;
-		std::set<User>			getAuthentificatedUsers() const;
-		std::set<Canal>			getCanals() const;
+		std::set<User*>			getServerOps() const;
+		std::set<User*>			getAuthentificatedUsers() const;
+		std::set<Canal*>		getCanals() const;
 
 		void					setPassword(std::string newPassword);
 		void					setState(bool value);
 
-		std::pair<std::set<User>::iterator, bool>
-								addServerOps(User newServOP);
-		std::size_t				removeServerOps(User target);
+		std::pair<std::set<User*>::iterator, bool>
+								addServerOps(User &newServOP);
+		std::size_t				removeServerOps(User &target);
 
-		std::pair<std::set<User>::iterator, bool>
-								addAuthentificatedUser(User newUser);
-		std::size_t				removeAuthentificatedUser(User target);
+		std::pair<std::set<User*>::iterator, bool>
+								addAuthentificatedUser(User &newUser);
+		std::size_t				removeAuthentificatedUser(User &target);
 		
-		std::pair<std::set<Canal>::iterator, bool>
-								addCanal(Canal newCanal);
-		std::size_t				removeCanal(Canal target);
+		std::pair<std::set<Canal*>::iterator, bool>
+								addCanal(Canal &newCanal);
+		std::size_t				removeCanal(Canal &target);
 
 		bool 					hasUser(std::set<User> usersContainer, User &target);
 

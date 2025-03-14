@@ -54,15 +54,15 @@ std::string	Canal::getTopic() const {
 	return this->topic;
 }
 
-std::set<User> Canal::getCurrentUsers() const {
+std::set<User*> Canal::getCurrentUsers() const {
 	return this->curUsers;
 }
 
-std::set<User> Canal::getUserInvitation() const {
+std::set<User*> Canal::getUserInvitation() const {
 	return this->invUsers;
 }
 
-std::set<User> Canal::getChanOps() const {
+std::set<User*> Canal::getChanOps() const {
 	return this->chanOp;
 }
 
@@ -82,29 +82,29 @@ void	Canal::setTopic(std::string value) {
 	this->topic = value;
 }
 
-std::pair<std::set<User>::iterator, bool> Canal::addChanOps(User value) {
-	return this->chanOp.insert(value);
+std::pair<std::set<User*>::iterator, bool> Canal::addChanOps(User &value) {
+	return this->chanOp.insert(&value);
 }
 
-std::pair<std::set<User>::iterator, bool> Canal::addUser(User value) {
-	return this->curUsers.insert(value);
+std::pair<std::set<User*>::iterator, bool> Canal::addUser(User &value) {
+	return this->curUsers.insert(&value);
 }
 
-std::pair<std::set<User>::iterator, bool> Canal::addUserInvitation(User value) {
-	return this->invUsers.insert(value);
+std::pair<std::set<User*>::iterator, bool> Canal::addUserInvitation(User &value) {
+	return this->invUsers.insert(&value);
 }
 
 
-std::size_t	Canal::removeChanOps(User target) {
-	return this->chanOp.erase(target);
+std::size_t	Canal::removeChanOps(User &target) {
+	return this->chanOp.erase(&target);
 }
 
-std::size_t	Canal::removeUser(User target) {
-	return this->curUsers.erase(target);
+std::size_t	Canal::removeUser(User &target) {
+	return this->curUsers.erase(&target);
 }
 
-std::size_t	Canal::removeUserInvitation(User target) {
-	return this->invUsers.erase(target);
+std::size_t	Canal::removeUserInvitation(User &target) {
+	return this->invUsers.erase(&target);
 }
 
 bool	Canal::operator<(const Canal &other) const {
@@ -123,7 +123,7 @@ std::ostream &operator<<(std::ostream &out, Canal const &rhs) {
 	return out;
 }
 
-void			printCanal(std::set<Canal> canals) {
-	for (std::set<Canal>::iterator it = canals.begin(); it != canals.end(); ++it)
+void			printCanals(std::set<Canal*> canals) {
+	for (std::set<Canal*>::iterator it = canals.begin(); it != canals.end(); ++it)
     	std::cout << *it;
 }
