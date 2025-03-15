@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "string.h"
 
 static	Server *server = NULL;
 
@@ -157,13 +158,17 @@ void	Server::handleClientMsg(int clientFd) {
 	ssize_t bytesRead = 1;
 
 	while ((bytesRead = recv(clientFd, buffer, sizeof(buffer), 0)) > 0) {
-		buffer[bytesRead] = '\0';
-		std::cout << "Received : " << buffer << std::endl;
+		std::string msg(buffer);
+		std::cout << "Received : " << msg << std::endl;
+		if (msg.find("JOIN") == 0) {
+			handlejoinCanal(clientFd, msg);
+		}
 		send(clientFd, "Message received", 16, 0);
 	}
 	if (bytesRead == 0) {
 		this->handleClientLogout(clientFd);
 	}
+
 }
 
 void	Server::handleClientLogout(int clientFd) {
@@ -214,4 +219,39 @@ std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server canals : " << rhs.getServerOps().size() << "\n";
 	printCanals(rhs.getCanals());
 	return out;
+}
+
+Canal* Server::findCanalByName(const std::string& name) {
+    for (std::set<Canal*>::iterator it = this->canals.begin(); it != this->canals.end(); ++it) {
+		Canal* canal = *it;
+        if (canal->getName() == name) {
+            return canal;
+        }
+    }
+    return NULL;
+}
+
+void Server::handlejoinCanal(int clientFd, std::string msg) 
+{
+	(void)clientFd;
+	std::cout << "Joining canal" << std::endl;
+    std::string canalName = msg.substr(5);
+    std::cout << "Enter the canal name : ";
+    std::cin >> canalName;
+
+    // Rechercher le canal par son nom
+    Canal* canal = findCanalByName(canalName);
+
+    if (canal == NULL) {
+        // Si le canal n'existe pas, le créer et l'ajouter au set
+        struct pollfd fd; // Vous devrez initialiser correctement ce pollfd
+        canal = new Canal(fd, canalName);
+        this->addCanal(*canal);
+        std::cout << "Canal " << canalName << " created and joined." << std::endl;
+    } else {
+        std::cout << "Joined existing canal " << canalName << "." << std::endl;
+    }
+
+    // Ajouter l'utilisateur au canal (vous devrez implémenter cette logique)
+    // canal->addUser(clientFd); // Exemple, à adapter selon votre implémentation
 }
