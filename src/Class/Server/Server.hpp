@@ -28,7 +28,7 @@ class Server: public ServerExepction
 		std::string 			password;
 		int 					portname;
 		bool					isRunning;
-		std::set<User*>			authUsers;
+		std::set<User*>			users;
 		std::set<User*>			serverOps;
 		std::set<Canal*>			canals;
 		std::vector
@@ -46,7 +46,7 @@ class Server: public ServerExepction
 		int						getPortname() const;
 		bool					getState() const;
 		std::set<User*>			getServerOps() const;
-		std::set<User*>			getAuthentificatedUsers() const;
+		std::set<User*>			getUsers() const;
 		std::set<Canal*>		getCanals() const;
 
 		void					setPassword(std::string newPassword);
@@ -57,8 +57,8 @@ class Server: public ServerExepction
 		std::size_t				removeServerOps(User &target);
 
 		std::pair<std::set<User*>::iterator, bool>
-								addAuthentificatedUser(User &newUser);
-		std::size_t				removeAuthentificatedUser(User &target);
+								addUser(User &newUser);
+		std::size_t				removeUser(User &target);
 		
 		std::pair<std::set<Canal*>::iterator, bool>
 								addCanal(Canal &newCanal);

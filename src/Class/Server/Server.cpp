@@ -11,7 +11,7 @@ Server::~Server() {
 		close(this->sockets[i].fd);
 	}
 	
-	for (std::set<User *>::iterator it = this->authUsers.begin(); it != this->authUsers.end(); ++it) {
+	for (std::set<User *>::iterator it = this->users.begin(); it != this->users.end(); ++it) {
 		delete *it; 
 	}
 
@@ -20,7 +20,7 @@ Server::~Server() {
 	}
 	
 
-    this->authUsers.clear();
+    this->users.clear();
 }
 
 Server::Server(int portname, std::string password): 
@@ -70,8 +70,8 @@ std::set<User*>	Server::getServerOps() const {
 	return this->serverOps;
 }
 
-std::set<User*>	Server::getAuthentificatedUsers() const {
-	return this->authUsers;
+std::set<User*>	Server::getUsers() const {
+	return this->users;
 }
 
 std::set<Canal*>	Server::getCanals() const {
@@ -86,12 +86,12 @@ std::size_t	Server::removeCanal(Canal &target) {
 	return this->canals.erase(&target);
 }
 
-std::pair<std::set<User*>::iterator, bool>	Server::addAuthentificatedUser(User &newUser) {
-	return this->authUsers.insert(&newUser);
+std::pair<std::set<User*>::iterator, bool>	Server::addUser(User &newUser) {
+	return this->users.insert(&newUser);
 }
 
-std::size_t	Server::removeAuthentificatedUser(User &target) {
-	return this->authUsers.erase(&target);
+std::size_t	Server::removeUser(User &target) {
+	return this->users.erase(&target);
 }
 
 std::pair<std::set<User*>::iterator, bool>	Server::addServerOps(User &newServerOp) {
@@ -158,7 +158,7 @@ void	Server::handleClientMsg(int clientFd) {
 
 	while ((bytesRead = recv(clientFd, buffer, sizeof(buffer), 0)) > 0) {
 		buffer[bytesRead] = '\0';
-		std::cout << "Received : " << buffer << std::endl;
+		std::cout << "Received : <" << buffer << ">" << std::endl;
 		send(clientFd, "Message received", 16, 0);
 	}
 	if (bytesRead == 0) {
