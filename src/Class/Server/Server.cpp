@@ -116,7 +116,7 @@ void	Server::running() {
 			continue;
 
 		for (size_t i = 0; i < this->sockets.size(); i++) {
-			if (this->sockets[i].revents & POLLIN) {
+			if (this->sockets[i].revents && this->sockets[i].revents == POLLIN) {
 				std::cout << "trigger " << std::endl;
 				if (i == 0)
 					this->createNewClient();
