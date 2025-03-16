@@ -161,7 +161,7 @@ void	Server::handleClientMsg(int clientFd) {
 		std::string msg(buffer);
 		std::cout << "Received : " << msg << std::endl;
 		if (msg.find("JOIN") == 0) {
-			handlejoinCanal(clientFd, msg);
+			handleJoinCanal(clientFd, msg);
 		}
 		send(clientFd, "Message received", 16, 0);
 	}
@@ -231,13 +231,37 @@ Canal* Server::findCanalByName(const std::string& name) {
     return NULL;
 }
 
-void Server::handlejoinCanal(int clientFd, std::string msg) 
+// User* Server::findUserByFd(int clientFd) 
+// {
+// 	User *user = NULL;
+// 	user = this->authUsers.find(clientFd);
+//     for (User* user : this->authUsers) 
+// 	{
+// 		int fd = user->getFd().fd;
+//         if (fd == clientFd) { // Assurez-vous que la classe User a une méthode getFd()
+//             return user;
+//         }
+//     }
+//     return NULL;
+// }
+
+void Server::handleJoinCanal(int clientFd, const std::string msg)
 {
 	(void)clientFd;
-	std::cout << "Joining canal" << std::endl;
-    std::string canalName = msg.substr(5);
-    std::cout << "Enter the canal name : ";
-    std::cin >> canalName;
+    // Trouver l'espace après "JOIN"
+    size_t pos = msg.find(' ');
+    if (pos == std::string::npos) 
+	{
+        std::cerr << "Invalid JOIN command format" << std::endl;
+        return;
+    }
+
+    // Extraire le nom du canal après l'espace
+    std::string canalName = msg.substr(pos + 1);
+    if (canalName.empty()) {
+        std::cerr << "Channel name is empty" << std::endl;
+        return;
+    }
 
     // Rechercher le canal par son nom
     Canal* canal = findCanalByName(canalName);
@@ -248,10 +272,16 @@ void Server::handlejoinCanal(int clientFd, std::string msg)
         canal = new Canal(fd, canalName);
         this->addCanal(*canal);
         std::cout << "Canal " << canalName << " created and joined." << std::endl;
-    } else {
+    } 
+	else {
         std::cout << "Joined existing canal " << canalName << "." << std::endl;
     }
 
-    // Ajouter l'utilisateur au canal (vous devrez implémenter cette logique)
-    // canal->addUser(clientFd); // Exemple, à adapter selon votre implémentation
+    // Ajouter l'utilisateur au canal
+    // User* user = findUserByFd(clientFd); // Vous devrez implémenter cette méthode
+    // if (user != NULL) {
+    //     canal->addUser(*user); // Assurez-vous que la méthode addUser est implémentée dans la classe Canal
+    // } else {
+    //     std::cerr << "User not found for clientFd: " << clientFd << std::endl;
+    // }
 }
