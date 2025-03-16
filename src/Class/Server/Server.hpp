@@ -19,6 +19,7 @@
 void	printUsers(std::set<User*>);
 void	printCanals(std::set<Canal*>);
 void	redirectCommand(std::string command);
+bool	isNick(std::string command) ;
 
 class Server: public ServerExepction
 {

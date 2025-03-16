@@ -161,7 +161,6 @@ void	Server::handleClientMsg(int clientFd) {
 
 	while ((bytesRead = recv(clientFd, buffer, sizeof(buffer), 0)) > 0) {
 		buffer[bytesRead] = '\0';
-		std::cout << "index : " << std::string(buffer).find("\r") << std::endl;
 		std::cout << "Received : <" << buffer << ">" << std::endl;
 		send(clientFd, "Message received", 16, 0);
 	}
@@ -174,7 +173,7 @@ void	Server::handleClientLogout(int clientFd) {
 	size_t i = 0;
 	while (this->sockets.begin() != this->sockets.end()) {
 		if (this->sockets[i].fd == clientFd)
-		this->sockets.erase(this->sockets.begin() + i);
+			this->sockets.erase(this->sockets.begin() + i);
 		i ++;
 		break;
 	}
@@ -204,6 +203,9 @@ void Server::createNewClient() {
 	newClient.events = POLLIN;
 	newClient.revents = 0;
 	this->sockets.push_back(newClient);
+	User *user = new User(NULL, NULL, NULL);
+	user->setFd(newClient);
+	this->addUser(*user);
 }
 
 bool Server::hasUser(std::set<User> usersContainer, User &target) {

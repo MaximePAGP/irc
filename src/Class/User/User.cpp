@@ -59,6 +59,10 @@ void	User::setUsername(std::string newUserName) {
 	this->userName = newUserName;
 }
 
+void	User::setCommandBuffer(std::string value) {
+	this->commandBuffer = value;
+}
+
 bool	User::operator<(const User &other) const {
 	return this->getNickName() < other.getNickName();
 }
