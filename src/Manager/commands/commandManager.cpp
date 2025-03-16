@@ -59,3 +59,26 @@ void	CommandManager::redirectCommand(std::string command) {
 	// if no handle case return same as 
 		//should response to client :localhost 421 salut {command} :Unknown command
 }
+
+
+void	CommandManager::buildCommand(std::string command, int clientFd) {
+	Server const &server = Server::getServer();
+	User *curUser = server.getUserByFd(clientFd);
+	
+	if ((curUser->getCommandBuffer().size() + command.size()) > MSG_LEN) {
+		// maybe send error to client ?
+		return;
+	}
+	if (!command.find("\r\n")) {
+		curUser->setCommandBuffer(
+			curUser->getCommandBuffer().append(command)
+		);
+		return ;
+	} 
+
+	// Command has been build so launch it into redirect command
+	std::cout << " target " << *curUser << std::endl;
+	// flush command 
+	curUser->setCommandBuffer("");
+	(void)command;
+}
