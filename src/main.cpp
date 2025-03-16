@@ -5,14 +5,16 @@
 
 
 int	checkPassingArguments(int argc, char **argv);
-void handle_sigint(int sigint);
+void handle_sigint(int signal);
+void handle_sigquit(int sigquit);
 
 int main(int argc, char **argv)
 {
 	if (!checkPassingArguments(argc, argv))
 		return 1;
 
-	// signal(SIGINT, &handle_sigint);
+	signal(SIGINT, &handle_sigint);
+	signal(SIGQUIT, &handle_sigquit);
 
 	try
 	{

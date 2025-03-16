@@ -2,8 +2,14 @@
 
 
 void handle_sigint(int sigint) {
-	// Server &server = Server::getServer();
+	Server &server = Server::getServer();
 	(void)sigint;
-	// server.setState(false);
-	// server.kill();
+	server.setState(false);
+}
+
+void handle_sigquit(int sigquit) {
+	Server &server = Server::getServer();
+	(void)sigquit;
+	std::cout << "Quit (core dumped)" << std::endl;
+	server.setState(false);
 }
