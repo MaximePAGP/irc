@@ -6,7 +6,6 @@
 #include "Manager/userManager/UserManager.hpp"
 
 int	checkPassingArguments(int argc, char **argv);
-bool	isNick(std::string command);
 void handle_sigint(int signal);
 void handle_sigquit(int sigquit);
 
@@ -28,15 +27,13 @@ int main(int argc, char **argv)
 			"ccpc"
 		);
 		server.addUser(*testt);
-		std::string test = "nick  salddddddddddd salut";
-		std::cout << isNick(test);
-		std::cout << test;
 		// std::cout << "result : " << UserManager::isUniqueUsername("salu");
 		server.running();
 	}
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
+		server.kill();
 		return 1;
 	}
 	server.kill();
