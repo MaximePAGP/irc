@@ -6,8 +6,9 @@
 #include "Manager/userManager/UserManager.hpp"
 
 int	checkPassingArguments(int argc, char **argv);
-void handle_sigint(int sigint);
 bool	isNick(std::string command);
+void handle_sigint(int signal);
+void handle_sigquit(int sigquit);
 
 int main(int argc, char **argv)
 {
@@ -16,7 +17,10 @@ int main(int argc, char **argv)
 
 	// signal(SIGINT, &handle_sigint);
 	Server &server = Server::init(std::atoi(argv[1]), argv[2]);
-	try	
+	signal(SIGINT, &handle_sigint);
+	signal(SIGQUIT, &handle_sigquit);
+
+	try
 	{
 		User *testt = new User(
 			"salt",
