@@ -1,12 +1,16 @@
 #include "User.hpp"
 
 User::User(): nickName("default"), userName("default"), password(NULL)
-	{}
+	{
+		this->fd.fd = -1;
+	}
 
 
-User::User(std::string const &nickName, std::string const &userName, std::string password)
+User::User(std::string nickName, std::string userName, std::string password)
 	: nickName(nickName), userName(userName), password(password)
-	{}
+	{
+		this->fd.fd = -1;
+	}
 
 
 User::~User() {}
@@ -53,6 +57,14 @@ void	User::setFd(struct pollfd newfd) {
 
 void	User::setNickName(std::string newNickName) {
 	this->nickName = newNickName;
+}
+
+void	User::setUsername(std::string newUserName) {
+	this->userName = newUserName;
+}
+
+void	User::setCommandBuffer(std::string value) {
+	this->commandBuffer = value;
 }
 
 bool	User::operator<(const User &other) const {

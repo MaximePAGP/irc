@@ -11,22 +11,24 @@ Server::~Server() {
 	{
 		close(this->sockets[i].fd);
 	}
+	this->sockets.clear();
 	
-	for (std::set<User *>::iterator it = this->authUsers.begin(); it != this->authUsers.end(); ++it) {
+	for (std::set<User *>::iterator it = this->users.begin(); it != this->users.end(); it++) {
 		delete *it; 
 	}
+	this->users.clear();
 
-	for (std::set<Canal *>::iterator it = this->canals.begin(); it != this->canals.end(); ++it) {
+	for (std::set<Canal *>::iterator it = this->canals.begin(); it != this->canals.end(); it++) {
 		delete *it; 
 	}
-	
+	this->canals.clear();
 
-    this->authUsers.clear();
+	this->serverOps.clear();
 }
 
 Server::Server(int portname, std::string password): 
 	password(password), portname(portname) {
-		if (portname < 1 || portname > 65535)
+		if (portname < 1 || portname > MAX_PORT)
 			throw PortOutOfRangeException();
 }
 
@@ -71,8 +73,8 @@ std::set<User*>	Server::getServerOps() const {
 	return this->serverOps;
 }
 
-std::set<User*>	Server::getAuthentificatedUsers() const {
-	return this->authUsers;
+std::set<User*>	Server::getUsers() const {
+	return this->users;
 }
 
 std::set<Canal*>	Server::getCanals() const {
@@ -87,12 +89,12 @@ std::size_t	Server::removeCanal(Canal &target) {
 	return this->canals.erase(&target);
 }
 
-std::pair<std::set<User*>::iterator, bool>	Server::addAuthentificatedUser(User &newUser) {
-	return this->authUsers.insert(&newUser);
+std::pair<std::set<User*>::iterator, bool>	Server::addUser(User &newUser) {
+	return this->users.insert(&newUser);
 }
 
-std::size_t	Server::removeAuthentificatedUser(User &target) {
-	return this->authUsers.erase(&target);
+std::size_t	Server::removeUser(User &target) {
+	return this->users.erase(&target);
 }
 
 std::pair<std::set<User*>::iterator, bool>	Server::addServerOps(User &newServerOp) {
@@ -113,8 +115,8 @@ void	Server::running() {
 		if (pollEvent == -1)
 			break;
 		// std::cout << "pollevent : " << pollEvent << std::endl;
-		if (pollEvent < 1)
-			continue;
+		// if (pollEvent < 1)
+		// 	continue;
 
 		for (size_t i = 0; i < this->sockets.size(); i++) {
 			if (this->sockets[i].revents & POLLIN) {
@@ -130,11 +132,14 @@ void	Server::running() {
 
 
 void	Server::bindAndListenPort() {
-	struct sockaddr_in address;
+	struct sockaddr_in	address;
+	int				option = 1;	
 
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->getPortname());
+	if (setsockopt(this->sockets[0].fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) == -1)
+        throw ServerExepction::CannotSetSocketOptionException();
 	if (bind(this->sockets[0].fd, (struct sockaddr*) &address, sizeof(address)) == -1)
 		throw ServerExepction::CannotBindPortException();
 	if (listen(this->sockets[0].fd, 10) < 0)
@@ -165,6 +170,7 @@ void	Server::handleClientMsg(int clientFd) {
 		}
 		send(clientFd, "Message received", 16, 0);
 	}
+	// handle if recv crash send a response to client to say we cannot handle the commmand
 	if (bytesRead == 0) {
 		this->handleClientLogout(clientFd);
 	}
@@ -172,16 +178,30 @@ void	Server::handleClientMsg(int clientFd) {
 }
 
 void	Server::handleClientLogout(int clientFd) {
-	size_t i = 0;
-	while (this->sockets.begin() != this->sockets.end()) {
-		if (this->sockets[i].fd == clientFd)
-		this->sockets.erase(this->sockets.begin() + i);
-		i ++;
-		break;
+
+	for (std::vector<struct pollfd>::iterator it = this->sockets.begin(); it != this->sockets.end(); it++)
+	{
+		pollfd cur = *it;
+		if (cur.fd == clientFd) {
+			this->sockets.erase(it);
+			break ;
+		}
 	}
 	
-	close(clientFd);
 
+	for (std::set<User*>::iterator it = this->users.begin(); it != this->users.end();)
+	{
+		User *cur = *it;
+		if (cur != NULL && cur->getFd().fd == clientFd) {
+			this->users.erase(it);  
+			delete cur;
+			break;
+		} else {
+			it++;
+		}
+	}
+
+	close(clientFd);
 }
 
 void Server::createNewClient() {
@@ -205,6 +225,9 @@ void Server::createNewClient() {
 	newClient.events = POLLIN;
 	newClient.revents = 0;
 	this->sockets.push_back(newClient);
+	User *user = new User("", "", "");
+	user->setFd(newClient);
+	this->addUser(*user);
 }
 
 bool Server::hasUser(std::set<User> usersContainer, User &target) {

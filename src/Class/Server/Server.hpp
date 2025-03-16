@@ -14,10 +14,13 @@
 #include "ServerExepction.hpp"
 
 
+#define MAX_PORT 65535
 #define	MSG_LEN 512
 
 void	printUsers(std::set<User*>);
 void	printCanals(std::set<Canal*>);
+void	redirectCommand(std::string command);
+bool	isNick(std::string command) ;
 
 class Server: public ServerExepction
 {
@@ -28,7 +31,7 @@ class Server: public ServerExepction
 		std::string 			password;
 		int 					portname;
 		bool					isRunning;
-		std::set<User*>			authUsers;
+		std::set<User*>			users;
 		std::set<User*>			serverOps;
 		std::set<Canal*>			canals;
 		std::vector
@@ -47,7 +50,7 @@ class Server: public ServerExepction
 		int						getPortname() const;
 		bool					getState() const;
 		std::set<User*>			getServerOps() const;
-		std::set<User*>			getAuthentificatedUsers() const;
+		std::set<User*>			getUsers() const;
 		std::set<Canal*>		getCanals() const;
 		
 		void					setPassword(std::string newPassword);
@@ -58,10 +61,10 @@ class Server: public ServerExepction
 		std::size_t				removeServerOps(User &target);
 		
 		std::pair<std::set<User*>::iterator, bool>
-								addAuthentificatedUser(User &newUser);
-								std::size_t				removeAuthentificatedUser(User &target);
-								
-								std::pair<std::set<Canal*>::iterator, bool>
+								addUser(User &newUser);
+		std::size_t				removeUser(User &target);
+		
+		std::pair<std::set<Canal*>::iterator, bool>
 								addCanal(Canal &newCanal);
 								std::size_t				removeCanal(Canal &target);
 
