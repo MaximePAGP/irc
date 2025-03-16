@@ -1,9 +1,9 @@
+#include "commandManager.hpp"
 
-#include <algorithm>
-#include <string>
-#include <iostream>
+CommandManager::CommandManager() {}
 
-// a voir si le tout nest pas plus pertinent dans une classe
+
+CommandManager::~CommandManager() {}
 
 
 /*
@@ -11,7 +11,7 @@
 	La taille minimum acceptable est 4 car la plus petite commande valide en taille est 4 (KICK ou MODE)
 
 */
-static	bool	hasValidCommand(std::string command) {
+bool	CommandManager::hasValidCommand(std::string command) {
 	int	const validCommandSize = 5;
 	size_t const firstSpaceIndex = command.find(" ");
 
@@ -30,7 +30,7 @@ static	bool	hasValidCommand(std::string command) {
 	return true;
 }
 
-bool	isNick(std::string command) {
+bool	CommandManager::isNick(std::string command) {
 	size_t test = command.find("nick");
 	std::cout << " result   "  << test << " " << command << std::endl;
 	if (command.find("nick") == 5){
@@ -39,19 +39,19 @@ bool	isNick(std::string command) {
 	return false;
 }
 
-void	redirectCommand(std::string command) {
+void	CommandManager::redirectCommand(std::string command) {
 	if (command.empty())
 		return ;
 	std::string cmdCpy = command;
 	std::transform(cmdCpy.begin(), cmdCpy.end(), cmdCpy.begin(), ::tolower);
 
-	if (!hasValidCommand(cmdCpy)) {
+	if (!this->hasValidCommand(cmdCpy)) {
 		// handle response here
 			//should response to client :localhost 421 salut {command} :Unknown command
 		return ;
 	}
 
-	if (isNick(cmdCpy)) {
+	if (this->isNick(cmdCpy)) {
 
 		// handle set nickname
 	}
