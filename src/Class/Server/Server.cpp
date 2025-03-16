@@ -129,11 +129,14 @@ void	Server::running() {
 
 
 void	Server::bindAndListenPort() {
-	struct sockaddr_in address;
+	struct sockaddr_in	address;
+	int				option = 1;	
 
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->getPortname());
+	if (setsockopt(this->sockets[0].fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) == -1)
+        throw ServerExepction::CannotSetSocketOptionException();
 	if (bind(this->sockets[0].fd, (struct sockaddr*) &address, sizeof(address)) == -1)
 		throw ServerExepction::CannotBindPortException();
 	if (listen(this->sockets[0].fd, 10) < 0)
@@ -158,6 +161,7 @@ void	Server::handleClientMsg(int clientFd) {
 
 	while ((bytesRead = recv(clientFd, buffer, sizeof(buffer), 0)) > 0) {
 		buffer[bytesRead] = '\0';
+		std::cout << "index : " << std::string(buffer).find("\r") << std::endl;
 		std::cout << "Received : <" << buffer << ">" << std::endl;
 		send(clientFd, "Message received", 16, 0);
 	}
