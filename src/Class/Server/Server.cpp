@@ -10,22 +10,24 @@ Server::~Server() {
 	{
 		close(this->sockets[i].fd);
 	}
+	this->sockets.clear();
 	
-	for (std::set<User *>::iterator it = this->users.begin(); it != this->users.end(); ++it) {
+	for (std::set<User *>::iterator it = this->users.begin(); it != this->users.end(); it++) {
 		delete *it; 
 	}
+	this->users.clear();
 
-	for (std::set<Canal *>::iterator it = this->canals.begin(); it != this->canals.end(); ++it) {
+	for (std::set<Canal *>::iterator it = this->canals.begin(); it != this->canals.end(); it++) {
 		delete *it; 
 	}
-	
+	this->canals.clear();
 
-    this->users.clear();
+	this->serverOps.clear();
 }
 
 Server::Server(int portname, std::string password): 
 	password(password), portname(portname) {
-		if (portname < 1 || portname > 65535)
+		if (portname < 1 || portname > MAX_PORT)
 			throw PortOutOfRangeException();
 }
 
@@ -112,11 +114,11 @@ void	Server::running() {
 		if (pollEvent == -1)
 			break;
 		// std::cout << "pollevent : " << pollEvent << std::endl;
-		if (pollEvent < 1)
-			continue;
+		// if (pollEvent < 1)
+		// 	continue;
 
 		for (size_t i = 0; i < this->sockets.size(); i++) {
-			if (this->sockets[i].revents && this->sockets[i].revents == POLLIN) {
+			if (this->sockets[i].revents & POLLIN) {
 				std::cout << "trigger " << std::endl;
 				if (i == 0)
 					this->createNewClient();
@@ -164,22 +166,37 @@ void	Server::handleClientMsg(int clientFd) {
 		std::cout << "Received : <" << buffer << ">" << std::endl;
 		send(clientFd, "Message received", 16, 0);
 	}
+	// handle if recv crash send a response to client to say we cannot handle the commmand
 	if (bytesRead == 0) {
 		this->handleClientLogout(clientFd);
 	}
 }
 
 void	Server::handleClientLogout(int clientFd) {
-	size_t i = 0;
-	while (this->sockets.begin() != this->sockets.end()) {
-		if (this->sockets[i].fd == clientFd)
-			this->sockets.erase(this->sockets.begin() + i);
-		i ++;
-		break;
+
+	for (std::vector<struct pollfd>::iterator it = this->sockets.begin(); it != this->sockets.end(); it++)
+	{
+		pollfd cur = *it;
+		if (cur.fd == clientFd) {
+			this->sockets.erase(it);
+			break ;
+		}
 	}
 	
-	close(clientFd);
 
+	for (std::set<User*>::iterator it = this->users.begin(); it != this->users.end();)
+	{
+		User *cur = *it;
+		if (cur != NULL && cur->getFd().fd == clientFd) {
+			this->users.erase(it);  
+			delete cur;
+			break;
+		} else {
+			it++;
+		}
+	}
+
+	close(clientFd);
 }
 
 void Server::createNewClient() {
@@ -203,7 +220,7 @@ void Server::createNewClient() {
 	newClient.events = POLLIN;
 	newClient.revents = 0;
 	this->sockets.push_back(newClient);
-	User *user = new User(NULL, NULL, NULL);
+	User *user = new User("", "", "");
 	user->setFd(newClient);
 	this->addUser(*user);
 }

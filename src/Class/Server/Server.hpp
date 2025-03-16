@@ -14,6 +14,7 @@
 #include "ServerExepction.hpp"
 
 
+#define MAX_PORT 65535
 #define	MSG_LEN 512
 
 void	printUsers(std::set<User*>);
