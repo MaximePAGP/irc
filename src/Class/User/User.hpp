@@ -32,6 +32,7 @@ class User
 		void			setPassword(std::string newPassord);
 		void			setFd(struct pollfd newFd);
 		void			setCommandBuffer(std::string value);
+		void			flushCommandBuffer();
 
 		bool			operator<(const User &other)const;
 };

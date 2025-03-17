@@ -80,6 +80,10 @@ std::ostream &operator<<(std::ostream &out, User const &rhs) {
 	return out;
 }
 
+void	User::flushCommandBuffer() {
+	this->setCommandBuffer("");
+}
+
 void	printUsers(std::set<User*> users) {
 	for (std::set<User*>::iterator it = users.begin(); it != users.end(); ++it)
     	std::cout << *it;

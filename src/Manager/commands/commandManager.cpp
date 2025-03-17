@@ -67,18 +67,21 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 	
 	if ((curUser->getCommandBuffer().size() + command.size()) > MSG_LEN) {
 		// maybe send error to client ?
+		curUser->flushCommandBuffer();
 		return;
 	}
-	if (!command.find("\r\n")) {
-		curUser->setCommandBuffer(
-			curUser->getCommandBuffer().append(command)
-		);
-		return ;
-	} 
+	curUser->setCommandBuffer(
+		curUser->getCommandBuffer().append(command)
+	);
 
-	// Command has been build so launch it into redirect command
-	std::cout << " target " << *curUser << std::endl;
-	// flush command 
-	curUser->setCommandBuffer("");
-	(void)command;
+	while (curUser->getCommandBuffer().find("\r\n") != std::string::npos) {
+		size_t pos = curUser->getCommandBuffer().find("\r\n");
+	
+		std::string fullCommand = curUser->getCommandBuffer().substr(0, pos);
+		curUser->setCommandBuffer(curUser->getCommandBuffer().substr(pos + 2)); // 2 is the length of \r\n
+	
+		std::cout << "i execute " << fullCommand << std::endl;
+	
+		// this->processCommand(fullCommand, curUser);
+	}	
 }
