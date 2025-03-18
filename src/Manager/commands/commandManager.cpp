@@ -34,12 +34,6 @@ bool CommandManager::hasValidCommand(std::string command) {
 }
 
 
-bool	CommandManager::isNick(std::string command) {
-	if (command.find("NICK") == 0)
-		return true;
-	return false;
-}
-
 void	CommandManager::redirectCommand(std::string command, User &user) {
 	(void)user;
 	if (command.empty())
@@ -51,7 +45,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		return ;
 	}
 
-	if (CommandManager::isNick(command)) {
+	if (command.find("NICK") == 0) {
 		CommandManager::handleNick(command.substr(4, command.size()), user);
 		return ;
 	}
@@ -87,6 +81,7 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 
 void CommandManager::handleNick(std::string command, User &user) {
 	std::string param =  CommandManager::trimParamSpace(command);
+	Server const &server = Server::getServer();
 
 	if (param.empty()) {
 		//:localhost 431 ${nickname} ${newNickname} :No nickname given
@@ -104,6 +99,11 @@ void CommandManager::handleNick(std::string command, User &user) {
 	if (param.size() > 9) {
 		// need response
 		return;
+	}
+
+	if (server.getUserByNickname(param) != NULL) {
+		// nickname already takken;
+		return ;
 	}
 
 	if (!isValidNickname(param)) {
@@ -143,8 +143,10 @@ bool	CommandManager::isValidNickname(std::string nickname) {
 	if (nickname.empty())
 		return false;
 
-	// handle special character check
-
+	for (size_t i = 0; i < nickname.size(); i++)
+	{
+		/* code */
+	}
 
 	return true;
 }
