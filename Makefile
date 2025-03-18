@@ -9,6 +9,9 @@ SRCS 				= 	src/main.cpp \
 						src/Class/Flag/Flag.cpp \
 						src/Class/Canal/Canal.cpp \
 						src/Class/Server/Server.cpp \
+						src/Class/Server/Socket.cpp \
+						src/Manager/commands/commandManager.cpp \
+						src/Manager/userManager/UserManager.cpp \
 						src/Manager/signals_manager.cpp \
 
 OBJS_DIR			= .objs

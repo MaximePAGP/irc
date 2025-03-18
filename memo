@@ -82,3 +82,37 @@ pour se connecter au server irc depuis hexchat
 /INVTE cf: inviter un user dans la room https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.7
 /KICK  https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.8
 /KILL coupe la co d'un client https://datatracker.ietf.org/doc/html/rfc1459#section-4.6.1
+
+
+
+
+
+    Utilise socket(AF_INET, SOCK_STREAM, 0) pour créer un socket TCP.
+    Vérifie si le socket est bien créé (socket() ne doit pas retourner -1).
+
+2. Configuration de l'adresse du serveur
+
+    Remplis une sockaddr_in avec :
+        sin_family = AF_INET (IPv4)
+        sin_addr.s_addr = INADDR_ANY (écoute sur toutes les interfaces)
+        sin_port = htons(portname) (conversion en format réseau)
+
+3. Liaison du socket à l'adresse et au port
+
+    Utilise bind(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)).
+    Vérifie que bind ne retourne pas -1 (sinon, erreur).
+
+4. Passage du socket en mode écoute
+
+    Utilise listen(socket_fd, SOMAXCONN).
+    SOMAXCONN définit la taille maximale de la file d’attente des connexions entrantes.
+
+5. Acceptation des connexions entrantes
+
+    Utilise accept() dans une boucle pour gérer les clients.
+    accept() renvoie un nouveau fd pour chaque client connecté.
+
+6. Intégration avec poll (ou select)
+
+    Ajoute le socket_fd dans une structure pollfd pour surveiller les événements (POLLIN).
+    Attends de nouvelles connexions et messages des clients.

@@ -1,12 +1,16 @@
 #include "User.hpp"
 
 User::User(): nickName("default"), userName("default"), password(NULL)
-	{}
+	{
+		this->fd.fd = -1;
+	}
 
 
 User::User(std::string nickName, std::string userName, std::string password)
 	: nickName(nickName), userName(userName), password(password)
-	{}
+	{
+		this->fd.fd = -1;
+	}
 
 
 User::~User() {}
@@ -43,6 +47,10 @@ struct	pollfd	User::getFd() const {
 	return this->fd;
 }
 
+std::string	User::getCommandBuffer() const {
+	return this->commandBuffer;
+}
+
 void	User::setPassword(std::string newPassord) {
 	this->password = newPassord;
 }
@@ -59,13 +67,21 @@ void	User::setUsername(std::string newUserName) {
 	this->userName = newUserName;
 }
 
+void	User::setCommandBuffer(std::string value) {
+	this->commandBuffer = value;
+}
+
 bool	User::operator<(const User &other) const {
 	return this->getNickName() < other.getNickName();
 }
 
 std::ostream &operator<<(std::ostream &out, User const &rhs) {
-	out << " " << rhs.getNickName() << " " << rhs.getUserName() << " " << rhs.getPassword() << "\n";
+	out << " " << rhs.getNickName() << " " << rhs.getUserName() << " " << rhs.getPassword() << " " << rhs.getCommandBuffer() << "\n";
 	return out;
+}
+
+void	User::flushCommandBuffer() {
+	this->setCommandBuffer("");
 }
 
 void	printUsers(std::set<User*> users) {

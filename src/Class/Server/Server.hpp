@@ -11,13 +11,17 @@
 #include <stdbool.h>
 #include "../Canal/Canal.hpp"
 #include "../User/User.hpp"
+#include "../../Manager/commands/commandManager.hpp"
 #include "ServerExepction.hpp"
 
 
+#define MAX_PORT 65535
 #define	MSG_LEN 512
 
 void	printUsers(std::set<User*>);
 void	printCanals(std::set<Canal*>);
+void	redirectCommand(std::string command);
+bool	isNick(std::string command) ;
 
 class Server: public ServerExepction
 {
@@ -47,6 +51,9 @@ class Server: public ServerExepction
 		bool					getState() const;
 		std::set<User*>			getServerOps() const;
 		std::set<User*>			getUsers() const;
+		User					*getUserByFd(int fd) const;
+		User					*getUserByUsername(std::string username) const;
+		User					*getUserByNickname(std::string nickname) const;
 		std::set<Canal*>		getCanals() const;
 
 		void					setPassword(std::string newPassword);
