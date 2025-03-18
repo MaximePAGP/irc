@@ -19,6 +19,7 @@ class CommandManager
 		static	bool	isNick(std::string command);
 		static	bool	hasValidCommand(std::string command);
 		static	bool	commandIsComplete(std::string command);
+		static	std::string	trimParamSpace(std::string param);
 		CommandManager();
     public:
 		virtual  ~CommandManager();

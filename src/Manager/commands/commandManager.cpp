@@ -52,7 +52,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	}
 
 	if (CommandManager::isNick(command)) {
-		CommandManager::handleNick(command, user);
+		CommandManager::handleNick(command.substr(4, command.size()), user);
 		return ;
 	}
 
@@ -79,50 +79,64 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 	
 		std::string fullCommand = curUser->getCommandBuffer().substr(0, pos);
 		curUser->setCommandBuffer(curUser->getCommandBuffer().substr(pos + 2)); // 2 is the length of \r\n
-	
-		std::cout << "i execute <" << fullCommand << ">" << std::endl;
-	
+		
 		CommandManager::redirectCommand(fullCommand, *curUser);
 	}
 }
 
 
 void CommandManager::handleNick(std::string command, User &user) {
-	size_t start = command.find("NICK \t\r\n", 9);
-	if (start == std::string::npos) {
+	std::string param =  CommandManager::trimParamSpace(command);
+
+	if (param.empty()) {
 		//:localhost 431 ${nickname} ${newNickname} :No nickname given
 		return;
 	}
 
-	std::cout << "raw command " << command << std::endl;
-	std::cout << "param start " << start << std::endl;
+	std::cout << "handle : <" << param << ">" << std::endl;
 
-	size_t end = command.find_first_of(" \t\r\n\0", start);
-	std::string nickname = "";
 
-	if (end != std::string::npos) {
-		nickname = command.substr(start, end - start);
-	}
-
-	std::cout << "handle : " << nickname << std::endl;
-
-	if (nickname.empty()) {
+	if (param.empty()) {
 		//:localhost 431 ${nickname} ${newNickname} :No nickname given
 		return;
 	}
 
-	if (nickname.size() > 9) {
+	if (param.size() > 9) {
 		// need response
 		return;
 	}
 
-	if (!isValidNickname(nickname)) {
+	if (!isValidNickname(param)) {
 		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
 		return;
 	}
 
-	user.setNickName(nickname);
-	std::cout << "New nickname: " << user.getNickName() << std::endl;
+	user.setNickName(param);
+	std::cout << "New nickname: <" << user.getNickName() << ">" << std::endl;
+	// send succes response
+}
+
+std::string CommandManager::trimParamSpace(std::string param) {
+	size_t start = param.find_first_not_of(" \t\r\n");
+
+	if (start == std::string::npos)
+		return "";
+
+	size_t end = param.find_first_of(" \t\r\n", start);
+	std::string trimParam = "";
+
+	if (end != std::string::npos)
+		trimParam = param.substr(start, end - start);
+	else
+    	trimParam = param.substr(start);
+
+	size_t lastNonSpace = trimParam.find_last_not_of(" \t\r\n");
+
+	if (lastNonSpace != std::string::npos) {
+		trimParam = trimParam.substr(0, lastNonSpace + 1);
+	}
+
+	return trimParam;
 }
 
 bool	CommandManager::isValidNickname(std::string nickname) {
