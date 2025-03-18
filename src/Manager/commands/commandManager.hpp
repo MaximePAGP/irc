@@ -14,13 +14,15 @@
 class CommandManager
 {
     private:
-		bool	isNick(std::string command);
-        bool	hasValidCommand(std::string command);
-		bool	commandIsComplete(std::string command);
+		static	bool 	isValidNickname(std::string nickname);
+		static	void	handleNick(std::string command, User &user);
+		static	bool	isNick(std::string command);
+        static	bool	hasValidCommand(std::string command);
+		static	bool	commandIsComplete(std::string command);
         CommandManager();
     public:
         virtual  ~CommandManager();
-		void	redirectCommand(std::string command);
+		static	void	redirectCommand(std::string command, User const &user);
 		static void	buildCommand(std::string command, int clientFd);
 };
 

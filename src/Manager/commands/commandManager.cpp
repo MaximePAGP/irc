@@ -11,48 +11,53 @@ CommandManager::~CommandManager() {}
 	La taille minimum acceptable est 4 car la plus petite commande valide en taille est 4 (KICK ou MODE)
 
 */
-bool	CommandManager::hasValidCommand(std::string command) {
-	int	const validCommandSize = 5;
-	size_t const firstSpaceIndex = command.find(" ");
+bool CommandManager::hasValidCommand(std::string command) {
+	int const validCommandSize = 4;
 
+	size_t firstCharIndex = command.find_first_not_of(" \t\r\n");
+	if (firstCharIndex == std::string::npos)
+		return false;
+
+	size_t firstSpaceIndex = command.find_first_of(" \t\r\n", firstCharIndex);
 	if (firstSpaceIndex == std::string::npos)
 		return false;
 
-	if (validCommandSize > firstSpaceIndex)
+	if ((firstSpaceIndex - firstCharIndex) < validCommandSize)
 		return false;
 
-	for (size_t i = 0; i < firstSpaceIndex; i++)
-	{
+	for (size_t i = firstCharIndex; i < firstSpaceIndex; i++) {
 		if (!std::isalpha(command[i]))
 			return false;
 	}
-	
+
 	return true;
 }
 
+
 bool	CommandManager::isNick(std::string command) {
-	size_t test = command.find("nick");
-	std::cout << " result   "  << test << " " << command << std::endl;
-	if (command.find("nick") == 5){
+	if (command.find("nick") == 0)
 		return true;
-	}
 	return false;
 }
 
-void	CommandManager::redirectCommand(std::string command) {
+void	CommandManager::redirectCommand(std::string command, User const &user) {
+	(void)user;
 	if (command.empty())
 		return ;
 	std::string cmdCpy = command;
 	std::transform(cmdCpy.begin(), cmdCpy.end(), cmdCpy.begin(), ::tolower);
 
-	if (!this->hasValidCommand(cmdCpy)) {
+	// std::cout << "je suis là " << std::endl;
+
+	if (!CommandManager::hasValidCommand(cmdCpy)) {
 		// handle response here
 			//should response to client :localhost 421 salut {command} :Unknown command
 		return ;
 	}
+	std::cout << "je suis là " << std::endl;
 
-	if (this->isNick(cmdCpy)) {
-
+	if (CommandManager::isNick(cmdCpy)) {
+		std::cout << "i hande nick" << std::endl;
 		// handle set nickname
 	}
 
@@ -82,6 +87,50 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 	
 		std::cout << "i execute " << fullCommand << std::endl;
 	
-		// this->processCommand(fullCommand, curUser);
-	}	
+		CommandManager::redirectCommand(fullCommand, *curUser);
+	}
+}
+
+
+void CommandManager::handleNick(std::string command, User &user) {
+	size_t start = command.find_first_not_of(" \t\r\n", 4);
+	if (start == std::string::npos) {
+		//:localhost 431 ${nickname} ${newNickname} :No nickname given
+		return;
+	}
+
+	size_t end = command.find_first_of(" \t\r\n", start);
+	std::string nickname = "";
+
+	if (end != std::string::npos) {
+		nickname = command.substr(start, end - start);
+	}
+
+	if (nickname.empty()) {
+		//:localhost 431 ${nickname} ${newNickname} :No nickname given
+		return;
+	}
+
+	if (nickname.size() > 9) {
+		// need response
+		return;
+	}
+
+	if (!isValidNickname(nickname)) {
+		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
+		return;
+	}
+
+	user.setNickName(nickname);
+	std::cout << "New nickname: " << user.getNickName() << std::endl;
+}
+
+bool	CommandManager::isValidNickname(std::string nickname) {
+	if (nickname.empty())
+		return false;
+
+	// handle special character check
+
+
+	return true;
 }
