@@ -2,6 +2,7 @@
 
 
 void	Server::running() {
+	int i = 0;
 	this->initServerSocket();
 	this->bindAndListenPort();
 	this->setState(true);
@@ -22,6 +23,11 @@ void	Server::running() {
 				else
 					this->handleClientMsg(this->sockets[i].fd);
 			}
+		}
+		if (i == 0)
+		{
+			std::cout << "Salut" << std::endl;
+			i = 1;
 		}
 	}
 }
@@ -96,8 +102,28 @@ void	Server::handleClientLogout(int clientFd) {
 	close(clientFd);
 }
 
+void Server::passwordManager(int clientFd) {
+	char		buffer[MSG_LEN];
+	std::string	psw;
+	ssize_t		bytesRead = 1;
+
+	while ((bytesRead = recv(clientFd, buffer, sizeof(buffer), 0)) > 0) {
+		buffer[bytesRead] = '\0';
+		psw = std::string(buffer);//, strlen(buffer)
+		std::cout << "Alpha BytesRead = " << bytesRead << std::endl;
+		if (psw == this->password)
+			return ;
+		else 
+			send(clientFd, ":server 464 * :Password incorrect\r\n", 35, 0);
+	}
+	std::cout << "BytesRead = " << bytesRead << std::endl;
+	if (bytesRead == 0) {
+		this->handleClientLogout(clientFd);
+	}
+}
+
 void Server::createNewClient() {
-    struct sockaddr_in clientAddr;
+    struct sockaddr_in	clientAddr;
     socklen_t addrLen = sizeof(clientAddr);
 
     int clientFd = accept(this->sockets[0].fd, (struct sockaddr*)&clientAddr, &addrLen);
@@ -111,6 +137,9 @@ void Server::createNewClient() {
 		return ;
 	}
 	std::cout << "New client connected : " << clientFd << std::endl;
+	this->passwordManager(clientFd);
+	std::cout << "Passed!" << std::endl;
+	
 	struct pollfd newClient;
 
 	newClient.fd = clientFd;
