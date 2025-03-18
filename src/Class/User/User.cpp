@@ -84,6 +84,20 @@ void	User::flushCommandBuffer() {
 	this->setCommandBuffer("");
 }
 
+std::string User::replaceSpecialChar(std::string param) {
+	std::string tmp = param;
+
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (tmp[i] == '{' || tmp[i] == '[')
+			tmp[i] = ',';
+		else if (tmp[i] == '}' || tmp[i] == ']')
+			tmp[i] = ':';
+	}
+	
+	return tmp;
+}
+
 void	printUsers(std::set<User*> users) {
 	for (std::set<User*>::iterator it = users.begin(); it != users.end(); ++it)
     	std::cout << *it;
