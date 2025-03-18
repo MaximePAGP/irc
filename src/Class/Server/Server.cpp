@@ -115,6 +115,26 @@ User	*Server::getUserByFd(int fd) const {
 	return NULL;
 }
 
+User	*Server::getUserByNickname(std::string nickname) const {
+	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {
+		if ((*it)->getNickName() == nickname) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
+User	*Server::getUserByUsername(std::string username) const {
+	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {
+		if ((*it)->getUserName() == username) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
 
 bool Server::hasUser(std::set<User> usersContainer, User &target) {
 	return usersContainer.find(target) != usersContainer.end();
