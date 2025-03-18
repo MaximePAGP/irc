@@ -35,30 +35,25 @@ bool CommandManager::hasValidCommand(std::string command) {
 
 
 bool	CommandManager::isNick(std::string command) {
-	if (command.find("nick") == 0)
+	if (command.find("NICK") == 0)
 		return true;
 	return false;
 }
 
-void	CommandManager::redirectCommand(std::string command, User const &user) {
+void	CommandManager::redirectCommand(std::string command, User &user) {
 	(void)user;
 	if (command.empty())
 		return ;
-	std::string cmdCpy = command;
-	std::transform(cmdCpy.begin(), cmdCpy.end(), cmdCpy.begin(), ::tolower);
 
-	// std::cout << "je suis là " << std::endl;
-
-	if (!CommandManager::hasValidCommand(cmdCpy)) {
+	if (!CommandManager::hasValidCommand(command)) {
 		// handle response here
 			//should response to client :localhost 421 salut {command} :Unknown command
 		return ;
 	}
-	std::cout << "je suis là " << std::endl;
 
-	if (CommandManager::isNick(cmdCpy)) {
-		std::cout << "i hande nick" << std::endl;
-		// handle set nickname
+	if (CommandManager::isNick(command)) {
+		CommandManager::handleNick(command, user);
+		return ;
 	}
 
 	// if no handle case return same as 
@@ -85,7 +80,7 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 		std::string fullCommand = curUser->getCommandBuffer().substr(0, pos);
 		curUser->setCommandBuffer(curUser->getCommandBuffer().substr(pos + 2)); // 2 is the length of \r\n
 	
-		std::cout << "i execute " << fullCommand << std::endl;
+		std::cout << "i execute <" << fullCommand << ">" << std::endl;
 	
 		CommandManager::redirectCommand(fullCommand, *curUser);
 	}
@@ -93,18 +88,23 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 
 
 void CommandManager::handleNick(std::string command, User &user) {
-	size_t start = command.find_first_not_of(" \t\r\n", 4);
+	size_t start = command.find("NICK \t\r\n", 9);
 	if (start == std::string::npos) {
 		//:localhost 431 ${nickname} ${newNickname} :No nickname given
 		return;
 	}
 
-	size_t end = command.find_first_of(" \t\r\n", start);
+	std::cout << "raw command " << command << std::endl;
+	std::cout << "param start " << start << std::endl;
+
+	size_t end = command.find_first_of(" \t\r\n\0", start);
 	std::string nickname = "";
 
 	if (end != std::string::npos) {
 		nickname = command.substr(start, end - start);
 	}
+
+	std::cout << "handle : " << nickname << std::endl;
 
 	if (nickname.empty()) {
 		//:localhost 431 ${nickname} ${newNickname} :No nickname given
