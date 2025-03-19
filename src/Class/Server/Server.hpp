@@ -42,7 +42,6 @@ class Server: public ServerExepction
 		void					initServerSocket(); // By default we use TCP and IPV4
 		void					bindAndListenPort();
 		void					handleClientMsg(int clientFd);
-		void					passwordManager(int clientFd);
 	public:
 		virtual	~Server();
 		static	Server			&init(int portname, std::string password);
