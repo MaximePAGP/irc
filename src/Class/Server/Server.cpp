@@ -117,7 +117,8 @@ User	*Server::getUserByFd(int fd) const {
 
 User	*Server::getUserByNickname(std::string nickname) const {
 	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {
-		if ((*it)->getNickName() == nickname) {
+		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
+		if (tmpNick == nickname) {
 			return *it;
 		}
 	}
@@ -127,7 +128,8 @@ User	*Server::getUserByNickname(std::string nickname) const {
 
 User	*Server::getUserByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {
-		if ((*it)->getUserName() == username) {
+		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
+		if (tmpUsername == username) {
 			return *it;
 		}
 	}

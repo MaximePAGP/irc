@@ -34,12 +34,6 @@ bool CommandManager::hasValidCommand(std::string command) {
 }
 
 
-bool	CommandManager::isNick(std::string command) {
-	if (command.find("NICK") == 0)
-		return true;
-	return false;
-}
-
 void	CommandManager::redirectCommand(std::string command, User &user) {
 	(void)user;
 	if (command.empty())
@@ -51,7 +45,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		return ;
 	}
 
-	if (CommandManager::isNick(command)) {
+	if (command.find("NICK") == 0) {
 		CommandManager::handleNick(command.substr(4, command.size()), user);
 		return ;
 	}
@@ -87,6 +81,7 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 
 void CommandManager::handleNick(std::string command, User &user) {
 	std::string param =  CommandManager::trimParamSpace(command);
+	Server const &server = Server::getServer();
 
 	if (param.empty()) {
 		//:localhost 431 ${nickname} ${newNickname} :No nickname given
@@ -106,7 +101,12 @@ void CommandManager::handleNick(std::string command, User &user) {
 		return;
 	}
 
-	if (!isValidNickname(param)) {
+	if (server.getUserByNickname(param) != NULL) {
+		// nickname already takken;
+		return ;
+	}
+
+	if (hasForbiddenChar(param)) {
 		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
 		return;
 	}
@@ -128,7 +128,7 @@ std::string CommandManager::trimParamSpace(std::string param) {
 	if (end != std::string::npos)
 		trimParam = param.substr(start, end - start);
 	else
-    	trimParam = param.substr(start);
+		trimParam = param.substr(start);
 
 	size_t lastNonSpace = trimParam.find_last_not_of(" \t\r\n");
 
@@ -139,12 +139,21 @@ std::string CommandManager::trimParamSpace(std::string param) {
 	return trimParam;
 }
 
-bool	CommandManager::isValidNickname(std::string nickname) {
+bool	CommandManager::hasForbiddenChar(std::string nickname) {
 	if (nickname.empty())
-		return false;
+		return true;
+	
+	if (nickname.find_first_of("-") == 0)
+		return true;
 
-	// handle special character check
+	if (nickname.find_first_of("/<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
+		return true;
 
+	for (size_t i = 0; i < nickname.size(); i++)
+	{
+		if (!::isascii(nickname[i]))
+			return true;
+	}
 
-	return true;
+	return false;
 }

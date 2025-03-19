@@ -34,6 +34,8 @@ class User
 		void			setCommandBuffer(std::string value);
 		void			flushCommandBuffer();
 
+		static	std::string	replaceSpecialChar(std::string param);
+
 		bool			operator<(const User &other)const;
 };
 
