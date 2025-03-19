@@ -95,6 +95,21 @@ std::pair<std::set<User*>::iterator, bool> Canal::addUserInvitation(User &value)
 }
 
 
+std::string	Canal::replaceSpecialChar(std::string name) {
+	std::string tmp = name;
+
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (tmp[i] == '{' || tmp[i] == '[')
+			tmp[i] = ' ';
+		else if (tmp[i] == '}' || tmp[i] == ']')
+			tmp[i] = '\v';
+	}
+	
+	return tmp;	
+}
+
+
 std::size_t	Canal::removeChanOps(User &target) {
 	return this->chanOp.erase(&target);
 }

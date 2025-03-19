@@ -45,6 +45,8 @@ class Canal
 		void			setPassword(std::string value);
 		void			setTopic(std::string value);
 
+		static	std::string	replaceSpecialChar(std::string param);
+
 		std::pair<std::set<User*>::iterator, bool>
 						addChanOps(User &value);
 		std::pair<std::set<User*>::iterator, bool>

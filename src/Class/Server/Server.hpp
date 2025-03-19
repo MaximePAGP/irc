@@ -54,6 +54,7 @@ class Server: public ServerExepction
 		User					*getUserByFd(int fd) const;
 		User					*getUserByUsername(std::string username) const;
 		User					*getUserByNickname(std::string nickname) const;
+		Canal					*getCanalByName(std::string name) const;
 		std::set<Canal*>		getCanals() const;
 
 		void					setPassword(std::string newPassword);
