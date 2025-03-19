@@ -106,7 +106,7 @@ void CommandManager::handleNick(std::string command, User &user) {
 		return ;
 	}
 
-	if (!isValidNickname(param)) {
+	if (hasForbiddenChar(param)) {
 		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
 		return;
 	}
@@ -128,7 +128,7 @@ std::string CommandManager::trimParamSpace(std::string param) {
 	if (end != std::string::npos)
 		trimParam = param.substr(start, end - start);
 	else
-    	trimParam = param.substr(start);
+		trimParam = param.substr(start);
 
 	size_t lastNonSpace = trimParam.find_last_not_of(" \t\r\n");
 
@@ -139,14 +139,21 @@ std::string CommandManager::trimParamSpace(std::string param) {
 	return trimParam;
 }
 
-bool	CommandManager::isValidNickname(std::string nickname) {
+bool	CommandManager::hasForbiddenChar(std::string nickname) {
 	if (nickname.empty())
-		return false;
+		return true;
+	
+	if (nickname.find_first_of("-") == 0)
+		return true;
+
+	if (nickname.find_first_of("/<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
+		return true;
 
 	for (size_t i = 0; i < nickname.size(); i++)
 	{
-		/* code */
+		if (!::isascii(nickname[i]))
+			return true;
 	}
 
-	return true;
+	return false;
 }

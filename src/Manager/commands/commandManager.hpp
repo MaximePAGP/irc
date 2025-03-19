@@ -14,7 +14,7 @@
 class CommandManager
 {
 	private:
-		static	bool 	isValidNickname(std::string nickname);
+		static	bool 	hasForbiddenChar(std::string nickname);
 		static	void	handleNick(std::string command, User &user);
 		static	bool	hasValidCommand(std::string command);
 		static	bool	commandIsComplete(std::string command);
