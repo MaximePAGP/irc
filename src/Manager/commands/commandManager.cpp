@@ -51,8 +51,10 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	} else if (command.find("USER") == 0) {
 		CommandManager::handleUsername(command.substr(4, command.size()), user);
 		return ;
+	} else if (command.find("MODE") == 0) {
+		CommandManager::handleMode(command.substr(4, command.size()), user);
+		return ;
 	}
-
 	// if no handle case return same as 
 		//should response to client :localhost 421 salut {command} :Unknown command
 }
@@ -79,71 +81,6 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 		
 		CommandManager::redirectCommand(fullCommand, *curUser);
 	}
-}
-
-
-void CommandManager::handleNick(std::string command, User &user) {
-	std::string param =  CommandManager::trimParamSpace(command);
-	Server const &server = Server::getServer();
-
-	if (param.empty()) {
-		//:localhost 431 ${nickname} ${newNickname} :No nickname given
-		return;
-	}
-
-	if (param.size() > LIMIT_USERNAME_NICKNAME) {
-		// need response
-		return;
-	}
-
-	if (server.getUserByNickname(param) != NULL) {
-		// nickname already takken;
-		return ;
-	}
-
-	if (hasForbiddenNickChar(param)) {
-		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
-		return;
-	}
-
-	user.setNickName(param);
-	std::cout << "New nickname: <" << user.getNickName() << ">" << std::endl;
-	// send succes response
-}
-
-
-void CommandManager::handleUsername(std::string command, User &user) {
-	std::string param =  CommandManager::trimParamSpace(command);
-	Server const &server = Server::getServer();
-
-	if (param.empty()) {
-		//:localhost 431 ${nickname} ${newNickname} :No nickname given
-		return;
-	}
-
-	if (param.size() > LIMIT_USERNAME_NICKNAME) {
-		// need response
-		return;
-	}
-
-	if (server.getUserByUsername(param) != NULL) {
-		// nickname already takken;
-		return ;
-	}
-
-	if (hasForbiddenUsernameChar(param)) {
-		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
-		return;
-	}
-
-	if (user.getUserName().size() != 0) {
-		// :localhost 462 ${username} :You may not reregisterw
-		return;
-	}
-
-	user.setUsername(param);
-	std::cout << "New UserName: <" << user.getUserName() << ">" << std::endl;
-	// send succes response
 }
 
 
