@@ -10,13 +10,16 @@
 
 
 #define	MSG_LEN 512 // Following norm IRC 1459, message size limit is <-
+#define LIMIT_USERNAME_NICKNAME 9
 
 class CommandManager
 {
 	private:
-		static	bool 	hasForbiddenChar(std::string nickname);
+		static	bool 	hasForbiddenNickChar(std::string nickname);
 		static	void	handleNick(std::string command, User &user);
+		static	void	handleUsername(std::string command, User &user);
 		static	bool	hasValidCommand(std::string command);
+		static 	bool 	hasForbiddenUsernameChar(std::string usnername);
 		static	bool	commandIsComplete(std::string command);
 		static	std::string	trimParamSpace(std::string param);
 		CommandManager();
