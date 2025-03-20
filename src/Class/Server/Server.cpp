@@ -155,7 +155,7 @@ void	Server::initServerSocket() {
 	if (serverPollFd.fd < 0)
 		throw SocketCreationException();
 	serverPollFd.events = POLLIN;
-	this->sockets.push_back(serverPollFd);	
+	this->sockets.push_back(serverPollFd);
 }
 
 void	Server::handleClientMsg(int clientFd) {
@@ -177,7 +177,8 @@ void	Server::handleClientMsg(int clientFd) {
 
 }
 
-void	Server::handleClientLogout(int clientFd) {
+void	Server::handleClientLogout(int clientFd) 
+{
 
 	for (std::vector<struct pollfd>::iterator it = this->sockets.begin(); it != this->sockets.end(); it++)
 	{
@@ -194,7 +195,7 @@ void	Server::handleClientLogout(int clientFd) {
 		User *cur = *it;
 		if (cur != NULL && cur->getFd().fd == clientFd) {
 			this->users.erase(it);  
-			delete cur;
+	 		delete cur;
 			break;
 		} else {
 			it++;
