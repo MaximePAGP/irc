@@ -246,66 +246,133 @@ std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 }
 
 Canal* Server::findCanalByName(const std::string& name) {
-    for (std::set<Canal*>::iterator it = this->canals.begin(); it != this->canals.end(); ++it) {
+    for (std::set<Canal*>::iterator it = this->canals.begin(); it != this->canals.end(); ++it) 
+	{
 		Canal* canal = *it;
-        if (canal->getName() == name) {
+        if (canal->getName() == name) 
+		{
             return canal;
         }
     }
     return NULL;
 }
 
-// User* Server::findUserByFd(int clientFd) 
-// {
-// 	User *user = NULL;
-// 	user = this->authUsers.find(clientFd);
-//     for (User* user : this->authUsers) 
-// 	{
-// 		int fd = user->getFd().fd;
-//         if (fd == clientFd) { // Assurez-vous que la classe User a une méthode getFd()
-//             return user;
-//         }
-//     }
-//     return NULL;
-// }
+User* Server::findUserByFd(int clientFd)
+{
+    std::set<User*>::iterator it;
+    for (it = this->users.begin(); it != this->users.end(); ++it) 
+    {
+        User* user = *it;
+        if (user->getFd().fd == clientFd) {
+            return user;
+        }
+    }
+    return NULL;
+}
 
 void Server::handleJoinCanal(int clientFd, const std::string msg)
 {
-	(void)clientFd;
-    // Trouver l'espace après "JOIN"
+    // Find space after "JOIN"
     size_t pos = msg.find(' ');
     if (pos == std::string::npos) 
-	{
+    {
         std::cerr << "Invalid JOIN command format" << std::endl;
         return;
     }
-
-    // Extraire le nom du canal après l'espace
+    
+    // Extract channel name
     std::string canalName = msg.substr(pos + 1);
+    
+    // Remove any trailing whitespace or newlines
+    size_t endPosition = canalName.find_first_of(" \r\n");
+    if (endPosition != std::string::npos) {
+        canalName = canalName.substr(0, endPosition);
+    }
+    
     if (canalName.empty()) {
         std::cerr << "Channel name is empty" << std::endl;
         return;
     }
-
-    // Rechercher le canal par son nom
+    
+    // Find the user who's joining
+    User* joiningUser = findUserByFd(clientFd);
+    if (joiningUser == NULL) {
+        std::cerr << "User not found for clientFd: " << clientFd << std::endl;
+        return;
+    }
+    
+    // Validate channel name
+    if (canalName[0] != '#') {
+        canalName = "#" + canalName;
+    }
+    
+    // Find or create the channel
     Canal* canal = findCanalByName(canalName);
-
+    
     if (canal == NULL) {
-        // Si le canal n'existe pas, le créer et l'ajouter au set
-        struct pollfd fd; // Vous devrez initialiser correctement ce pollfd
+        // Get the joining user's pollfd
+        struct pollfd fd = joiningUser->getFd();
         canal = new Canal(fd, canalName);
         this->addCanal(*canal);
-        std::cout << "Canal " << canalName << " created and joined." << std::endl;
-    } 
-	else {
-        std::cout << "Joined existing canal " << canalName << "." << std::endl;
+        
+        // Make the joining user a channel operator
+        canal->addChanOps(*joiningUser);
+        
+        std::cout << "Canal " << canalName << " created." << std::endl;
     }
-
-    // Ajouter l'utilisateur au canal
-    // User* user = findUserByFd(clientFd); // Vous devrez implémenter cette méthode
-    // if (user != NULL) {
-    //     canal->addUser(*user); // Assurez-vous que la méthode addUser est implémentée dans la classe Canal
-    // } else {
-    //     std::cerr << "User not found for clientFd: " << clientFd << std::endl;
-    // }
+    
+    // Add user to the channel
+    canal->addUser(*joiningUser);
+    
+    // Send JOIN confirmation to the user
+    std::string joinResponse = ":" + joiningUser->getNickName() + " JOIN " + canalName + "\r\n";
+    send(clientFd, joinResponse.c_str(), joinResponse.length(), 0);
+    
+    // Send channel topic if it exists
+    std::string topic = canal->getTopic();
+    if (!topic.empty()) {
+        std::string topicResponse = ":server 332 " + joiningUser->getNickName() + " " + canalName + " :" + topic + "\r\n";
+        send(clientFd, topicResponse.c_str(), topicResponse.length(), 0);
+    }
+    
+    // Send names list (users in channel)
+    std::string namesResponse = ":server 353 " + joiningUser->getNickName() + " = " + canalName + " :";
+    
+    std::set<User*> channelUsers = canal->getCurrentUsers();
+    std::set<User*> channelOps = canal->getChanOps();
+    std::set<User*>::iterator userIt;
+    
+    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
+        User* channelUser = *userIt;
+        
+        // Check if this user is a channel operator
+        std::set<User*>::iterator opIt = channelOps.find(channelUser);
+        if (opIt != channelOps.end()) {
+            namesResponse += "@";
+        }
+        
+        namesResponse += channelUser->getNickName() + " ";
+    }
+    
+    namesResponse += "\r\n";
+    send(clientFd, namesResponse.c_str(), namesResponse.length(), 0);
+    
+    // End of names list
+    std::string endNamesResponse = ":server 366 " + joiningUser->getNickName() + " " + canalName + " :End of /NAMES list.\r\n";
+    send(clientFd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
+    
+    // Notify other users in the channel
+    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
+        User* channelUser = *userIt;
+        
+        // Skip the joining user (already notified)
+        if (channelUser == joiningUser) {
+            continue;
+        }
+        
+        int userFd = channelUser->getFd().fd;
+        send(userFd, joinResponse.c_str(), joinResponse.length(), 0);
+    }
+    
+    std::cout << "User " << joiningUser->getNickName() << " joined canal " << canalName << std::endl;
 }

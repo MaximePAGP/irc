@@ -74,7 +74,7 @@ class Server: public ServerExepction
 		void					kill();
 		void					handleJoinCanal(int clientFd, std::string canalName);
 		Canal* 					findCanalByName(const std::string& name);
-		// User *findUserByFd(int clientFd);
+		User *findUserByFd(int clientFd);
 		
 		//*********************************	 *
 };

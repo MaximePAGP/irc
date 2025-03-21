@@ -7,7 +7,7 @@ Flag::~Flag() {}
 Flag::Flag(Flag const &copy): flags(copy.flags) {}
 
 Flag &Flag::operator=(Flag const &rhs) {
-	if (&rhs == this) {
+	if (&rhs != this) {
     	this->flags = rhs.flags;
 	}
     return *this;
