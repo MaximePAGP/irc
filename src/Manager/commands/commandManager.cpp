@@ -84,7 +84,7 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 }
 
 
-std::string CommandManager::trimParamSpace(std::string param) {
+std::string CommandManager::trimFirstParamSpace(std::string param) {
 	size_t start = param.find_first_not_of(" \t\r\n");
 
 	if (start == std::string::npos)

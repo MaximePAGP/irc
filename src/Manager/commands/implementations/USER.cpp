@@ -1,7 +1,7 @@
 #include "../commandManager.hpp"
 
 void CommandManager::handleUsername(std::string command, User &user) {
-	std::string param =  CommandManager::trimParamSpace(command);
+	std::string param =  CommandManager::trimFirstParamSpace(command);
 	Server const &server = Server::getServer();
 
 	if (param.empty()) {
@@ -30,6 +30,6 @@ void CommandManager::handleUsername(std::string command, User &user) {
 	}
 
 	user.setUsername(param);
-	std::cout << "New UserName: <" << user.getUserName() << ">" << std::endl;
+	// std::cout << "New UserName: <" << user.getUserName() << ">" << std::endl;
 	// send succes response
 }

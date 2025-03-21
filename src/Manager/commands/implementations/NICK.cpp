@@ -1,7 +1,7 @@
 #include "../commandManager.hpp"
 
 void CommandManager::handleNick(std::string command, User &user) {
-	std::string param =  CommandManager::trimParamSpace(command);
+	std::string param =  CommandManager::trimFirstParamSpace(command);
 	Server const &server = Server::getServer();
 
 	if (param.empty()) {
@@ -25,6 +25,6 @@ void CommandManager::handleNick(std::string command, User &user) {
 	}
 
 	user.setNickName(param);
-	std::cout << "New nickname: <" << user.getNickName() << ">" << std::endl;
+	// std::cout << "New nickname: <" << user.getNickName() << ">" << std::endl;
 	// send succes response
 }
