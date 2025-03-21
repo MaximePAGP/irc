@@ -14,6 +14,7 @@ CommandManager::~CommandManager() {}
 bool CommandManager::hasValidCommand(std::string command) {
 	int const validCommandSize = 4;
 
+
 	size_t firstCharIndex = command.find_first_not_of(" \t\r\n");
 	if (firstCharIndex == std::string::npos)
 		return false;
@@ -40,10 +41,13 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		return ;
 
 	if (!CommandManager::hasValidCommand(command)) {
+		send(user.getFd().fd, ":server 461 <command> :Not enough parameters\r\n", 46, 0);
 		// handle response here
 			//should response to client :localhost 421 salut {command} :Unknown command
 		return ;
 	}
+	if (user.getIsConnected() == false)
+		CommandManager::handlePass(command, user);
 
 	if (command.find("NICK") == 0) {
 		CommandManager::handleNick(command.substr(4, command.size()), user);
@@ -60,9 +64,9 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 
 void	CommandManager::buildCommand(std::string command, int clientFd) {
 	Server const &server = Server::getServer();
-	User *curUser = server.getUserByFd(clientFd);
-	
-	if ((curUser->getCommandBuffer().size() + command.size()) > MSG_LEN) {
+	User *curUser =server.getUserByFd(clientFd);
+
+	if((curUser->getCommandBuffer().size() + command.size()) > MSG_LEN) {
 		// maybe send error to client ?
 		curUser->flushCommandBuffer();
 		return;

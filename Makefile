@@ -11,6 +11,7 @@ SRCS 				= 	src/main.cpp \
 						src/Class/Server/Server.cpp \
 						src/Class/Server/Socket.cpp \
 						src/Manager/commands/commandManager.cpp \
+						src/Manager/commands/implementations/PASS.cpp \
 						src/Manager/userManager/UserManager.cpp \
 						src/Manager/signals_manager.cpp \
 

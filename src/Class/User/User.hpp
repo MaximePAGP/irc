@@ -15,6 +15,7 @@ class User
 		std::string 	userName; // Required and unique and cannot be changed
 		std::string 	password; // Optionnal maybe usless
 		std::string		commandBuffer; // used to fill the command until we found \r\n (meaning its the end of command)
+		bool			isConnected;
 		User();
 	public:
 		User(std::string nickName, std::string userName, std::string password);
@@ -27,12 +28,14 @@ class User
 		std::string		getPassword() const;
 		struct	pollfd	getFd() const;
 		std::string		getCommandBuffer() const;
+		bool			getIsConnected() const;
 		void			setNickName(std::string newNickname);
 		void			setUsername(std::string newUsername);
 		void			setPassword(std::string newPassord);
 		void			setFd(struct pollfd newFd);
 		void			setCommandBuffer(std::string value);
 		void			flushCommandBuffer();
+		void			setIsConnected(bool status);
 
 		static	std::string	replaceSpecialChar(std::string param);
 
