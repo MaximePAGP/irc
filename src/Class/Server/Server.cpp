@@ -104,6 +104,17 @@ std::size_t	Server::removeServerOps(User &target) {
 	return this->serverOps.erase(&target);
 }
 
+Canal	*Server::getCanalByName(std::string name) const {
+	for (std::set<Canal*>::const_iterator it = this->canals.begin(); it != this->canals.end(); it++) {
+		std::string tmpName = Canal::replaceSpecialChar((*it)->getName());
+		if ((*it)->getName() == name) {
+			return *it;
+		}
+	}
+	
+	return NULL;	
+}
+
 
 User	*Server::getUserByFd(int fd) const {
 	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {

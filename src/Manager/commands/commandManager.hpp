@@ -18,15 +18,16 @@ class CommandManager
 		static	bool 	hasForbiddenNickChar(std::string nickname);
 		static	void	handleNick(std::string command, User &user);
 		static	void	handleUsername(std::string command, User &user);
+		static	void	handleMode(std::string command, User &user);
 		static	bool	hasValidCommand(std::string command);
 		static 	bool 	hasForbiddenUsernameChar(std::string usnername);
 		static	bool	commandIsComplete(std::string command);
-		static	std::string	trimParamSpace(std::string param);
+		static	std::string	trimFirstParamSpace(std::string param);
 		CommandManager();
     public:
 		virtual  ~CommandManager();
 		static	void	redirectCommand(std::string command, User &user);
-		static void		buildCommand(std::string command, int clientFd);
+		static 	void	buildCommand(std::string command, int clientFd);
 };
 
 
