@@ -27,6 +27,8 @@ int main(int argc, char **argv)
 			"ccpc"
 		);
 		server.addUser(*testt);
+		Canal *testCanal = new Canal("coucou");
+		server.addCanal(*testCanal);
 		// std::cout << "result : " << UserManager::isUniqueUsername("salu");
 		server.running();
 	}
