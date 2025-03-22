@@ -14,8 +14,6 @@ class Canal
 {
 	private:
 		Canal();
-
-		struct	pollfd			fd;
 		int						userLimit;
 		Flag					flags;
 		std::string	const		name;
@@ -25,12 +23,11 @@ class Canal
 		std::set<User*>			invUsers;
 		std::set<User*>			chanOp;
 	public:
-		Canal(struct pollfd &fd, std::string &name);
+		Canal(std::string name);
 		virtual ~Canal();
 		Canal(Canal const &copy);
 		Canal &operator=(Canal const &rhs);
 
-		struct	pollfd	getFd() const;
 		int				getUserLimits() const;
 		Flag			getFlag() const;
 		std::string		getName() const;
@@ -40,7 +37,6 @@ class Canal
 		std::set<User*>	getUserInvitation() const;
 		std::set<User*>	getChanOps() const;
 
-		void			setFd(const struct pollfd &value);
 		void			setUserlimit(int value);
 		void			setPassword(std::string value);
 		void			setTopic(std::string value);
@@ -58,6 +54,11 @@ class Canal
 		std::size_t		removeUserInvitation(User &value);
 		std::size_t		removeUser(User &value);
 	
+		User	*Canal::getChanOpByNickname(std::string nickname) const;
+		User	*Canal::getChanOpByUsername(std::string username) const;
+		User	*Canal::getChanOpByFd(int fd) const;
+
+
 		bool			operator<(const Canal &other) const;
 };
 
