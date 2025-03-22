@@ -54,10 +54,11 @@ class Canal
 		std::size_t		removeUserInvitation(User &value);
 		std::size_t		removeUser(User &value);
 	
-		User	*Canal::getChanOpByNickname(std::string nickname) const;
-		User	*Canal::getChanOpByUsername(std::string username) const;
-		User	*Canal::getChanOpByFd(int fd) const;
+		User			*getChanOpByNickname(std::string nickname) const;
+		User			*getChanOpByUsername(std::string username) const;
+		User			*getChanOpByFd(int fd) const;
 
+		static	bool	hasForbbidenCharPassword(std::string pw);
 
 		bool			operator<(const Canal &other) const;
 };

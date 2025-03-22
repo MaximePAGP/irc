@@ -160,6 +160,18 @@ std::ostream &operator<<(std::ostream &out, Canal const &rhs) {
 	return out;
 }
 
+bool	Canal::hasForbbidenCharPassword(std::string pw) {
+	if (pw.find_first_of(" \t\r\v\n#&!:$") != std::string::npos)
+		return true;
+	for (size_t i = 0; i < pw.size(); i++)
+	{
+		if (!isascii(pw[i]))
+			return true;
+	}
+	
+	return false;
+}
+
 void			printCanals(std::set<Canal*> canals) {
 	for (std::set<Canal*>::iterator it = canals.begin(); it != canals.end(); ++it)
     	std::cout << *it;
