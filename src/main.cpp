@@ -29,6 +29,8 @@ int main(int argc, char **argv)
 		server.addUser(*testt);
 		Canal *testCanal = new Canal("coucou");
 		server.addCanal(*testCanal);
+		testCanal->addChanOps(*testt);
+		testCanal->addUser(*testt);
 		// std::cout << "result : " << UserManager::isUniqueUsername("salu");
 		server.running();
 	}

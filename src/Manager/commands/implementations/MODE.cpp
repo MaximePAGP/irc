@@ -132,6 +132,31 @@ static	void	removedChanOp(std::string targetUsername, Canal &canal, User &user) 
 }
 
 
+static	void	addLimit(std::string limit, Canal &canal, User &user) {
+	if (canal.getChanOpByNickname(user.getNickName())) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+
+	if (limit.empty())
+		return;
+
+
+}
+
+
+static	void	removeLimit(std::string usless, Canal &canal, User &user) {
+	if (canal.getChanOpByNickname(user.getNickName())) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+
+	// >> :localhost MODE #canalName -l 
+	canal.setUserlimit(10);
+	std::cout << "limit of canal has been reset to 10" << std::endl;
+}
+
+
 typedef void (*ActionFunction) (std::string arg, Canal &canal, User &user);
 
 void CommandManager::handleMode(std::string command, User &user) {
@@ -157,15 +182,17 @@ void CommandManager::handleMode(std::string command, User &user) {
 	if (flag.size() <= 1)
 		return;
 
-	std::map<std::string, ActionFunction> supportedMode;
-	supportedMode["+k"] = addCanalPassord;
-	supportedMode["-k"] = removeCanalPassord;
-	supportedMode["+i"] = addInvitationOnly;
-	supportedMode["-i"] = removeInvitationOnly;
-	supportedMode["+o"] = addChanOp;
-	supportedMode["-o"] = removedChanOp;
+	std::map<std::string, ActionFunction> implementedFlags;
+	implementedFlags["+k"] = addCanalPassord;
+	implementedFlags["-k"] = removeCanalPassord;
+	implementedFlags["+i"] = addInvitationOnly;
+	implementedFlags["-i"] = removeInvitationOnly;
+	implementedFlags["+o"] = addChanOp;
+	implementedFlags["-o"] = removedChanOp;
+	implementedFlags["+l"] = addLimit;
+	implementedFlags["-l"] = removeLimit;
 
-	if (supportedMode.find(flag) == supportedMode.end()) {
+	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		std::cout << "ya rien frero " << std::endl;
 		return;
 	}
@@ -173,7 +200,7 @@ void CommandManager::handleMode(std::string command, User &user) {
 	std::string skipFlag = command.substr(command.find(flag) + flag.size(), command.size());
 	std::string argFlag = CommandManager::trimFirstParamSpace(skipFlag);
 
-	supportedMode[flag](argFlag, *canal, user);
+	implementedFlags[flag](argFlag, *canal, user);
 	// send back to client >> :localhsot 472 ${username} ${flag} :is unknown mode char to me
 	(void)user;
 }
