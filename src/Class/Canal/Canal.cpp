@@ -143,6 +143,38 @@ User	*Canal::getChanOpByUsername(std::string username) const {
 }
 
 
+User	*Canal::getConnectedUserByFd(int fd) const {
+	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		if ((*it)->getFd().fd == fd) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
+User	*Canal::getConnectedUserByNickname(std::string nickname) const {
+	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
+		if (tmpNick == nickname) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
+User	*Canal::getConnectedUserByUsername(std::string username) const {
+	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
+		if (tmpUsername == username) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
 std::ostream &operator<<(std::ostream &out, Canal const &rhs) {
 	out << rhs.getPassword() << " " << rhs.getTopic() << " "
 		<< rhs.getUserLimits() << " ";

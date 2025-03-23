@@ -58,6 +58,10 @@ class Canal
 		User			*getChanOpByUsername(std::string username) const;
 		User			*getChanOpByFd(int fd) const;
 
+		User			*getConnectedUserByNickname(std::string nickname) const;
+		User			*getConnectedUserByUsername(std::string username) const;
+		User			*getConnectedUserByFd(int fd) const;
+
 		static	bool	hasForbbidenCharPassword(std::string pw);
 
 		bool			isProtectedByPassword(); // used on +k flag !! PASSWORD IS NOT REQUIRED IF USER IS INVITED
