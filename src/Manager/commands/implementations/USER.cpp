@@ -30,6 +30,6 @@ void CommandManager::handleUsername(std::string command, User &user) {
 	}
 
 	user.setUsername(param);
-	// std::cout << "New UserName: <" << user.getUserName() << ">" << std::endl;
+	std::cout << "New UserName: <" << user.getUserName() << ">" << std::endl;
 	// send succes response
 }

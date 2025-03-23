@@ -25,6 +25,6 @@ void CommandManager::handleNick(std::string command, User &user) {
 	}
 
 	user.setNickName(param);
-	// std::cout << "New nickname: <" << user.getNickName() << ">" << std::endl;
+	std::cout << "New nickname: <" << user.getNickName() << ">" << std::endl;
 	// send succes response
 }
