@@ -141,11 +141,17 @@ static	void	addLimit(std::string limit, Canal &canal, User &user) {
 	if (limit.empty())
 		return;
 
+	int parsedLimit = atoi(limit.c_str());
 
+	if (parsedLimit < 1 || parsedLimit > 10)
+		return;
+	std::cout << "limit has been set to " << parsedLimit << std::endl;
+	canal.setUserlimit(parsedLimit);
 }
 
 
 static	void	removeLimit(std::string usless, Canal &canal, User &user) {
+	(void)usless;
 	if (canal.getChanOpByNickname(user.getNickName())) {
 		// >> :localhost 482 username[ #canalName :You're not channel operator
 		return;
