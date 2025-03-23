@@ -7,14 +7,13 @@ Canal::Canal(std::string name): userLimit(10), name(name), password(""), topic("
 Canal::~Canal() {}
 
 
-Canal::Canal(Canal const &copy) : userLimit(copy.userLimit), flags(copy.flags),
+Canal::Canal(Canal const &copy) : userLimit(copy.userLimit),
 	password(copy.password), topic(copy.topic), curUsers(copy.curUsers),
 	invUsers(copy.invUsers), chanOp(copy.chanOp) {}
 
 Canal	&Canal::operator=(Canal const &rhs) {
 	if (this != &rhs) {
 		userLimit = rhs.userLimit;
-		flags = rhs.flags;
 		password = rhs.password;
 		topic = rhs.topic;
 		curUsers = rhs.curUsers;
@@ -26,10 +25,6 @@ Canal	&Canal::operator=(Canal const &rhs) {
 
 int Canal::getUserLimits() const {
 	return this->userLimit;
-}
-
-Flag	Canal::getFlag() const {
-	return this->flags;
 }
 
 std::string	Canal::getName() const {
@@ -148,6 +143,38 @@ User	*Canal::getChanOpByUsername(std::string username) const {
 }
 
 
+User	*Canal::getConnectedUserByFd(int fd) const {
+	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		if ((*it)->getFd().fd == fd) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
+User	*Canal::getConnectedUserByNickname(std::string nickname) const {
+	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
+		if (tmpNick == nickname) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
+User	*Canal::getConnectedUserByUsername(std::string username) const {
+	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
+		if (tmpUsername == username) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
 std::ostream &operator<<(std::ostream &out, Canal const &rhs) {
 	out << rhs.getPassword() << " " << rhs.getTopic() << " "
 		<< rhs.getUserLimits() << " ";
@@ -171,6 +198,20 @@ bool	Canal::hasForbbidenCharPassword(std::string pw) {
 	
 	return false;
 }
+
+bool	Canal::isProtectedByPassword() {
+	if (this->password.size() > 1)
+		return true;
+	return false;
+}
+
+bool	Canal::getIsOnInvitationOnly() {
+	return this->invitationOnly;
+}
+
+void	Canal::setIsOnInvitationOnly(bool value) {
+	this->invitationOnly = value;
+}	
 
 void			printCanals(std::set<Canal*> canals) {
 	for (std::set<Canal*>::iterator it = canals.begin(); it != canals.end(); ++it)

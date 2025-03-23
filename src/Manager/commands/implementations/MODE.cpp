@@ -7,42 +7,38 @@
 // si ya dla merde apres je prends le flag
 
 static	std::string	getFirstFlagParam(std::string canalName, std::string rawCommand) {
-	std::string nextArg = rawCommand.substr(canalName.size() + 1, rawCommand.size());
+	std::string rightSideArg = rawCommand.substr(canalName.size() + 2, rawCommand.size());
 
-	if (nextArg.size() == 1) {
+	if (rightSideArg.size() == 1) {
 		// no args detected so give back flags
 		return "";
 	}
 
-	std::cout << "next args " << nextArg.size() << " <" << (nextArg == "\n") << ">" << std::endl;
-
-	size_t firstFlagIndex = nextArg.find_first_of("+-");
+	size_t firstFlagIndex = rightSideArg.find_first_of("+-");
 
 	if (firstFlagIndex == std::string::npos) {
 		// >> :localhost 472 ${nickname} ${unknowFlag} :is unknown mode char to me
 		return "";
 	}
 
-	for (size_t i = 0; i < firstFlagIndex; i++)
+	for (size_t i = 0; i < firstFlagIndex; i++) // check if there is only space between canalname and the first flag
 	{
-		if (std::isspace(nextArg[i]) == 0) {
-			std::cout << "break " << std::string(nextArg, i) <<std::endl;
+		if (std::isspace(rightSideArg[i]) == 0) {
+			std::cout << "break " << std::string(rightSideArg, i) <<std::endl;
 			// >> :localhost 472 ${nickname} ${unknowFlag} :is unknown mode char to me
 			return "";
 		}
 	}
 
-	return nextArg.substr(firstFlagIndex, 2);
+	return rightSideArg.substr(firstFlagIndex, 2);
 }
 
 
 static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << "je suis call " << password << std::endl;
 		// >> :localhost 482 username[ #canalName :You're not channel operator
 		return;
 	}
-
 	if (password.size() == 0) // do nothing
 		return;
 
@@ -57,12 +53,113 @@ static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
 static	void	removeCanalPassord(std::string uslessArg, Canal &canal, User &user) {
 	(void)uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << "je suis call " << uslessArg << std::endl;
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+	std::cout << "jai eneleve" << std::endl;
+	canal.setPassword("");
+}
+
+
+static	void	addInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
+	(void) uslessArg;
+	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+	if (canal.getIsOnInvitationOnly())
+		return;
+	canal.setIsOnInvitationOnly(true);
+	// :localhost username MODE #canalName +i
+	std::cout << "jai set a +i" << std::endl;
+}
+
+
+static	void	removeInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
+	(void) uslessArg;
+	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+	if (!canal.getIsOnInvitationOnly())
+		return;
+	canal.setIsOnInvitationOnly(false);
+	// :localhost username MODE #canalName -i
+	std::cout << "jai set a -i" << std::endl;
+}
+
+
+static	void	addChanOp(std::string targetUsername, Canal &canal, User &user) {
+	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		// >> :localhost 482 username[ #canalName :You're not channel operator
 		return;
 	}
 
-	canal.setPassword("");
+	if (targetUsername.empty())
+		return;
+	
+	User *targetUser = canal.getConnectedUserByNickname(targetUsername);
+	if (targetUser == NULL) {
+		// :localhost 401 ElitE-40912 , :No such nick/channel
+		return;
+	}
+
+	canal.addChanOps(*targetUser);
+	std::cout << "i add chan op from " << targetUsername << std::endl;
+ 	// :localhost MODE #canalName +o targetName
+}
+
+
+static	void	removedChanOp(std::string targetUsername, Canal &canal, User &user) {
+	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+
+	if (targetUsername.empty())
+		return;
+
+	User *targetUser = canal.getConnectedUserByNickname(targetUsername);
+	std::cout << *targetUser;
+	if (targetUser == NULL) {
+		// :localhost 401 ElitE-40912 , :No such nick/channel
+		return;
+	}
+
+	canal.removeChanOps(*targetUser);
+	std::cout << "i removed chan op from " << targetUsername << std::endl;
+ 	// :localhost MODE #canalName -o targetName
+}
+
+
+static	void	addLimit(std::string limit, Canal &canal, User &user) {
+	if (canal.getChanOpByNickname(user.getNickName())) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+
+	if (limit.empty())
+		return;
+
+	int parsedLimit = atoi(limit.c_str());
+
+	if (parsedLimit < 1 || parsedLimit > 10)
+		return;
+	std::cout << "limit has been set to " << parsedLimit << std::endl;
+	canal.setUserlimit(parsedLimit);
+}
+
+
+static	void	removeLimit(std::string usless, Canal &canal, User &user) {
+	(void)usless;
+	if (canal.getChanOpByNickname(user.getNickName())) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+
+	// >> :localhost MODE #canalName -l 
+	canal.setUserlimit(10);
+	std::cout << "limit of canal has been reset to 10" << std::endl;
 }
 
 
@@ -77,7 +174,7 @@ void CommandManager::handleMode(std::string command, User &user) {
 			//:localhost 324 ${nickname} ${canalName} +iklt ${canalPassword} ${canalLimit} 
 		return;
 	}
-
+	canalName = canalName.substr(1, canalName.size()); // remove # or & from canalName
 	Canal *canal = server.getCanalByName(canalName);
 
 	if (canal == NULL) {
@@ -91,11 +188,17 @@ void CommandManager::handleMode(std::string command, User &user) {
 	if (flag.size() <= 1)
 		return;
 
-   std::map<std::string, ActionFunction> supportedMode;
-   supportedMode["+k"] = addCanalPassord;
-   supportedMode["-k"] = removeCanalPassord;
+	std::map<std::string, ActionFunction> implementedFlags;
+	implementedFlags["+k"] = addCanalPassord;
+	implementedFlags["-k"] = removeCanalPassord;
+	implementedFlags["+i"] = addInvitationOnly;
+	implementedFlags["-i"] = removeInvitationOnly;
+	implementedFlags["+o"] = addChanOp;
+	implementedFlags["-o"] = removedChanOp;
+	implementedFlags["+l"] = addLimit;
+	implementedFlags["-l"] = removeLimit;
 
-	if (supportedMode.find(flag) == supportedMode.end()) {
+	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		std::cout << "ya rien frero " << std::endl;
 		return;
 	}
@@ -103,7 +206,7 @@ void CommandManager::handleMode(std::string command, User &user) {
 	std::string skipFlag = command.substr(command.find(flag) + flag.size(), command.size());
 	std::string argFlag = CommandManager::trimFirstParamSpace(skipFlag);
 
-	supportedMode[flag](argFlag, *canal, user);
+	implementedFlags[flag](argFlag, *canal, user);
 	// send back to client >> :localhsot 472 ${username} ${flag} :is unknown mode char to me
 	(void)user;
 }

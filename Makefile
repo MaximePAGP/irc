@@ -6,7 +6,6 @@ CC 					= c++
 SRCS 				= 	src/main.cpp \
 						src/args_handler.cpp \
 						src/Class/User/User.cpp \
-						src/Class/Flag/Flag.cpp \
 						src/Class/Canal/Canal.cpp \
 						src/Class/Server/Server.cpp \
 						src/Class/Server/Socket.cpp \

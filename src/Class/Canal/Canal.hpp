@@ -5,7 +5,6 @@
 #include <string>
 #include <poll.h>
 #include <set>
-#include "../Flag/Flag.hpp"
 #include "../User/User.hpp"
 
 void	printUsers(std::set<User*> users);
@@ -14,11 +13,11 @@ class Canal
 {
 	private:
 		Canal();
-		int						userLimit;
-		Flag					flags;
+		int						userLimit; // flag +l 
+		bool					invitationOnly; // flag +i
 		std::string	const		name;
-		std::string				password;
-		std::string				topic;
+		std::string				password; // flag +k
+		std::string				topic; // flag +t
 		std::set<User*>			curUsers;
 		std::set<User*>			invUsers;
 		std::set<User*>			chanOp;
@@ -29,15 +28,16 @@ class Canal
 		Canal &operator=(Canal const &rhs);
 
 		int				getUserLimits() const;
-		Flag			getFlag() const;
 		std::string		getName() const;
 		std::string		getPassword() const;
 		std::string		getTopic() const;
 		std::set<User*>	getCurrentUsers() const;
 		std::set<User*>	getUserInvitation() const;
 		std::set<User*>	getChanOps() const;
+		bool			getIsOnInvitationOnly();
 
 		void			setUserlimit(int value);
+		void			setIsOnInvitationOnly(bool value);
 		void			setPassword(std::string value);
 		void			setTopic(std::string value);
 
@@ -58,8 +58,13 @@ class Canal
 		User			*getChanOpByUsername(std::string username) const;
 		User			*getChanOpByFd(int fd) const;
 
+		User			*getConnectedUserByNickname(std::string nickname) const;
+		User			*getConnectedUserByUsername(std::string username) const;
+		User			*getConnectedUserByFd(int fd) const;
+
 		static	bool	hasForbbidenCharPassword(std::string pw);
 
+		bool			isProtectedByPassword(); // used on +k flag !! PASSWORD IS NOT REQUIRED IF USER IS INVITED
 		bool			operator<(const Canal &other) const;
 };
 
