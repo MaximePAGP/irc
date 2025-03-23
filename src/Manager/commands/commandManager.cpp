@@ -12,7 +12,7 @@ CommandManager::~CommandManager() {}
 
 */
 bool CommandManager::hasValidCommand(std::string command) {
-	int const validCommandSize = 4;
+	int const validCommandSize = 3;
 
 
 	size_t firstCharIndex = command.find_first_not_of(" \t\r\n");
@@ -41,13 +41,16 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		return ;
 
 	if (!CommandManager::hasValidCommand(command)) {
+		std::cout << "->" << command << std::endl;
 		send(user.getFd().fd, ":server 461 <command> :Not enough parameters\r\n", 46, 0);
 		// handle response here
 			//should response to client :localhost 421 salut {command} :Unknown command
 		return ;
 	}
-	if (user.getIsConnected() == false)
+	if (user.getIsConnected() == false) {
 		CommandManager::handlePass(command, user);
+		return ;
+	}
 
 	if (command.find("NICK") == 0) {
 		CommandManager::handleNick(command.substr(4, command.size()), user);
