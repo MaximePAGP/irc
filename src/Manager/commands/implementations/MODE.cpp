@@ -74,6 +74,7 @@ static	void	addInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
 	std::cout << "jai set a +i" << std::endl;
 }
 
+
 static	void	removeInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
 	(void) uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
@@ -86,6 +87,50 @@ static	void	removeInvitationOnly(std::string uslessArg, Canal &canal, User &user
 	// :localhost username MODE #canalName -i
 	std::cout << "jai set a -i" << std::endl;
 }
+
+
+static	void	addChanOp(std::string targetUsername, Canal &canal, User &user) {
+	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+
+	if (targetUsername.empty())
+		return;
+	
+	User *targetUser = canal.getConnectedUserByNickname(targetUsername);
+	if (targetUser == NULL) {
+		// :localhost 401 ElitE-40912 , :No such nick/channel
+		return;
+	}
+
+	canal.addChanOps(*targetUser);
+	std::cout << "i add chan op from " << targetUsername << std::endl;
+ 	// :localhost MODE #canalName +o targetName
+}
+
+
+static	void	removedChanOp(std::string targetUsername, Canal &canal, User &user) {
+	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
+		// >> :localhost 482 username[ #canalName :You're not channel operator
+		return;
+	}
+
+	if (targetUsername.empty())
+		return;
+
+	User *targetUser = canal.getConnectedUserByNickname(targetUsername);
+	std::cout << *targetUser;
+	if (targetUser == NULL) {
+		// :localhost 401 ElitE-40912 , :No such nick/channel
+		return;
+	}
+
+	canal.removeChanOps(*targetUser);
+	std::cout << "i removed chan op from " << targetUsername << std::endl;
+ 	// :localhost MODE #canalName -o targetName
+}
+
 
 typedef void (*ActionFunction) (std::string arg, Canal &canal, User &user);
 
@@ -112,11 +157,13 @@ void CommandManager::handleMode(std::string command, User &user) {
 	if (flag.size() <= 1)
 		return;
 
-   std::map<std::string, ActionFunction> supportedMode;
-   supportedMode["+k"] = addCanalPassord;
-   supportedMode["-k"] = removeCanalPassord;
-   supportedMode["+i"] = addInvitationOnly;
-   supportedMode["-i"] = removeInvitationOnly;
+	std::map<std::string, ActionFunction> supportedMode;
+	supportedMode["+k"] = addCanalPassord;
+	supportedMode["-k"] = removeCanalPassord;
+	supportedMode["+i"] = addInvitationOnly;
+	supportedMode["-i"] = removeInvitationOnly;
+	supportedMode["+o"] = addChanOp;
+	supportedMode["-o"] = removedChanOp;
 
 	if (supportedMode.find(flag) == supportedMode.end()) {
 		std::cout << "ya rien frero " << std::endl;
