@@ -47,6 +47,10 @@ struct	pollfd	User::getFd() const {
 	return this->fd;
 }
 
+std::string	User::getCommandBuffer() const {
+	return this->commandBuffer;
+}
+
 void	User::setPassword(std::string newPassord) {
 	this->password = newPassord;
 }
@@ -72,8 +76,26 @@ bool	User::operator<(const User &other) const {
 }
 
 std::ostream &operator<<(std::ostream &out, User const &rhs) {
-	out << " " << rhs.getNickName() << " " << rhs.getUserName() << " " << rhs.getPassword() << "\n";
+	out << " " << rhs.getNickName() << " " << rhs.getUserName() << " " << rhs.getPassword() << " " << rhs.getCommandBuffer() << "\n";
 	return out;
+}
+
+void	User::flushCommandBuffer() {
+	this->setCommandBuffer("");
+}
+
+std::string User::replaceSpecialChar(std::string param) {
+	std::string tmp = param;
+
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (tmp[i] == '{' || tmp[i] == '[')
+			tmp[i] = ',';
+		else if (tmp[i] == '}' || tmp[i] == ']')
+			tmp[i] = ':';
+	}
+	
+	return tmp;
 }
 
 void	printUsers(std::set<User*> users) {

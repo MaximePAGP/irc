@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include "../Canal/Canal.hpp"
 #include "../User/User.hpp"
+#include "../../Manager/commands/commandManager.hpp"
 #include "ServerExepction.hpp"
 
 
@@ -51,6 +52,10 @@ class Server: public ServerExepction
 		bool					getState() const;
 		std::set<User*>			getServerOps() const;
 		std::set<User*>			getUsers() const;
+		User					*getUserByFd(int fd) const;
+		User					*getUserByUsername(std::string username) const;
+		User					*getUserByNickname(std::string nickname) const;
+		Canal					*getCanalByName(std::string name) const;
 		std::set<Canal*>		getCanals() const;
 		
 		void					setPassword(std::string newPassword);

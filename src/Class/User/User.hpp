@@ -32,6 +32,9 @@ class User
 		void			setPassword(std::string newPassord);
 		void			setFd(struct pollfd newFd);
 		void			setCommandBuffer(std::string value);
+		void			flushCommandBuffer();
+
+		static	std::string	replaceSpecialChar(std::string param);
 
 		bool			operator<(const User &other)const;
 };

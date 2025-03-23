@@ -11,51 +11,137 @@ CommandManager::~CommandManager() {}
 	La taille minimum acceptable est 4 car la plus petite commande valide en taille est 4 (KICK ou MODE)
 
 */
-bool	CommandManager::hasValidCommand(std::string command) {
-	int	const validCommandSize = 5;
-	size_t const firstSpaceIndex = command.find(" ");
+bool CommandManager::hasValidCommand(std::string command) {
+	int const validCommandSize = 4;
 
+	size_t firstCharIndex = command.find_first_not_of(" \t\r\n");
+	if (firstCharIndex == std::string::npos)
+		return false;
+
+	size_t firstSpaceIndex = command.find_first_of(" \t\r\n", firstCharIndex);
 	if (firstSpaceIndex == std::string::npos)
 		return false;
 
-	if (validCommandSize > firstSpaceIndex)
+	if ((firstSpaceIndex - firstCharIndex) < validCommandSize)
 		return false;
 
-	for (size_t i = 0; i < firstSpaceIndex; i++)
-	{
+	for (size_t i = firstCharIndex; i < firstSpaceIndex; i++) {
 		if (!std::isalpha(command[i]))
 			return false;
 	}
-	
+
 	return true;
 }
 
-bool	CommandManager::isNick(std::string command) {
-	size_t test = command.find("nick");
-	std::cout << " result   "  << test << " " << command << std::endl;
-	if (command.find("nick") == 5){
-		return true;
-	}
-	return false;
-}
 
-void	CommandManager::redirectCommand(std::string command) {
+void	CommandManager::redirectCommand(std::string command, User &user) {
+	(void)user;
 	if (command.empty())
 		return ;
-	std::string cmdCpy = command;
-	std::transform(cmdCpy.begin(), cmdCpy.end(), cmdCpy.begin(), ::tolower);
 
-	if (!this->hasValidCommand(cmdCpy)) {
+	if (!CommandManager::hasValidCommand(command)) {
 		// handle response here
 			//should response to client :localhost 421 salut {command} :Unknown command
 		return ;
 	}
 
-	if (this->isNick(cmdCpy)) {
-
-		// handle set nickname
+	if (command.find("NICK") == 0) {
+		CommandManager::handleNick(command.substr(4, command.size()), user);
+		return ;
+	} else if (command.find("USER") == 0) {
+		CommandManager::handleUsername(command.substr(4, command.size()), user);
+		return ;
+	} else if (command.find("MODE") == 0) {
+		CommandManager::handleMode(command.substr(4, command.size()), user);
+		return ;
 	}
-
 	// if no handle case return same as 
 		//should response to client :localhost 421 salut {command} :Unknown command
 }
+
+
+void	CommandManager::buildCommand(std::string command, int clientFd) {
+	Server const &server = Server::getServer();
+	User *curUser = server.getUserByFd(clientFd);
+	
+	if ((curUser->getCommandBuffer().size() + command.size()) > MSG_LEN) {
+		// maybe send error to client ?
+		curUser->flushCommandBuffer();
+		return;
+	}
+	curUser->setCommandBuffer(
+		curUser->getCommandBuffer().append(command)
+	);
+
+	while (curUser->getCommandBuffer().find("\r\n") != std::string::npos) {
+		size_t pos = curUser->getCommandBuffer().find("\r\n");
+	
+		std::string fullCommand = curUser->getCommandBuffer().substr(0, pos);
+		curUser->setCommandBuffer(curUser->getCommandBuffer().substr(pos + 2)); // 2 is the length of \r\n
+		
+		CommandManager::redirectCommand(fullCommand, *curUser);
+	}
+}
+
+
+std::string CommandManager::trimFirstParamSpace(std::string param) {
+	size_t start = param.find_first_not_of(" \t\r\n");
+
+	if (start == std::string::npos)
+		return "";
+
+	size_t end = param.find_first_of(" \t\r\n", start);
+	std::string trimParam = "";
+
+	if (end != std::string::npos)
+		trimParam = param.substr(start, end - start);
+	else
+		trimParam = param.substr(start);
+
+	size_t lastNonSpace = trimParam.find_last_not_of(" \t\r\n");
+
+	if (lastNonSpace != std::string::npos) {
+		trimParam = trimParam.substr(0, lastNonSpace + 1);
+	}
+
+	return trimParam;
+}
+
+bool	CommandManager::hasForbiddenNickChar(std::string nickname) {
+	if (nickname.empty())
+		return true;
+	
+	if (nickname.find_first_of("-") == 0)
+		return true;
+
+	if (nickname.find_first_of("/<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
+		return true;
+
+	for (size_t i = 0; i < nickname.size(); i++)
+	{
+		if (!::isascii(nickname[i]))
+			return true;
+	}
+
+	return false;
+}
+
+bool	CommandManager::hasForbiddenUsernameChar(std::string usnername) {
+	if (usnername.empty())
+		return true;
+	
+	if (usnername.find_first_of("-") == 0)
+		return true;
+
+	if (usnername.find_first_of("/<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
+		return true;
+
+	for (size_t i = 0; i < usnername.size(); i++)
+	{
+		if (!::isascii(usnername[i]))
+			return true;
+	}
+
+	return false;
+}
+
