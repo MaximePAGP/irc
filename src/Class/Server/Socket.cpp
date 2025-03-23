@@ -62,7 +62,7 @@ void	Server::handleClientMsg(int clientFd) {
 		buffer[bytesRead] = '\0';
 		CommandManager::buildCommand(buffer, clientFd);
 		std::cout << "Received : <" << buffer << ">" << std::endl;
-		send(clientFd, "Message received", 16, 0);
+		// send(clientFd, "Message received", 16, 0);
 	}
 	// handle if recv crash send a response to client to say we cannot handle the commmand
 	if (bytesRead == 0) {

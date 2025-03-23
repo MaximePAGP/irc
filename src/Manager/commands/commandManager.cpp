@@ -54,6 +54,11 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	} else if (command.find("MODE") == 0) {
 		CommandManager::handleMode(command.substr(4, command.size()), user);
 		return ;
+	}// Dans CommandManager::redirectCommand, ajoutez:
+	else if (command.find("JOIN") == 0) {
+		Server &server = Server::getServer();
+		server.handleJoinCanal(user.getFd().fd, command);
+		return;
 	}
 	// if no handle case return same as 
 		//should response to client :localhost 421 salut {command} :Unknown command

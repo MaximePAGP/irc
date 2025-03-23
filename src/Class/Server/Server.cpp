@@ -150,7 +150,8 @@ User	*Server::getUserByUsername(std::string username) const {
 }
 
 
-bool Server::hasUser(std::set<User> usersContainer, User &target) {
+bool Server::hasUser(std::set<User> usersContainer, User &target) 
+{
 	return usersContainer.find(target) != usersContainer.end();
 }
 
@@ -179,7 +180,7 @@ Canal* Server::findCanalByName(const std::string& name) {
 User* Server::findUserByFd(int clientFd)
 {
 	std::set<User*>::iterator it;
-	for (it = this->users.begin(); it != this->users.end(); ++it) 
+	for (it = this->users.begin(); it != this->users.end(); ++it)
 	{
 		User* user = *it;
 		if (user->getFd().fd == clientFd) {
@@ -198,50 +199,61 @@ void Server::handleJoinCanal(int clientFd, const std::string msg)
         std::cerr << "Invalid JOIN command format" << std::endl;
         return;
     }
+    
     // Extract channel name
     std::string canalName = msg.substr(pos + 1);
-    // Remove any trailing whitespace or newlines
+    
+    // Remove trailing whitespace or newlines
     size_t endPosition = canalName.find_first_of(" \r\n");
-    if (endPosition != std::string::npos) 
-	{
+    if (endPosition != std::string::npos)
+    {
         canalName = canalName.substr(0, endPosition);
     }
+    
     if (canalName.empty())
-	{
+    {
         std::cerr << "Channel name is empty" << std::endl;
         return;
     }
     
-    // Find the user who's joining
-    User* joiningUser = findUserByFd(clientFd);
+    // Find the user who's joining - using your getUserByFd function
+    User* joiningUser = this->getUserByFd(clientFd);
     if (joiningUser == NULL) {
         std::cerr << "User not found for clientFd: " << clientFd << std::endl;
         return;
     }
+    
+    // Verify user is registered
+    if (joiningUser->getNickName().empty() || joiningUser->getUserName().empty()) {
+        std::string errorMsg = ":server 451 * :You have not registered\r\n";
+        send(clientFd, errorMsg.c_str(), errorMsg.length(), 0);
+        return;
+    }
+    
     // Validate channel name
     if (canalName[0] != '#') 
-	{
+    {
         canalName = "#" + canalName;
     }
-    // Find or create the channel
-    Canal* canal = findCanalByName(canalName);
+    
+    // Find or create the channel - using your getCanalByName function
+    Canal* canal = this->getCanalByName(canalName);
     if (canal == NULL) 
-	{
-        // Get the joining user's pollfd
-        struct pollfd fd = joiningUser->getFd();
-        canal = new Canal(fd, canalName);
-        this->addCanal(*canal);   
+    {
+        // Create new channel
+        canal = new Canal(canalName);
+        this->addCanal(*canal);
         std::cout << "Canal " << canalName << " created." << std::endl;
     }
     
     // Add user to the channel
     canal->addUser(*joiningUser);
     
-    // Make ALL joining users channel operators
+    // Make joining user a channel operator
     canal->addChanOps(*joiningUser);
     
-    // Send JOIN confirmation to the user
-    std::string joinResponse = ":" + joiningUser->getNickName() + " JOIN " + canalName + "\r\n";
+    // Send JOIN confirmation to the user - fixed format
+    std::string joinResponse = ":" + joiningUser->getNickName() + "!~" + joiningUser->getUserName() + "@localhost JOIN " + canalName + "\r\n";
     send(clientFd, joinResponse.c_str(), joinResponse.length(), 0);
     
     // Send channel topic if it exists
@@ -264,13 +276,13 @@ void Server::handleJoinCanal(int clientFd, const std::string msg)
         // Check if this user is a channel operator
         std::set<User*>::iterator opIt = channelOps.find(channelUser);
         if (opIt != channelOps.end()) 
-		{
+        {
             namesResponse += "@";
         }
         
         namesResponse += channelUser->getNickName() + " ";
     }
-
+    
     namesResponse += "\r\n";
     send(clientFd, namesResponse.c_str(), namesResponse.length(), 0);
     
