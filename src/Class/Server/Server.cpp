@@ -33,9 +33,9 @@ Server::Server(int portname, std::string password):
 }
 
 Server &Server::init(int portname, std::string password) {
-    if (!server)
-        server = new Server(portname, password);
-    return *server;
+	if (!server)
+		server = new Server(portname, password);
+	return *server;
 }
 
 void	Server::kill() {
@@ -46,7 +46,7 @@ void	Server::kill() {
 }
 
 Server &Server::getServer() {
-    return *server;
+	return *server;
 }
 
 std::string Server::getPassord() const {
@@ -139,7 +139,7 @@ void	Server::bindAndListenPort() {
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->getPortname());
 	if (setsockopt(this->sockets[0].fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) == -1)
-        throw ServerExepction::CannotSetSocketOptionException();
+		throw ServerExepction::CannotSetSocketOptionException();
 	if (bind(this->sockets[0].fd, (struct sockaddr*) &address, sizeof(address)) == -1)
 		throw ServerExepction::CannotBindPortException();
 	if (listen(this->sockets[0].fd, 10) < 0)
@@ -206,11 +206,11 @@ void	Server::handleClientLogout(int clientFd)
 }
 
 void Server::createNewClient() {
-    struct sockaddr_in clientAddr;
-    socklen_t addrLen = sizeof(clientAddr);
+	struct sockaddr_in clientAddr;
+	socklen_t addrLen = sizeof(clientAddr);
 
-    int clientFd = accept(this->sockets[0].fd, (struct sockaddr*)&clientAddr, &addrLen);
-    if (clientFd < 0) {
+	int clientFd = accept(this->sockets[0].fd, (struct sockaddr*)&clientAddr, &addrLen);
+	if (clientFd < 0) {
 		std::cerr << "New connexion was failed" << std::endl;
 		return ;
 	}
@@ -246,50 +246,49 @@ std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 }
 
 Canal* Server::findCanalByName(const std::string& name) {
-    for (std::set<Canal*>::iterator it = this->canals.begin(); it != this->canals.end(); ++it) 
+	for (std::set<Canal*>::iterator it = this->canals.begin(); it != this->canals.end(); ++it)
 	{
 		Canal* canal = *it;
-        if (canal->getName() == name) 
+		if (canal->getName() == name) 
 		{
-            return canal;
-        }
-    }
-    return NULL;
+			return canal;
+		}
+	}
+	return NULL;
 }
 
 User* Server::findUserByFd(int clientFd)
 {
-    std::set<User*>::iterator it;
-    for (it = this->users.begin(); it != this->users.end(); ++it) 
-    {
-        User* user = *it;
-        if (user->getFd().fd == clientFd) {
-            return user;
-        }
-    }
-    return NULL;
+	std::set<User*>::iterator it;
+	for (it = this->users.begin(); it != this->users.end(); ++it) 
+	{
+		User* user = *it;
+		if (user->getFd().fd == clientFd) {
+			return user;
+		}
+	}
+	return NULL;
 }
 
 void Server::handleJoinCanal(int clientFd, const std::string msg)
 {
     // Find space after "JOIN"
     size_t pos = msg.find(' ');
-    if (pos == std::string::npos) 
+    if (pos == std::string::npos)
     {
         std::cerr << "Invalid JOIN command format" << std::endl;
         return;
     }
-    
     // Extract channel name
     std::string canalName = msg.substr(pos + 1);
-    
     // Remove any trailing whitespace or newlines
     size_t endPosition = canalName.find_first_of(" \r\n");
-    if (endPosition != std::string::npos) {
+    if (endPosition != std::string::npos) 
+	{
         canalName = canalName.substr(0, endPosition);
     }
-    
-    if (canalName.empty()) {
+    if (canalName.empty())
+	{
         std::cerr << "Channel name is empty" << std::endl;
         return;
     }
@@ -300,29 +299,27 @@ void Server::handleJoinCanal(int clientFd, const std::string msg)
         std::cerr << "User not found for clientFd: " << clientFd << std::endl;
         return;
     }
-    
     // Validate channel name
-    if (canalName[0] != '#') {
+    if (canalName[0] != '#') 
+	{
         canalName = "#" + canalName;
     }
-    
     // Find or create the channel
     Canal* canal = findCanalByName(canalName);
-    
-    if (canal == NULL) {
+    if (canal == NULL) 
+	{
         // Get the joining user's pollfd
         struct pollfd fd = joiningUser->getFd();
         canal = new Canal(fd, canalName);
-        this->addCanal(*canal);
-        
-        // Make the joining user a channel operator
-        canal->addChanOps(*joiningUser);
-        
+        this->addCanal(*canal);   
         std::cout << "Canal " << canalName << " created." << std::endl;
     }
     
     // Add user to the channel
     canal->addUser(*joiningUser);
+    
+    // Make ALL joining users channel operators
+    canal->addChanOps(*joiningUser);
     
     // Send JOIN confirmation to the user
     std::string joinResponse = ":" + joiningUser->getNickName() + " JOIN " + canalName + "\r\n";
@@ -347,13 +344,14 @@ void Server::handleJoinCanal(int clientFd, const std::string msg)
         
         // Check if this user is a channel operator
         std::set<User*>::iterator opIt = channelOps.find(channelUser);
-        if (opIt != channelOps.end()) {
+        if (opIt != channelOps.end()) 
+		{
             namesResponse += "@";
         }
         
         namesResponse += channelUser->getNickName() + " ";
     }
-    
+
     namesResponse += "\r\n";
     send(clientFd, namesResponse.c_str(), namesResponse.length(), 0);
     
