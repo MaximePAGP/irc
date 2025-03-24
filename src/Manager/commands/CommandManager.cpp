@@ -1,4 +1,4 @@
-#include "commandManager.hpp"
+#include "CommandManager.hpp"
 
 CommandManager::CommandManager() {}
 

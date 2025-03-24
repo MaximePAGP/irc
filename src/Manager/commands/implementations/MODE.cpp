@@ -1,5 +1,5 @@
 #include <map>
-#include "../commandManager.hpp"
+#include "../CommandManager.hpp"
 
 // si ya dla merde avant les flags je renvoi une erreur 
 	// >> :localhost 472 ${nickname} ${unknowFlag} :is unknown mode char to me

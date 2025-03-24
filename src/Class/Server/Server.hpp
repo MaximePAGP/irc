@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include "../Canal/Canal.hpp"
 #include "../User/User.hpp"
-#include "../../Manager/commands/commandManager.hpp"
+#include "../../Manager/commands/CommandManager.hpp"
 #include "ServerExepction.hpp"
 
 

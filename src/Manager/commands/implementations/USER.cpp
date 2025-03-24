@@ -1,4 +1,4 @@
-#include "../commandManager.hpp"
+#include "../CommandManager.hpp"
 
 void CommandManager::handleUsername(std::string command, User &user) {
 	std::string param =  CommandManager::trimFirstParamSpace(command);

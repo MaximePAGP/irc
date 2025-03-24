@@ -12,7 +12,7 @@ SRCS 				= 	src/main.cpp \
 						src/Manager/commands/implementations/MODE.cpp \
 						src/Manager/commands/implementations/NICK.cpp \
 						src/Manager/commands/implementations/USER.cpp \
-						src/Manager/commands/commandManager.cpp \
+						src/Manager/commands/CommandManager.cpp \
 						src/Manager/signals_manager.cpp \
 
 OBJS_DIR			= .objs
