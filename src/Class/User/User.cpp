@@ -110,7 +110,7 @@ bool	User::hasForbiddenNickChar(std::string nickname) {
 
 	for (size_t i = 0; i < nickname.size(); i++)
 	{
-		if (!::isascii(nickname[i]))
+		if (!isascii(nickname[i]))
 			return true;
 	}
 
