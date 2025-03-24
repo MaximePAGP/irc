@@ -56,8 +56,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		return ;
 	}// Dans CommandManager::redirectCommand, ajoutez:
 	else if (command.find("JOIN") == 0) {
-		Server &server = Server::getServer();
-		server.handleJoinCanal(user.getFd().fd, command);
+		CommandManager::handleJoin(command.substr(4, command.size()), user);
 		return;
 	}
 	// if no handle case return same as 
