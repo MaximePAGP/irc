@@ -1,6 +1,23 @@
 #include "../CommandManager.hpp"
 
 
+bool	canalHasFlag(bool hasPasswordParam, Canal &canal, User &user) {
+	(void)user;
+	if (hasPasswordParam == false && canal.getPassword().size() > 1) {
+		// :localhost 475 nickname canalName :Cannot join channel (+k)
+		return true;
+	}
+	if (canal.getUserLimits() < static_cast<int>(canal.getCurrentUsers().size()) + 1) {
+		// :localhost 471 nickname canalName :Cannot join channel (+l)
+		return true;
+	}
+	if (canal.getIsOnInvitationOnly()) {
+		// :localhost 473 nickname canalName :Cannot join channel (+i)
+		return true;
+	}
+	return false;
+}
+
 void CommandManager::handleJoin(std::string command, User &user) {
     (void)command;
     (void)user;
