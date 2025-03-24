@@ -3,7 +3,6 @@
 #include <signal.h>
 #include "Class/Server/Server.hpp"
 #include "Class/User/User.hpp"
-#include "Manager/userManager/UserManager.hpp"
 
 int	checkPassingArguments(int argc, char **argv);
 void handle_sigint(int signal);
