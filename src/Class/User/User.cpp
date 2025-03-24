@@ -98,6 +98,45 @@ std::string User::replaceSpecialChar(std::string param) {
 	return tmp;
 }
 
+bool	User::hasForbiddenNickChar(std::string nickname) {
+	if (nickname.empty())
+		return true;
+	
+	if (nickname.find_first_of("-") == 0)
+		return true;
+
+	if (nickname.find_first_of("/<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
+		return true;
+
+	for (size_t i = 0; i < nickname.size(); i++)
+	{
+		if (!::isascii(nickname[i]))
+			return true;
+	}
+
+	return false;
+}
+
+bool	User::hasForbiddenUsernameChar(std::string usnername) {
+	if (usnername.empty())
+		return true;
+	
+	if (usnername.find_first_of("-") == 0)
+		return true;
+
+	if (usnername.find_first_of("/<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
+		return true;
+
+	for (size_t i = 0; i < usnername.size(); i++)
+	{
+		if (!isascii(usnername[i]))
+			return true;
+	}
+
+	return false;
+}
+
+
 void	printUsers(std::set<User*> users) {
 	for (std::set<User*>::iterator it = users.begin(); it != users.end(); ++it)
     	std::cout << *it;

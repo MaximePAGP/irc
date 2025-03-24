@@ -33,7 +33,8 @@ class User
 		void			setFd(struct pollfd newFd);
 		void			setCommandBuffer(std::string value);
 		void			flushCommandBuffer();
-
+		static	bool	hasForbiddenNickChar(std::string nickname);
+		static	bool	hasForbiddenUsernameChar(std::string usnername);
 		static	std::string	replaceSpecialChar(std::string param);
 
 		bool			operator<(const User &other)const;

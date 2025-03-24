@@ -15,12 +15,10 @@
 class CommandManager
 {
 	private:
-		static	bool 	hasForbiddenNickChar(std::string nickname);
 		static	void	handleNick(std::string command, User &user);
 		static	void	handleUsername(std::string command, User &user);
 		static	void	handleMode(std::string command, User &user);
 		static	bool	hasValidCommand(std::string command);
-		static 	bool 	hasForbiddenUsernameChar(std::string usnername);
 		static	bool	commandIsComplete(std::string command);
 		static	std::string	trimFirstParamSpace(std::string param);
 		CommandManager();

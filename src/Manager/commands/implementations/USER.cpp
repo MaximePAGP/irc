@@ -19,7 +19,7 @@ void CommandManager::handleUsername(std::string command, User &user) {
 		return ;
 	}
 
-	if (hasForbiddenUsernameChar(param)) {
+	if (User::hasForbiddenUsernameChar(param)) {
 		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
 		return;
 	}
