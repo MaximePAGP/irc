@@ -110,7 +110,7 @@ bool	User::hasForbiddenNickChar(std::string nickname) {
 
 	for (size_t i = 0; i < nickname.size(); i++)
 	{
-		if (!isascii(nickname[i]))
+		if (!isascii(nickname[i]) || isspace(nickname[i]))
 			return true;
 	}
 
@@ -129,7 +129,7 @@ bool	User::hasForbiddenUsernameChar(std::string usnername) {
 
 	for (size_t i = 0; i < usnername.size(); i++)
 	{
-		if (!isascii(usnername[i]))
+		if (!isascii(usnername[i]) || isspace(usnername[i]))
 			return true;
 	}
 

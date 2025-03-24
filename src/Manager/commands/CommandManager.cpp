@@ -89,12 +89,12 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 
 
 std::string CommandManager::trimFirstParamSpace(std::string param) {
-	size_t start = param.find_first_not_of(" \t\r\n");
+	size_t start = param.find_first_not_of(" \r\n");
 
 	if (start == std::string::npos)
 		return "";
 
-	size_t end = param.find_first_of(" \t\r\n", start);
+	size_t end = param.find_first_of(" \r\n", start);
 	std::string trimParam = "";
 
 	if (end != std::string::npos)
@@ -102,7 +102,7 @@ std::string CommandManager::trimFirstParamSpace(std::string param) {
 	else
 		trimParam = param.substr(start);
 
-	size_t lastNonSpace = trimParam.find_last_not_of(" \t\r\n");
+	size_t lastNonSpace = trimParam.find_last_not_of(" \r\n");
 
 	if (lastNonSpace != std::string::npos) {
 		trimParam = trimParam.substr(0, lastNonSpace + 1);
