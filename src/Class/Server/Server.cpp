@@ -189,4 +189,3 @@ User* Server::findUserByFd(int clientFd)
 	}
 	return NULL;
 }
-
