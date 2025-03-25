@@ -58,6 +58,9 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	else if (command.find("JOIN") == 0) {
 		CommandManager::handleJoin(command.substr(4, command.size()), user);
 		return;
+	} else if (command.find("TOPIC") == 0) {
+		CommandManager::handleTopic(command.substr(5, command.size()), user);
+		return;
 	}
 	// if no handle case return same as 
 		//should response to client :localhost 421 salut {command} :Unknown command

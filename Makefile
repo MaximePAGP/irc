@@ -13,6 +13,7 @@ SRCS 				= 	src/main.cpp \
 						src/Manager/commands/implementations/NICK.cpp \
 						src/Manager/commands/implementations/USER.cpp \
 						src/Manager/commands/implementations/JOIN.cpp \
+						src/Manager/commands/implementations/TOPIC.cpp \
 						src/Manager/commands/CommandManager.cpp \
 						src/Manager/signals_manager.cpp \
 

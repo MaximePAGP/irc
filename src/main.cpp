@@ -27,6 +27,7 @@ int main(int argc, char **argv)
 		);
 		server.addUser(*testt);
 		Canal *testCanal = new Canal("coucou");
+		testCanal->setHasProtectedTopic(false);
 		server.addCanal(*testCanal);
 		testCanal->addChanOps(*testt);
 		testCanal->addUser(*testt);
