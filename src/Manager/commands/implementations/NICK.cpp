@@ -1,30 +1,30 @@
 #include "../CommandManager.hpp"
 
-void CommandManager::handleNick(std::string command, User &user) {
-	std::string param =  CommandManager::trimFirstParamSpace(command);
+void CommandManager::handleNick(std::string param, User &user) {
 	Server const &server = Server::getServer();
 
-	if (param.empty()) {
-		//:localhost 431 ${nickname} ${newNickname} :No nickname given
+	if (param.empty() || (param.find(" ") + 1) == param.size()) {
+		std::cout << ":localhost 431 " << user.getUserName() << " " << param << " :No nickname given" << std::endl;
 		return;
 	}
 
+	param = param.substr(1, param.size()); // jump space
+
 	if (param.size() > LIMIT_USERNAME_NICKNAME) {
-		// need response
+		std::cout << ":localhost 432 " << user.getUserName() << " " << param << " :Erroneous nickname" << std::endl;
 		return;
 	}
 
 	if (server.getUserByNickname(param) != NULL) {
-		// nickname already takken;
+		std::cout << ":localhost 433 " << user.getUserName() << " " << param << " :Nickname is already in use" << std::endl;
 		return ;
 	}
 
 	if (User::hasForbiddenNickChar(param)) {
-		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
+		std::cout << ":localhost 432 " << user.getUserName() << " " << param << " :Nickname is unavailable: Illegal characters" << std::endl;
 		return;
 	}
 
 	user.setNickName(param);
-	std::cout << "New nickname: <" << user.getNickName() << ">" << std::endl;
-	// send succes response
+	std::cout << ":localhost NICK " << user.getNickName() << std::endl;
 }
