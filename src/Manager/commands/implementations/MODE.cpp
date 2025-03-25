@@ -163,6 +163,33 @@ static	void	removeLimit(std::string usless, Canal &canal, User &user) {
 }
 
 
+static	void	addTopicProtection(std::string usless, Canal &canal, User &user) {
+	(void)usless;
+	if (canal.getChanOpByNickname(user.getNickName())) {
+		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName() << " :You're not channel operator" << std::endl;
+		return;
+	}
+
+	if (canal.getHasProtectedTopic() == false) {
+		std::cout << ":localhost MODE #" << canal.getName() << " +t" << std::endl;
+		return;
+	}
+}
+
+static	void	removeTopicProtection(std::string usless, Canal &canal, User &user) {
+	(void)usless;
+	if (canal.getChanOpByNickname(user.getNickName())) {
+		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName() << " :You're not channel operator" << std::endl;
+		return;
+	}
+
+	if (canal.getHasProtectedTopic() == true) {
+		std::cout << ":localhost MODE #" << canal.getName() << " -t" << std::endl;
+		return;
+	}
+}
+
+
 typedef void (*ActionFunction) (std::string arg, Canal &canal, User &user);
 
 void CommandManager::handleMode(std::string command, User &user) {
@@ -197,6 +224,8 @@ void CommandManager::handleMode(std::string command, User &user) {
 	implementedFlags["-o"] = removedChanOp;
 	implementedFlags["+l"] = addLimit;
 	implementedFlags["-l"] = removeLimit;
+	implementedFlags["+t"] = addTopicProtection;
+	implementedFlags["-t"] = removeTopicProtection;
 
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		std::cout << "ya rien frero " << std::endl;

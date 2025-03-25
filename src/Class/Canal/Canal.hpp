@@ -15,6 +15,7 @@ class Canal
 		Canal();
 		int						userLimit; // flag +l 
 		bool					invitationOnly; // flag +i
+		bool					hasProtectedTopic; // flag +t
 		std::string	const		name;
 		std::string				password; // flag +k
 		std::string				topic; // flag +t
@@ -35,11 +36,13 @@ class Canal
 		std::set<User*>	getUserInvitation() const;
 		std::set<User*>	getChanOps() const;
 		bool			getIsOnInvitationOnly();
+		bool			getHasProtectedTopic();
 
 		void			setUserlimit(int value);
 		void			setIsOnInvitationOnly(bool value);
 		void			setPassword(std::string value);
 		void			setTopic(std::string value);
+		void			setHasProtectedTopic(bool value);
 
 		static	std::string	replaceSpecialChar(std::string param);
 
