@@ -178,7 +178,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 		return;
 	
 	std::string canalName = CommandManager::trimFirstParamSpace(param);
-
+	std::cout << "canal " << canalName << std::endl;
 	Canal *canal = server.getCanalByName(canalName);
 
 	if (canal == NULL) {

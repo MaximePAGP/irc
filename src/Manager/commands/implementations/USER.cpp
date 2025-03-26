@@ -11,7 +11,7 @@ void CommandManager::handleUsername(std::string param, User &user) {
 	param = param.substr(1, param.size()); // jump space
 
 	if (param.size() > LIMIT_USERNAME_NICKNAME) {
-		std::cout << ":localhost 432 " << user.getNickName() << " " << param << " :Erroneous username" << std::endl;		return;
+		std::cout << ":localhost 432 " << user.getNickName() << " " << param << " :Erroneous username" << std::endl;
 		return;
 	}
 
