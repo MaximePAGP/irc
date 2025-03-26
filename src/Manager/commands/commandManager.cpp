@@ -47,7 +47,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 			//should response to client :localhost 421 salut {command} :Unknown command
 		return ;
 	}
-	if (user.getIsConnected() == false) {
+	if (user.getIsConnected() == false || command.find("PASS") == 0) {
 		CommandManager::handlePass(command, user);
 		return ;
 	}
