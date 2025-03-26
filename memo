@@ -116,3 +116,12 @@ pour se connecter au server irc depuis hexchat
 
     Ajoute le socket_fd dans une structure pollfd pour surveiller les événements (POLLIN).
     Attends de nouvelles connexions et messages des clients.
+
+PASS passord
+NICK nickaname
+USER username
+JOIN #coucou password?
+KICK #canal username
+PRIVMSG (#canal | username)
+
+COMMAND 

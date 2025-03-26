@@ -105,7 +105,7 @@ bool	User::hasForbiddenNickChar(std::string nickname) {
 	if (nickname.find_first_of("-") == 0)
 		return true;
 
-	if (nickname.find_first_of("/<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
+	if (nickname.find_first_of(" /<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
 		return true;
 
 	for (size_t i = 0; i < nickname.size(); i++)

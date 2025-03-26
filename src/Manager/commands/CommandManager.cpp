@@ -5,65 +5,57 @@ CommandManager::CommandManager() {}
 
 CommandManager::~CommandManager() {}
 
-
 /*
-
-	La taille minimum acceptable est 4 car la plus petite commande valide en taille est 4 (KICK ou MODE)
-
+	Detect if passing command has space before reach to the first alphanumeric value
+	Acutally the method do a little bit more, we also looking if the passing command
+	has less then 4 and more then 7 size, it is our minimal and maximal handled command
 */
-bool CommandManager::hasValidCommand(std::string command) {
-	int const validCommandSize = 4;
+bool CommandManager::hasLeadingSpaces(std::string command) {
+	int	const minimalCommandSize = 4;
+	int	const maximalCommandSize = 7;
 
-	size_t firstCharIndex = command.find_first_not_of(" \t\r\n");
-	if (firstCharIndex == std::string::npos)
-		return false;
+	size_t firstSpaceIndex = command.find_first_of(" ");
 
-	size_t firstSpaceIndex = command.find_first_of(" \t\r\n", firstCharIndex);
 	if (firstSpaceIndex == std::string::npos)
 		return false;
 
-	if ((firstSpaceIndex - firstCharIndex) < validCommandSize)
-		return false;
-
-	for (size_t i = firstCharIndex; i < firstSpaceIndex; i++) {
-		if (!std::isalpha(command[i]))
-			return false;
+	if (firstSpaceIndex < minimalCommandSize || firstSpaceIndex > maximalCommandSize) {
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 
+
+typedef void (*commandsModel) (std::string command, User &user);
+
 void	CommandManager::redirectCommand(std::string command, User &user) {
-	(void)user;
 	if (command.empty())
 		return ;
 
-	if (!CommandManager::hasValidCommand(command)) {
+	if (CommandManager::hasLeadingSpaces(command)) {
 		// handle response here
 			//should response to client :localhost 421 salut {command} :Unknown command
+			std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
 		return ;
+	}
+	std::string getFirstCommand = getCommand(command);
+	
+	std::map<std::string, commandsModel> commands;
+
+	commands["MODE"] = CommandManager::handleMode;
+	commands["JOIN"] = CommandManager::handleJoin;
+	commands["TOPIC"] = CommandManager::handleTopic;
+	commands["NICK"] = CommandManager::handleNick;
+	commands["USER"] = CommandManager::handleUsername;
+
+	if (commands.find(getFirstCommand) == commands.end()) {
+		std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
+		return;
 	}
 
-	if (command.find("NICK") == 0) {
-		CommandManager::handleNick(command.substr(4, command.size()), user);
-		return ;
-	} else if (command.find("USER") == 0) {
-		CommandManager::handleUsername(command.substr(4, command.size()), user);
-		return ;
-	} else if (command.find("MODE") == 0) {
-		CommandManager::handleMode(command.substr(4, command.size()), user);
-		return ;
-	}// Dans CommandManager::redirectCommand, ajoutez:
-	else if (command.find("JOIN") == 0) {
-		CommandManager::handleJoin(command.substr(4, command.size()), user);
-		return;
-	} else if (command.find("TOPIC") == 0) {
-		CommandManager::handleTopic(command.substr(5, command.size()), user);
-		return;
-	}
-	// if no handle case return same as 
-		//should response to client :localhost 421 salut {command} :Unknown command
+	commands[getFirstCommand](command.substr(getFirstCommand.size(), command.size()), user);
 }
 
 
@@ -91,26 +83,20 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 }
 
 
+std::string	CommandManager::getCommand(std::string command) {
+	size_t nextSpaceIndex = command.find(" ");
+
+	if (nextSpaceIndex == std::string::npos)
+		return command;
+
+	return command.substr(0, nextSpaceIndex);
+}
+
 std::string CommandManager::trimFirstParamSpace(std::string param) {
-	size_t start = param.find_first_not_of(" \r\n");
+	std::string	jumpSpace = param.substr(2, param.size());
 
-	if (start == std::string::npos)
-		return "";
+	size_t nextSpaceIndex = jumpSpace.find(" ");
 
-	size_t end = param.find_first_of(" \r\n", start);
-	std::string trimParam = "";
-
-	if (end != std::string::npos)
-		trimParam = param.substr(start, end - start);
-	else
-		trimParam = param.substr(start);
-
-	size_t lastNonSpace = trimParam.find_last_not_of(" \r\n");
-
-	if (lastNonSpace != std::string::npos) {
-		trimParam = trimParam.substr(0, lastNonSpace + 1);
-	}
-
-	return trimParam;
+	return jumpSpace.substr(0, nextSpaceIndex);
 }
 

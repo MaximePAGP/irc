@@ -1,35 +1,41 @@
 #include "../CommandManager.hpp"
 
 static	void	getCurrentTopic(Canal &canal, User &user) {
-	(void)user;
 	if (canal.getTopic().empty()) {
-		std::cout << ":localhost 331 nickname #" << canal.getName() <<  " :No topic is set" << std::endl;
+		std::cout << ":localhost 331 " << user.getNickName() << " #" 
+			<< canal.getName() << " :No topic is set" << std::endl;
 		return;
-	}
-	std::cout << ":localhost 332 nickname #canalname :" << canal.getTopic() << std::endl;
+    }
+	std::cout << ":localhost 332 " << user.getNickName() << " #" 
+		<< canal.getName() << " :" << canal.getTopic() << std::endl;
 }
 
-static	std::string	getCanalName(std::string command) {
-	size_t canalNameIndex = command.find_first_of("#&");
-
-	if (canalNameIndex == std::string::npos)
+std::string	getCanalNameStart(std::string command) {
+	if (command.size() < 2)
 		return "";
-	
-	size_t spaceAfterArg = command.substr(canalNameIndex + 1, command.size()).find(" ");
-	
-	if (spaceAfterArg == std::string::npos)
-		return command.substr(canalNameIndex + 1, command.size());
-	return command.substr(canalNameIndex + 1, spaceAfterArg);
+	return command.substr(2, command.size());
+}
+
+std::string trimToFirstSpace(std::string command) {
+    size_t firstSpaceIndex = command.find(' ');
+    if (firstSpaceIndex != std::string::npos){
+        return command.substr(0, firstSpaceIndex);
+	}
+    return command;
 }
 
 void	CommandManager::handleTopic(std::string command, User &user) {
-	Server 			&server = Server::getServer();
-	std::string		canalArgName = getCanalName(command);
-	Canal 			*targetCanal = server.getCanalByName(canalArgName);
+	Server &server = Server::getServer();
 
+	if (command.empty())
+		return;
+
+	std::string jumpedSpace = getCanalNameStart(command);
+	std::string canalName = trimToFirstSpace(jumpedSpace);
+	Canal *targetCanal = server.getCanalByName(canalName);
 
 	if (targetCanal == NULL) {
-		std::cout << ":localhost 403 username #" << canalArgName << ":No such channel" << std::endl;
+		std::cout << ":localhost 403 " << user.getNickName() <<" "  << command << " :No such channel" << std::endl;
 		return;
 	}
 
@@ -44,6 +50,7 @@ void	CommandManager::handleTopic(std::string command, User &user) {
 		std::cout << ":localhost 482 " << user.getNickName() << " #" << targetCanal->getName() << " :You're not channel operator" << std::endl;
 		return;
 	}
-	std::string newTopic = command.substr(topicParamIndex, command.size());
+	std::string newTopic = command.substr(topicParamIndex + 1, command.size());
+	targetCanal->setTopic(newTopic);
 	std::cout << ":localhost " << user.getNickName() << " TOPIC #" << targetCanal->getName() << " :" << newTopic << std::endl;
 }

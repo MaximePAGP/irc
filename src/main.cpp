@@ -18,8 +18,8 @@ int main(int argc, char **argv)
 	signal(SIGINT, &handle_sigint);
 	signal(SIGQUIT, &handle_sigquit);
 
-	try
-	{
+	// try
+	// {
 		User *testt = new User(
 			"salt",
 			"salu",
@@ -33,13 +33,13 @@ int main(int argc, char **argv)
 		testCanal->addUser(*testt);
 		// std::cout << "result : " << UserManager::isUniqueUsername("salu");
 		server.running();
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-		server.kill();
-		return 1;
-	}
+	// }
+	// catch(const std::exception& e)
+	// {
+	// 	std::cerr << e.what() << std::endl;
+	// 	server.kill();
+	// 	return 1;
+	// }
 	server.kill();
 	return 0;
 }
