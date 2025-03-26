@@ -18,7 +18,7 @@ class CommandManager
 	private:
 		static	void		handleNick(std::string param, User &user);
 		static	void		handleUsername(std::string param, User &user);
-		static	void		handleMode(std::string command, User &user);
+		static	void		handleMode(std::string param, User &user);
 		static	void		handleJoin(std::string command, User &user);
 		static	void		handleTopic(std::string command, User &user);
 		static	bool		hasLeadingSpaces(std::string command);
