@@ -2,12 +2,13 @@
 
 Canal::Canal(): userLimit(10), name("DEFAULT") {}
 
-Canal::Canal(std::string name): userLimit(10), name(name), password(""), topic("") {}
+Canal::Canal(std::string name): userLimit(10), invitationOnly(false), hasProtectedTopic(true), name(name), password(""), topic("") {}
 
 Canal::~Canal() {}
 
 
 Canal::Canal(Canal const &copy) : userLimit(copy.userLimit),
+	invitationOnly(copy.invitationOnly), hasProtectedTopic(copy.hasProtectedTopic),
 	password(copy.password), topic(copy.topic), curUsers(copy.curUsers),
 	invUsers(copy.invUsers), chanOp(copy.chanOp) {}
 
@@ -16,6 +17,8 @@ Canal	&Canal::operator=(Canal const &rhs) {
 		userLimit = rhs.userLimit;
 		password = rhs.password;
 		topic = rhs.topic;
+		invitationOnly = rhs.invitationOnly;
+		hasProtectedTopic = rhs.hasProtectedTopic;
 		curUsers = rhs.curUsers;
 		invUsers = rhs.invUsers;
 		chanOp = rhs.chanOp;
@@ -209,9 +212,20 @@ bool	Canal::getIsOnInvitationOnly() {
 	return this->invitationOnly;
 }
 
+
+bool	Canal::getHasProtectedTopic() {
+	return this->hasProtectedTopic;
+}
+
 void	Canal::setIsOnInvitationOnly(bool value) {
 	this->invitationOnly = value;
+}
+
+
+void	Canal::setHasProtectedTopic(bool value) {
+	this->hasProtectedTopic = value;
 }	
+
 
 void			printCanals(std::set<Canal*> canals) {
 	for (std::set<Canal*>::iterator it = canals.begin(); it != canals.end(); ++it)

@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include "../Canal/Canal.hpp"
 #include "../User/User.hpp"
-#include "../../Manager/commands/commandManager.hpp"
+#include "../../Manager/commands/CommandManager.hpp"
 #include "ServerExepction.hpp"
 
 
@@ -42,7 +42,8 @@ class Server: public ServerExepction
 		void					initServerSocket(); // By default we use TCP and IPV4
 		void					bindAndListenPort();
 		void					handleClientMsg(int clientFd);
-	public:
+		/********************************** */
+		public:
 		virtual	~Server();
 		static	Server			&init(int portname, std::string password);
 		static	Server			&getServer();
@@ -56,26 +57,30 @@ class Server: public ServerExepction
 		User					*getUserByNickname(std::string nickname) const;
 		Canal					*getCanalByName(std::string name) const;
 		std::set<Canal*>		getCanals() const;
-
+		
 		void					setPassword(std::string newPassword);
 		void					setState(bool value);
 
 		std::pair<std::set<User*>::iterator, bool>
-								addServerOps(User &newServOP);
+		addServerOps(User &newServOP);
 		std::size_t				removeServerOps(User &target);
-
+		
 		std::pair<std::set<User*>::iterator, bool>
 								addUser(User &newUser);
 		std::size_t				removeUser(User &target);
 		
 		std::pair<std::set<Canal*>::iterator, bool>
 								addCanal(Canal &newCanal);
-		std::size_t				removeCanal(Canal &target);
+								std::size_t				removeCanal(Canal &target);
 
-		bool 					hasUser(std::set<User> usersContainer, User &target);
-
-		void					running();
+								bool 					hasUser(std::set<User> usersContainer, User &target);
+								
+								void					running();
 		void					kill();
+		Canal* 					findCanalByName(const std::string& name);
+		User *findUserByFd(int clientFd);
+		
+		//*********************************	 *
 };
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs);

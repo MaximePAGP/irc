@@ -1,35 +1,35 @@
-#include "../commandManager.hpp"
+#include "../CommandManager.hpp"
 
-void CommandManager::handleUsername(std::string command, User &user) {
-	std::string param =  CommandManager::trimFirstParamSpace(command);
+void CommandManager::handleUsername(std::string param, User &user) {
 	Server const &server = Server::getServer();
-
-	if (param.empty()) {
-		//:localhost 431 ${nickname} ${newNickname} :No nickname given
+	
+	if (param.empty() || (param.find(" ") + 1) == param.size()) {
+		std::cout << ":localhost 461 " << user.getNickName() << " USER :Not enough parameters" << std::endl;
 		return;
 	}
 
+	param = param.substr(1, param.size()); // jump space
+
 	if (param.size() > LIMIT_USERNAME_NICKNAME) {
-		// need response
+		std::cout << ":localhost 432 " << user.getNickName() << " " << param << " :Erroneous username" << std::endl;
 		return;
 	}
 
 	if (server.getUserByUsername(param) != NULL) {
-		// nickname already takken;
-		return ;
-	}
-
-	if (hasForbiddenUsernameChar(param)) {
-		// :localhost 432 ${nickname} ${nickname} :Nickname is unavailable: Illegal characters
+		std::cout << ":localhost 433 " << user.getNickName() << " " << param << " :Username is already in use" << std::endl;
 		return;
 	}
 
-	if (user.getUserName().size() != 0) {
-		// :localhost 462 ${username} :You may not reregisterw
+	if (User::hasForbiddenUsernameChar(param)) {
+		std::cout << ":localhost 432 " << user.getNickName() << " " << param << " :Username contains forbidden characters" << std::endl;
+		return;
+	}
+
+	if (!user.getUserName().empty()) {
+		std::cout << ":localhost 462 " << user.getNickName() << " :You may not reregister" << std::endl;
 		return;
 	}
 
 	user.setUsername(param);
-	std::cout << "New UserName: <" << user.getUserName() << ">" << std::endl;
-	// send succes response
+	std::cout << ":localhost USER " << user.getUserName() << std::endl;
 }

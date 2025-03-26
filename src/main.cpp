@@ -3,7 +3,6 @@
 #include <signal.h>
 #include "Class/Server/Server.hpp"
 #include "Class/User/User.hpp"
-#include "Manager/userManager/UserManager.hpp"
 
 int	checkPassingArguments(int argc, char **argv);
 void handle_sigint(int signal);
@@ -19,8 +18,8 @@ int main(int argc, char **argv)
 	signal(SIGINT, &handle_sigint);
 	signal(SIGQUIT, &handle_sigquit);
 
-	try
-	{
+	// try
+	// {
 		User *testt = new User(
 			"salt",
 			"salu",
@@ -28,18 +27,19 @@ int main(int argc, char **argv)
 		);
 		server.addUser(*testt);
 		Canal *testCanal = new Canal("coucou");
+		testCanal->setHasProtectedTopic(false);
 		server.addCanal(*testCanal);
 		testCanal->addChanOps(*testt);
 		testCanal->addUser(*testt);
 		// std::cout << "result : " << UserManager::isUniqueUsername("salu");
 		server.running();
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-		server.kill();
-		return 1;
-	}
+	// }
+	// catch(const std::exception& e)
+	// {
+	// 	std::cerr << e.what() << std::endl;
+	// 	server.kill();
+	// 	return 1;
+	// }
 	server.kill();
 	return 0;
 }

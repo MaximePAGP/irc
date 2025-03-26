@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "string.h"
 
 static	Server *server = NULL;
 
@@ -32,9 +33,9 @@ Server::Server(int portname, std::string password):
 }
 
 Server &Server::init(int portname, std::string password) {
-    if (!server)
-        server = new Server(portname, password);
-    return *server;
+	if (!server)
+		server = new Server(portname, password);
+	return *server;
 }
 
 void	Server::kill() {
@@ -45,7 +46,7 @@ void	Server::kill() {
 }
 
 Server &Server::getServer() {
-    return *server;
+	return *server;
 }
 
 std::string Server::getPassord() const {
@@ -149,7 +150,8 @@ User	*Server::getUserByUsername(std::string username) const {
 }
 
 
-bool Server::hasUser(std::set<User> usersContainer, User &target) {
+bool Server::hasUser(std::set<User> usersContainer, User &target) 
+{
 	return usersContainer.find(target) != usersContainer.end();
 }
 
@@ -161,4 +163,29 @@ std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server canals : " << rhs.getServerOps().size() << "\n";
 	printCanals(rhs.getCanals());
 	return out;
+}
+
+Canal* Server::findCanalByName(const std::string& name) {
+	for (std::set<Canal*>::iterator it = this->canals.begin(); it != this->canals.end(); ++it)
+	{
+		Canal* canal = *it;
+		if (canal->getName() == name) 
+		{
+			return canal;
+		}
+	}
+	return NULL;
+}
+
+User* Server::findUserByFd(int clientFd)
+{
+	std::set<User*>::iterator it;
+	for (it = this->users.begin(); it != this->users.end(); ++it)
+	{
+		User* user = *it;
+		if (user->getFd().fd == clientFd) {
+			return user;
+		}
+	}
+	return NULL;
 }
