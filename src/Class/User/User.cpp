@@ -108,7 +108,6 @@ bool	User::hasForbiddenNickChar(std::string nickname) {
 	if (nickname.find_first_of(" /<>.,:;'\"()?¿!~@#%^$&*+=") != std::string::npos)
 		return true;
 
-	std::cout << "nick checking (" << nickname << ")" << std::endl;
 	for (size_t i = 0; i < nickname.size(); i++)
 	{
 		if (!isascii(nickname[i]) || isspace(nickname[i]))
