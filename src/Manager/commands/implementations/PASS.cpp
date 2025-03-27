@@ -1,4 +1,4 @@
-#include "../commandManager.hpp"
+#include "../CommandManager.hpp"
 #include "../../../Class/Server/Server.hpp"
 
 void	CommandManager::handlePass(std::string command, User &user) {

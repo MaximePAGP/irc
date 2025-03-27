@@ -36,7 +36,7 @@ class User
 		void			setCommandBuffer(std::string value);
 		void			flushCommandBuffer();
 		static	bool	hasForbiddenNickChar(std::string nickname);
-		static	bool	hasForbiddenUsernameChar(std::string usnername);		void			setIsConnected(bool status);
+		static	bool	hasForbiddenUsernameChar(std::string usnername);
 		void			setIsConnected(bool status);
 
 		static	std::string	replaceSpecialChar(std::string param);
