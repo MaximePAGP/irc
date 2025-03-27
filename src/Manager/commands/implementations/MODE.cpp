@@ -198,10 +198,10 @@ void CommandManager::handleMode(std::string param, User &user) {
 	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size(), param.size());
 	
 	if (flag.size() < 1) {
-		std::cout << "Get back flag" << std::endl;
+		canal->sendActiveMode(user);
 		return;
 	}
-
+	
 	flag = flag.substr(1, 2); // get the two first one after space
 
 	std::map<std::string, ActionFunction> implementedFlags;

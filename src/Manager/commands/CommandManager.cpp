@@ -32,13 +32,11 @@ typedef void (*commandsModel) (std::string command, User &user);
 
 void	CommandManager::redirectCommand(std::string command, User &user) {
 	if (command.empty())
-		return ;
+		return;
 
 	if (CommandManager::hasLeadingSpaces(command)) {
-		// handle response here
-			//should response to client :localhost 421 salut {command} :Unknown command
 			std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
-		return ;
+		return;
 	}
 	std::string getFirstCommand = getCommand(command);
 	

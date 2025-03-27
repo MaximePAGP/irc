@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "string.h"
 
 static	Server *server = NULL;
 

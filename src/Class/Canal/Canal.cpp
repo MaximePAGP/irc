@@ -227,6 +227,39 @@ void	Canal::setHasProtectedTopic(bool value) {
 }	
 
 
+void	Canal::sendActiveMode(User &user) {
+	std::string activeFlag = "+";
+
+	if (this->getIsOnInvitationOnly()) {
+		activeFlag.append("i");
+	}
+	if (this->isProtectedByPassword()) {
+		activeFlag.append("k");
+	}
+	if (this->getUserLimits() != 10) {
+		activeFlag.append("l");
+	}
+	if (this->getHasProtectedTopic()) {
+		activeFlag.append("t");
+	}
+	if (this->isProtectedByPassword()) {
+		activeFlag.append(" ");
+		activeFlag.append(this->getPassword());
+	}
+	if (this->getUserLimits() != 10) {
+		activeFlag.append(" ");
+		std::stringstream convertInt;
+
+		convertInt << this->getUserLimits();
+		
+		std::string convertValue = convertInt.str();
+		activeFlag.append(convertValue);
+	}
+	std::string clientMsg = ":localhost 324 " + user.getNickName() + " #" + this->getName() + " " + activeFlag;
+	send(user.getFd().fd, clientMsg.c_str(), clientMsg.size(), 0);
+}
+
+
 void			printCanals(std::set<Canal*> canals) {
 	for (std::set<Canal*>::iterator it = canals.begin(); it != canals.end(); ++it)
     	std::cout << *it;

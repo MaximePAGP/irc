@@ -2,10 +2,9 @@
 #define USER_CLASS_HPP
 
 #include <iostream>
-#include <string>
+#include <cstring>
 #include <set>
 #include <poll.h>
-
 
 class User
 {
