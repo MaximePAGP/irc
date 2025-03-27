@@ -8,6 +8,7 @@
 #include <map>
 #include <iostream>
 #include "../../Class/Server/Server.hpp"
+#include "../../Class/Message/Message.hpp"
 
 
 #define	MSG_LEN 512 // Following norm IRC 1459, message size limit is <-

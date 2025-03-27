@@ -9,6 +9,7 @@ SRCS 				= 	src/main.cpp \
 						src/Class/Canal/Canal.cpp \
 						src/Class/Server/Server.cpp \
 						src/Class/Server/Socket.cpp \
+						src/Class/Message/Message.cpp \
 						src/Manager/commands/implementations/MODE.cpp \
 						src/Manager/commands/implementations/NICK.cpp \
 						src/Manager/commands/implementations/USER.cpp \

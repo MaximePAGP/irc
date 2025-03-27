@@ -35,17 +35,17 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		return;
 
 	if (CommandManager::hasLeadingSpaces(command)) {
-			std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
+		std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
 		return;
 	}
 	std::string getFirstCommand = getCommand(command);
 	
 	std::map<std::string, commandsModel> commands;
 
-	if (user.getIsConnected() == false || command.find("PASS") == 0) {
-		CommandManager::handlePass(command, user);
-		return ;
-	}
+	// if (user.getIsConnected() == false || command.find("PASS") == 0) {
+	// 	CommandManager::handlePass(command, user);
+	// 	return ;
+	// }
 	commands["MODE"] = CommandManager::handleMode;
 	commands["JOIN"] = CommandManager::handleJoin;
 	commands["TOPIC"] = CommandManager::handleTopic;

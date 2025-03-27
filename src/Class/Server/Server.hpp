@@ -78,8 +78,7 @@ class Server: public ServerExepction
 								void					running();
 		void					kill();
 		Canal* 					findCanalByName(const std::string& name);
-		User *findUserByFd(int clientFd);
-		
+		User					*findUserByFd(int clientFd);
 		//*********************************	 *
 };
 
