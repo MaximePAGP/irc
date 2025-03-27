@@ -21,6 +21,7 @@ class CommandManager
 		static	void		handleMode(std::string param, User &user);
 		static	void		handleJoin(std::string command, User &user);
 		static	void		handleTopic(std::string command, User &user);
+		static	void		handlePass(std::string command, User &user);
 		static	bool		hasLeadingSpaces(std::string command);
 		static	bool		commandIsComplete(std::string command);
 		static	std::string getCommand(std::string command);

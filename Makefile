@@ -15,6 +15,9 @@ SRCS 				= 	src/main.cpp \
 						src/Manager/commands/implementations/JOIN.cpp \
 						src/Manager/commands/implementations/TOPIC.cpp \
 						src/Manager/commands/CommandManager.cpp \
+						src/Manager/commands/commandManager.cpp \
+						src/Manager/commands/implementations/PASS.cpp \
+						src/Manager/userManager/UserManager.cpp \
 						src/Manager/signals_manager.cpp \
 
 OBJS_DIR			= .objs

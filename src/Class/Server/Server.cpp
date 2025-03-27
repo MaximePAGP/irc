@@ -49,7 +49,7 @@ Server &Server::getServer() {
 	return *server;
 }
 
-std::string Server::getPassord() const {
+std::string Server::getPassword() const {
 	return this->password;
 }
 
@@ -157,7 +157,7 @@ bool Server::hasUser(std::set<User> usersContainer, User &target)
 
 std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server portname : " << rhs.getPortname() << "\n";
-	out << "Server passord : " << rhs.getPassord() << "\n";
+	out << "Server passord : " << rhs.getPassword() << "\n";
 	out << "Server Server ops : " << rhs.getServerOps().size() << "\n";
 	printUsers(rhs.getServerOps());
 	out << "Server canals : " << rhs.getServerOps().size() << "\n";

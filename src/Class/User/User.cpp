@@ -3,6 +3,7 @@
 User::User(): nickName("default"), userName("default"), password(NULL)
 	{
 		this->fd.fd = -1;
+		this->isConnected = false;
 	}
 
 
@@ -10,6 +11,7 @@ User::User(std::string nickName, std::string userName, std::string password)
 	: nickName(nickName), userName(userName), password(password)
 	{
 		this->fd.fd = -1;
+		this->isConnected = false;
 	}
 
 
@@ -51,6 +53,10 @@ std::string	User::getCommandBuffer() const {
 	return this->commandBuffer;
 }
 
+bool	User::getIsConnected() const {
+	return this->isConnected;
+}
+
 void	User::setPassword(std::string newPassord) {
 	this->password = newPassord;
 }
@@ -69,6 +75,10 @@ void	User::setUsername(std::string newUserName) {
 
 void	User::setCommandBuffer(std::string value) {
 	this->commandBuffer = value;
+}
+
+void	User::setIsConnected(bool status) {
+	this->isConnected = status;
 }
 
 bool	User::operator<(const User &other) const {
