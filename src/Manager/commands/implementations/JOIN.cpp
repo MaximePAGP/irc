@@ -18,7 +18,8 @@ bool	canalHasFlag(bool hasPasswordParam, Canal &canal, User &user) {
 	return false;
 }
 
-void CommandManager::handleJoin(std::string command, User &user) {
+void CommandManager::handleJoin(std::string command, User &user) 
+{
     Server &server = Server::getServer();
     // Remove trailing whitespace or newlines
     std::string canalName = command;
@@ -50,7 +51,7 @@ void CommandManager::handleJoin(std::string command, User &user) {
     // Add user to the channel
     canal->addUser(user);
     
-    // Make joining user a channel operator
+    // Make joining user a channel operatorz
     canal->addChanOps(user);
     
     // Send JOIN confirmation to the user - fixed format
