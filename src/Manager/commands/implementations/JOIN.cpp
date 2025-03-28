@@ -23,11 +23,12 @@ void CommandManager::handleJoin(std::string command, User &user)
     Server &server = Server::getServer();
     // Remove trailing whitespace or newlines
     std::string canalName = command;
-    size_t endPosition = canalName.find_first_of(" \r\n");
-    if (endPosition != std::string::npos)
-    {
-        canalName = canalName.substr(0, endPosition);
-    }
+    std::cout << "canalName : " << canalName << std::endl;
+    // size_t endPosition = canalName.find_first_of(" \r\n");
+    // if (endPosition != std::string::npos)
+    // {
+    //     canalName = canalName.substr(0, endPosition);
+    // }
     if (canalName.empty())
     {
         std::cerr << "Channel name is empty" << std::endl;

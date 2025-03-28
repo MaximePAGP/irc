@@ -15,8 +15,8 @@ int main(int argc, char **argv)
 
 	// signal(SIGINT, &handle_sigint);
 	Server &server = Server::init(std::atoi(argv[1]), argv[2]);
-	signal(SIGINT, &handle_sigint);
-	signal(SIGQUIT, &handle_sigquit);
+	// signal(SIGINT, &handle_sigint);
+	// signal(SIGQUIT, &handle_sigquit);
 
 	// try
 	// {
