@@ -4,6 +4,10 @@
 
 #include <string>
 #include <poll.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <sstream>
+#include <cstdlib> 
 #include <set>
 #include "../User/User.hpp"
 
@@ -37,6 +41,7 @@ class Canal
 		std::set<User*>	getChanOps() const;
 		bool			getIsOnInvitationOnly();
 		bool			getHasProtectedTopic();
+		void			sendActiveMode(User &user);
 
 		void			setUserlimit(int value);
 		void			setIsOnInvitationOnly(bool value);

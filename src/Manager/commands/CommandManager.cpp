@@ -32,18 +32,21 @@ typedef void (*commandsModel) (std::string command, User &user);
 
 void	CommandManager::redirectCommand(std::string command, User &user) {
 	if (command.empty())
-		return ;
+		return;
 
 	if (CommandManager::hasLeadingSpaces(command)) {
-		// handle response here
-			//should response to client :localhost 421 salut {command} :Unknown command
-			std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
-		return ;
+		std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
+		return;
 	}
 	std::string getFirstCommand = getCommand(command);
 	
 	std::map<std::string, commandsModel> commands;
 
+	if (user.getIsConnected() == false || command.find("PASS") == 0) {
+		CommandManager::handlePass(command, user);
+		return ;
+	}
+	
 	commands["MODE"] = CommandManager::handleMode;
 	commands["JOIN"] = CommandManager::handleJoin;
 	commands["TOPIC"] = CommandManager::handleTopic;

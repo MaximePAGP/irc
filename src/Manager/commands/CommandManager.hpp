@@ -8,6 +8,7 @@
 #include <map>
 #include <iostream>
 #include "../../Class/Server/Server.hpp"
+#include "../../Class/Message/Message.hpp"
 
 
 #define	MSG_LEN 512 // Following norm IRC 1459, message size limit is <-
@@ -21,6 +22,7 @@ class CommandManager
 		static	void		handleMode(std::string param, User &user);
 		static	void		handleJoin(std::string command, User &user);
 		static	void		handleTopic(std::string command, User &user);
+		static	void		handlePass(std::string command, User &user);
 		static	bool		hasLeadingSpaces(std::string command);
 		static	bool		commandIsComplete(std::string command);
 		static	std::string getCommand(std::string command);

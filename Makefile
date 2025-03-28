@@ -9,11 +9,13 @@ SRCS 				= 	src/main.cpp \
 						src/Class/Canal/Canal.cpp \
 						src/Class/Server/Server.cpp \
 						src/Class/Server/Socket.cpp \
+						src/Class/Message/Message.cpp \
 						src/Manager/commands/implementations/MODE.cpp \
 						src/Manager/commands/implementations/NICK.cpp \
 						src/Manager/commands/implementations/USER.cpp \
 						src/Manager/commands/implementations/JOIN.cpp \
 						src/Manager/commands/implementations/TOPIC.cpp \
+						src/Manager/commands/implementations/PASS.cpp \
 						src/Manager/commands/CommandManager.cpp \
 						src/Manager/signals_manager.cpp \
 

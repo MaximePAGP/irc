@@ -47,7 +47,7 @@ class Server: public ServerExepction
 		virtual	~Server();
 		static	Server			&init(int portname, std::string password);
 		static	Server			&getServer();
-		std::string 			getPassord() const;
+		std::string 			getPassword() const;
 		int						getPortname() const;
 		bool					getState() const;
 		std::set<User*>			getServerOps() const;
@@ -78,8 +78,7 @@ class Server: public ServerExepction
 								void					running();
 		void					kill();
 		Canal* 					findCanalByName(const std::string& name);
-		User *findUserByFd(int clientFd);
-		
+		User					*findUserByFd(int clientFd);
 		//*********************************	 *
 };
 

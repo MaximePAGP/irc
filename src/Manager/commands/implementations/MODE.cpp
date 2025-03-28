@@ -3,8 +3,7 @@
 
 static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 	if (password.size() <= 1)
@@ -13,30 +12,28 @@ static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
 	password = password.substr(1, password.size());
 
 	if (password.size() > 12) {
-		std::cout << ":localhost 696 " << user.getNickName() << " #" << canal.getName()
-			<< " +k " << password << " :Channel key is too long" << std::endl;
+		Message::chanPassordToLong(canal.getName(), user, password);
 		return;
 	}
 
 	if (Canal::hasForbbidenCharPassword(password)) {
-		std::cout << ":localhost 696 " << user.getNickName() << " #" << canal.getName()
-			<< " +k " << password
-			<< " :Channel key contains forbidden characters" << std::endl;
+		Message::chanPasswordForbiddenChar(canal.getName(), user, password);
 		return;
 	}
 
+	std::string flagWithPassword = " +k ";
+	flagWithPassword.append(password);
+	Message::changedModeChan(canal.getName(), user, flagWithPassword);
 	canal.setPassword(password);
-	std::cout << ":localhost 324 " << user.getNickName() << " " << canal.getName()
-	<< " +k " << password << std::endl;
 }
 
 static	void	removeCanalPassord(std::string uslessArg, Canal &canal, User &user) {
 	(void)uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
+	Message::changedModeChan(canal.getName(), user, " -k");
 	canal.setPassword("");
 }
 
@@ -45,35 +42,32 @@ static	void	removeCanalPassord(std::string uslessArg, Canal &canal, User &user) 
 static	void	addInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
 	(void) uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 	if (canal.getIsOnInvitationOnly())
 		return;
 	canal.setIsOnInvitationOnly(true);
-	std::cout << ":localhost " << user.getNickName() << " MODE #" << canal.getName() << " +i" << std::endl;
+	Message::changedModeChan(canal.getName(), user, " +i");
 }
 
 static	void	removeInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
 	(void) uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 	if (!canal.getIsOnInvitationOnly())
 		return;
 	canal.setIsOnInvitationOnly(false);
-	std::cout << ":localhost " << user.getNickName() << " MODE #" << canal.getName() << " -i" << std::endl;
+	Message::changedModeChan(canal.getName(), user, " -i");
 }
 
 
 
 static	void	addChanOp(std::string nickname, Canal &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 
@@ -83,19 +77,20 @@ static	void	addChanOp(std::string nickname, Canal &canal, User &user) {
 	
 	User *targetUser = canal.getConnectedUserByNickname(nickname);
 	if (targetUser == NULL) {
-		std::cout << ":localhost 401 " << user.getNickName() << " " << nickname 
-		<< " :No such nick/channel" << std::endl;
+		Message::noSuchNickChannel(nickname, user);
 		return;
 	}
 
 	canal.addChanOps(*targetUser);
-	std::cout << ":localhost " << user.getNickName() << " MODE +o " << targetUser->getNickName() << std::endl;
+
+	std::string flagWithTarget = " +o ";
+	flagWithTarget.append(targetUser->getNickName());
+	Message::changedModeChan(canal.getName(), user, flagWithTarget);
 }
 
 static	void	removedChanOp(std::string nickname, Canal &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 
@@ -105,21 +100,20 @@ static	void	removedChanOp(std::string nickname, Canal &canal, User &user) {
 
 	User *targetUser = canal.getConnectedUserByNickname(nickname);
 	if (targetUser == NULL) {
-		std::cout << ":localhost 401 " << user.getNickName() << " " << nickname 
-		<< " :No such nick/channel" << std::endl;
+		Message::noSuchNickChannel(nickname, user);
 		return;
 	}
-
+	std::string flagWithTarget = " -o ";
+	flagWithTarget.append(targetUser->getNickName());
+	Message::changedModeChan(canal.getName(), user, flagWithTarget);
 	canal.removeChanOps(*targetUser);
-	std::cout << ":localhost " << user.getNickName() << " MODE -o " << targetUser->getNickName() << std::endl;
 }
 
 
 
 static	void	addLimit(std::string limit, Canal &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 
@@ -131,20 +125,27 @@ static	void	addLimit(std::string limit, Canal &canal, User &user) {
 
 	if (parsedLimit < 1 || parsedLimit > 10)
 		return;
+	std::string flagWithTarget = " +l ";
+	std::stringstream convertInt;
+ 
+ 	convertInt << parsedLimit;
+ 		
+ 	std::string convertValue = convertInt.str();
+ 	flagWithTarget.append(convertValue);
+
+	Message::changedModeChan(canal.getName(), user, flagWithTarget);
 	canal.setUserlimit(parsedLimit);
-	std::cout << ":localhost " << canal.getName() << " MODE +l " << parsedLimit << std::endl;
 }
 
 static	void	removeLimit(std::string usless, Canal &canal, User &user) {
 	(void)usless;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 
 	canal.setUserlimit(10);
-	std::cout << ":localhost " << canal.getName() << " MODE -l"<< std::endl;
+	Message::changedModeChan(canal.getName(), user, " -l");
 }
 
 
@@ -152,13 +153,12 @@ static	void	removeLimit(std::string usless, Canal &canal, User &user) {
 static	void	addTopicProtection(std::string usless, Canal &canal, User &user) {
 	(void)usless;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 
 	if (canal.getHasProtectedTopic() == false) {
-		std::cout << ":localhost MODE #" << canal.getName() << " +t" << std::endl;
+		Message::changedModeChan(canal.getName(), user, " +t");
 		return;
 	}
 }
@@ -166,13 +166,12 @@ static	void	addTopicProtection(std::string usless, Canal &canal, User &user) {
 static	void	removeTopicProtection(std::string usless, Canal &canal, User &user) {
 	(void)usless;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
-		std::cout << ":localhost 482 " << user.getNickName() << " #" << canal.getName()
-			<< " :You're not channel operator" << std::endl;
+		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
 
 	if (canal.getHasProtectedTopic() == true) {
-		std::cout << ":localhost MODE #" << canal.getName() << " -t" << std::endl;
+		Message::changedModeChan(canal.getName(), user, " -t");
 		return;
 	}
 }
@@ -191,14 +190,13 @@ void CommandManager::handleMode(std::string param, User &user) {
 	Canal *canal = server.getCanalByName(canalName);
 
 	if (canal == NULL) {
-		std::cout << ":localhost 401 " << user.getNickName() << " " << canalName 
-		<< " :No such nick/channel" << std::endl;
+		Message::noSuchNickChannel(canalName, user);
 		return;
 	}
 	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size(), param.size());
 	
 	if (flag.size() < 1) {
-		std::cout << "Get back flag" << std::endl;
+		canal->sendActiveMode(user);
 		return;
 	}
 
@@ -218,8 +216,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 	implementedFlags["-t"] = removeTopicProtection;
 
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
-		std::cout << ":localhost 472 " << user.getNickName() << " " << flag 
-			<< " :is unknown mode char to me" << std::endl;
+		Message::unknowFlag(user, flag);
 		return;
 	}
 	

@@ -2,10 +2,9 @@
 #define USER_CLASS_HPP
 
 #include <iostream>
-#include <string>
+#include <cstring>
 #include <set>
 #include <poll.h>
-
 
 class User
 {
@@ -15,6 +14,7 @@ class User
 		std::string 	userName; // Required and unique and cannot be changed
 		std::string 	password; // Optionnal maybe usless
 		std::string		commandBuffer; // used to fill the command until we found \r\n (meaning its the end of command)
+		bool			isConnected;
 		User();
 	public:
 		User(std::string nickName, std::string userName, std::string password);
@@ -27,6 +27,7 @@ class User
 		std::string		getPassword() const;
 		struct	pollfd	getFd() const;
 		std::string		getCommandBuffer() const;
+		bool			getIsConnected() const;
 		void			setNickName(std::string newNickname);
 		void			setUsername(std::string newUsername);
 		void			setPassword(std::string newPassord);
@@ -35,6 +36,8 @@ class User
 		void			flushCommandBuffer();
 		static	bool	hasForbiddenNickChar(std::string nickname);
 		static	bool	hasForbiddenUsernameChar(std::string usnername);
+		void			setIsConnected(bool status);
+
 		static	std::string	replaceSpecialChar(std::string param);
 
 		bool			operator<(const User &other)const;

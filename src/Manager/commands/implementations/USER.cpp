@@ -4,32 +4,32 @@ void CommandManager::handleUsername(std::string param, User &user) {
 	Server const &server = Server::getServer();
 	
 	if (param.empty() || (param.find(" ") + 1) == param.size()) {
-		std::cout << ":localhost 461 " << user.getNickName() << " USER :Not enough parameters" << std::endl;
+		Message::userNoParam(user, param);
 		return;
 	}
 
 	param = param.substr(1, param.size()); // jump space
 
 	if (param.size() > LIMIT_USERNAME_NICKNAME) {
-		std::cout << ":localhost 432 " << user.getNickName() << " " << param << " :Erroneous username" << std::endl;
+		Message::userToLong(user, param);
 		return;
 	}
 
 	if (server.getUserByUsername(param) != NULL) {
-		std::cout << ":localhost 433 " << user.getNickName() << " " << param << " :Username is already in use" << std::endl;
+		Message::userAlreadyTaken(user, param);
 		return;
 	}
 
 	if (User::hasForbiddenUsernameChar(param)) {
-		std::cout << ":localhost 432 " << user.getNickName() << " " << param << " :Username contains forbidden characters" << std::endl;
+		Message::userForbiddenChar(user, param);
 		return;
 	}
 
 	if (!user.getUserName().empty()) {
-		std::cout << ":localhost 462 " << user.getNickName() << " :You may not reregister" << std::endl;
+		Message::userCannotChange(user, param);
 		return;
 	}
 
 	user.setUsername(param);
-	std::cout << ":localhost USER " << user.getUserName() << std::endl;
+	Message::userSet(user);
 }
