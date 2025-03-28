@@ -51,7 +51,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["TOPIC"] = CommandManager::handleTopic;
 	commands["NICK"] = CommandManager::handleNick;
 	commands["USER"] = CommandManager::handleUsername;
-	commands["KICK"] = CommandManager::handleUsername;
+	commands["KICK"] = CommandManager::handleKick;
 
 	if (commands.find(getFirstCommand) == commands.end()) {
 		std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
