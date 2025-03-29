@@ -34,11 +34,12 @@ void CommandManager::handleJoin(std::string command, User &user)
         std::cerr << "Channel name is empty" << std::endl;
         return;
     }
+    
     // Validate channel name
-    if (canalName[0] != '#')
-    {
-        canalName = "#" + canalName;
-    }
+    // if (canalName[0] != '#')
+    // {
+    //     canalName = "#" + canalName;
+    // }
     // Find or create the channel - using your getCanalByName function
     Canal* canal = server.getCanalByName(canalName);
     if (canal == NULL) 
@@ -51,14 +52,16 @@ void CommandManager::handleJoin(std::string command, User &user)
     
     // Add user to the channel
     canal->addUser(user);
-    
+
     // Make joining user a channel operatorz
     canal->addChanOps(user);
     
     // Send JOIN confirmation to the user - fixed format
-    std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN " + canalName + "\r\n";
+    // std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN " + canalName + "\r\n";
+    std::string joinResponse = ":" + user.getNickName() + " JOIN" + canalName + "\r\n";
+    std::cout << "Join response: " << joinResponse << std::endl;
     send(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
-    
+    std::cout << "Join response sent to user " << user.getNickName() << std::endl;
     // Send channel topic if it exists
     std::string topic = canal->getTopic();
     if (!topic.empty()) {
