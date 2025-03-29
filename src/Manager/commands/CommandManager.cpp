@@ -46,7 +46,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		CommandManager::handlePass(command, user);
 		return ;
 	}
-	
+
 	commands["MODE"] = CommandManager::handleMode;
 	commands["JOIN"] = CommandManager::handleJoin;
 	commands["TOPIC"] = CommandManager::handleTopic;
@@ -80,8 +80,7 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 		size_t pos = curUser->getCommandBuffer().find("\r\n");
 	
 		std::string fullCommand = curUser->getCommandBuffer().substr(0, pos);
-		curUser->setCommandBuffer(curUser->getCommandBuffer().substr(pos + 2)); // 2 is the length of \r\n
-		
+		curUser->setCommandBuffer(curUser->getCommandBuffer().substr(pos + 2, curUser->getCommandBuffer().size()));
 		CommandManager::redirectCommand(fullCommand, *curUser);
 	}
 }
