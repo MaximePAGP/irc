@@ -23,23 +23,18 @@ void CommandManager::handleJoin(std::string command, User &user)
     Server &server = Server::getServer();
     // Remove trailing whitespace or newlines
     std::string canalName = command;
+    canalName = canalName.substr(1, canalName.size());
     std::cout << "canalName : " << canalName << std::endl;
-    // size_t endPosition = canalName.find_first_of(" \r\n");
-    // if (endPosition != std::string::npos)
-    // {
-    //     canalName = canalName.substr(0, endPosition);
-    // }
     if (canalName.empty())
     {
         std::cerr << "Channel name is empty" << std::endl;
         return;
     }
-    
-    // Validate channel name
-    // if (canalName[0] != '#')
-    // {
-    //     canalName = "#" + canalName;
-    // }
+    if (canalName[0] != '#')
+    {
+        std::cerr << "Invalid channel name #" << std::endl;
+        return;
+    }
     // Find or create the channel - using your getCanalByName function
     Canal* canal = server.getCanalByName(canalName);
     if (canal == NULL) 
@@ -49,16 +44,12 @@ void CommandManager::handleJoin(std::string command, User &user)
         server.addCanal(*canal);
         std::cout << "Canal " << canalName << " created." << std::endl;
     }
-    
-    // Add user to the channel
     canal->addUser(user);
-
-    // Make joining user a channel operatorz
     canal->addChanOps(user);
-    
+
     // Send JOIN confirmation to the user - fixed format
-    // std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN " + canalName + "\r\n";
-    std::string joinResponse = ":" + user.getNickName() + " JOIN" + canalName + "\r\n";
+    std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN " + canalName + "\r\n";
+    // std::string joinResponse = ":server 329 reo1 JOIN #general\r\n";
     std::cout << "Join response: " << joinResponse << std::endl;
     send(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
     std::cout << "Join response sent to user " << user.getNickName() << std::endl;
