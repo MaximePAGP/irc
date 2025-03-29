@@ -1,6 +1,6 @@
 #include "Message.hpp"
 
-
+// 482  :You're not channel operator
 void	Message::youreNotChanOp(std::string canalName, User &user) {
 	std::string message = ":";
 
@@ -15,6 +15,8 @@ void	Message::youreNotChanOp(std::string canalName, User &user) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+// 401   :No such nick/channel
 void	Message::noSuchNickChannel(std::string target, User &user) {
 	std::string message = ":";
 
@@ -46,6 +48,7 @@ void	Message::changedModeChan(std::string chanName, User &user, std::string flag
 }
 
 
+// 472 :is unknown mode char to me
 void	Message::unknowFlag(User &user, std::string flag) {
 	std::string message = ":";
 
@@ -61,6 +64,7 @@ void	Message::unknowFlag(User &user, std::string flag) {
 }
 
 
+// 696  :Channel key contains forbidden characters
 void	Message::chanPasswordForbiddenChar(std::string chanName, User &user, std::string password) {
 	std::string message = ":";
 
@@ -77,6 +81,8 @@ void	Message::chanPasswordForbiddenChar(std::string chanName, User &user, std::s
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+// 696  :Channel key is too long
 void	Message::chanPassordToLong(std::string chanName, User &user, std::string password) {
 	std::string message = ":";
 
@@ -93,6 +99,8 @@ void	Message::chanPassordToLong(std::string chanName, User &user, std::string pa
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+// 431  :No nickname given
 void	Message::nickNoParam(User &user, std::string nickname) {
 	std::string message = ":";
 
@@ -107,7 +115,7 @@ void	Message::nickNoParam(User &user, std::string nickname) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
-
+// 432 :Erroneous nickname
 void	Message::nickToLongParam(User &user, std::string nickname) {
 	std::string message = ":";
 
@@ -123,6 +131,7 @@ void	Message::nickToLongParam(User &user, std::string nickname) {
 }
 
 
+// 433   :Nickname is already in use
 void	Message::nickAlreadyUsed(User &user, std::string nickname) {
 	std::string message = ":";
 
@@ -137,7 +146,7 @@ void	Message::nickAlreadyUsed(User &user, std::string nickname) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
-
+// 432  :Nickname is unavailable: Illegal characters
 void	Message::nickIllegal(User &user, std::string nickname) {
 	std::string message = ":";
 
@@ -156,14 +165,31 @@ void	Message::nickSet(User &user) {
 	std::string message = ":";
 
 	message.append(ENV);
-	message.append(" NICK ");
+	message.append(" 001 ");
+	message.append(user.getNickName());
+	message.append(" :Nick has been set to ");
 	message.append(user.getNickName());
 	message.append(END_CMD);
 	
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+void	Message::nickSetUpdated(User &user, std::string newNick) {
+	std::string message = ":";
 
+	message.append(ENV);
+	message.append(" 001 ");
+	message.append(user.getNickName());
+	message.append(" :You've set your nickname to ");
+	message.append(newNick);
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+
+// 461  USER :Not enough parameters
 void	Message::userNoParam(User &user, std::string username) {
 	std::string message = ":";
 
@@ -178,6 +204,8 @@ void	Message::userNoParam(User &user, std::string username) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+// 432   :Erroneous username
 void	Message::userToLong(User &user, std::string username) {
 	std::string message = ":";
 
@@ -192,6 +220,8 @@ void	Message::userToLong(User &user, std::string username) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+// 433   :Username is already in use
 void	Message::userAlreadyTaken(User &user, std::string username) {
 	std::string message = ":";
 
@@ -206,6 +236,8 @@ void	Message::userAlreadyTaken(User &user, std::string username) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+// 432  :Username contains forbidden characters
 void	Message::userForbiddenChar(User &user, std::string username) {
 	std::string message = ":";
 
@@ -220,6 +252,8 @@ void	Message::userForbiddenChar(User &user, std::string username) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+// 432 :You may not reregister
 void	Message::userCannotChange(User &user, std::string username) {
 	std::string message = ":";
 
@@ -238,7 +272,8 @@ void	Message::userSet(User &user) {
 	std::string message = ":";
 
 	message.append(ENV);
-	message.append(" USER ");
+	message.append(" 001 USER ");
+	message.append("Username has been set to ");
 	message.append(user.getUserName());
 	message.append(END_CMD);
 	

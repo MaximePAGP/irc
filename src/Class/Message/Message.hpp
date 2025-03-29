@@ -23,6 +23,7 @@ class Message
 		static	void	nickAlreadyUsed(User &user, std::string nickname);
 		static	void	nickIllegal(User &user, std::string nickname);
 		static	void	nickSet(User &user);
+		static	void	nickSetUpdated(User &user, std::string oldNick);
 
 
 		static	void	userNoParam(User &user, std::string nickname);

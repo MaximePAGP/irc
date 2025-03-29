@@ -10,6 +10,11 @@ void CommandManager::handleUsername(std::string param, User &user) {
 
 	param = param.substr(1, param.size()); // jump space
 
+	size_t trimCommand = param.find("0 ");
+
+	if (trimCommand != std::string::npos)
+		param = param.substr(0, trimCommand - 1);
+	
 	if (param.size() > LIMIT_USERNAME_NICKNAME) {
 		Message::userToLong(user, param);
 		return;
