@@ -139,7 +139,7 @@ User	*Server::getUserByNickname(std::string nickname) const {
 
 User	*Server::getUserByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {
-		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
+		std::string tmpUsername = User::replaceSpecialChar((*it)->getUserName());
 		if (tmpUsername == username) {
 			return *it;
 		}
