@@ -24,7 +24,11 @@ void CommandManager::handleNick(std::string param, User &user) {
 		Message::nickIllegal(user, param);
 		return;
 	}
-
+	if (user.getNickName().empty()) {
+		user.setNickName(param);
+		Message::nickSet(user);
+		return;
+	}
+	Message::nickSetUpdated(user, param);
 	user.setNickName(param);
-	Message::nickSet(user);
 }
