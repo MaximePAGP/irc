@@ -272,7 +272,8 @@ void	Message::userSet(User &user) {
 	std::string message = ":";
 
 	message.append(ENV);
-	message.append(" USER ");
+	message.append(" 001 USER ");
+	message.append("Username has been set to ");
 	message.append(user.getUserName());
 	message.append(END_CMD);
 	
