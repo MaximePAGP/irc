@@ -194,7 +194,7 @@ void	loadFunctions(std::map<std::string, ActionFunction> container) {
 }
 
 
-static	std::vector<std::string>	getParams(std::string command) { //aze aze aze
+static	std::vector<std::string>	getParams(std::string command) {
 	std::vector<std::string> result;
 	size_t flagIndex = command.find_first_of("+-");
 
@@ -202,19 +202,27 @@ static	std::vector<std::string>	getParams(std::string command) { //aze aze aze
 		return result;
 
 	command = command.substr(flagIndex, command.size());
-	size_t start = command.find_first_of(" ");
+	size_t skipFlagIndex = command.find_first_of(" ");
 
-	if (start == std::string::npos)
+	if (skipFlagIndex == std::string::npos)
 		return result;
 
-	command = command.substr(start + 1, command.size());
-	while (start < command.size()) {
-		size_t end = command.find_first_of(" ", start);
-		if (end == std::string::npos)
-			end = command.size();
-		result.push_back(command.substr(start, end - start));
-		std::cout << "arg (" << result.back() << ")" << std::endl;
-		start = end + 1;
+	command = command.substr(skipFlagIndex + 1, command.size()); // trim command to get first of arg
+	std::cout << "command -> (" << command << ")" << std::endl;
+	//+qwe |     aze    aze    aze
+	size_t start = 0;
+	size_t end = 0;
+	int i = 0;
+	while (end < command.size() && i < 20)
+	{
+		size_t jumpSpace = command.find_first_not_of(" ") + start + 1;
+		std::cout << "jumpSpace ? (" << jumpSpace << ")" << std::endl;
+		std::string tmp = command.substr(jumpSpace, command.size());
+		std::cout << "space ? (" << tmp << ")" << std::endl;
+		end = tmp.find_first_of(" ") + jumpSpace;
+		start = end;
+		std::cout << "full param ? (" << command.substr(start, end) << ")" << std::endl;
+		i ++;
 	}
 	return result;
 }
@@ -227,7 +235,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 	
 	if (param.empty() || param.size() < 2)
 		return;
-	
+
 	std::string canalName = CommandManager::trimFirstParamSpace(param);
 	Canal *canal = server.getCanalByName(canalName);
 

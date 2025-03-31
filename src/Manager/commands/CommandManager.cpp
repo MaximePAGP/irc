@@ -46,7 +46,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	// 	CommandManager::handlePass(command, user);
 	// 	return ;
 	// }
-
+	
 	commands["MODE"] = CommandManager::handleMode;
 	commands["JOIN"] = CommandManager::handleJoin;
 	commands["TOPIC"] = CommandManager::handleTopic;
