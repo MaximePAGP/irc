@@ -177,8 +177,50 @@ static	void	removeTopicProtection(std::string usless, Canal &canal, User &user) 
 }
 
 
-
 typedef void (*ActionFunction) (std::string arg, Canal &canal, User &user);
+
+
+void	loadFunctions(std::map<std::string, ActionFunction> container) {
+	container["+k"] = addCanalPassord;
+	container["+i"] = addInvitationOnly;
+	container["+t"] = addTopicProtection;
+	container["+o"] = addChanOp;
+	container["+l"] = addLimit;
+	container["-k"] = removeCanalPassord;
+	container["-i"] = removeInvitationOnly;
+	container["-t"] = removeTopicProtection;
+	container["-o"] = removedChanOp;
+	container["-l"] = removeLimit;
+}
+
+
+static	std::vector<std::string>	getParams(std::string command) { //aze aze aze
+	std::vector<std::string> result;
+	size_t flagIndex = command.find_first_of("+-");
+
+	if (flagIndex == std::string::npos)
+		return result;
+
+	command = command.substr(flagIndex, command.size());
+	size_t start = command.find_first_of(" ");
+
+	if (start == std::string::npos)
+		return result;
+
+	command = command.substr(start + 1, command.size());
+	while (start < command.size()) {
+		size_t end = command.find_first_of(" ", start);
+		if (end == std::string::npos)
+			end = command.size();
+		result.push_back(command.substr(start, end - start));
+		std::cout << "arg (" << result.back() << ")" << std::endl;
+		start = end + 1;
+	}
+	return result;
+}
+
+// static	void	read
+
 
 void CommandManager::handleMode(std::string param, User &user) {
 	Server const &server = Server::getServer();
@@ -200,20 +242,14 @@ void CommandManager::handleMode(std::string param, User &user) {
 		return;
 	}
 
-	flag = flag.substr(1, 2); // get the two first one after space
+	flag = flag.substr(1, flag.size());
 
 	std::map<std::string, ActionFunction> implementedFlags;
 
-	implementedFlags["+k"] = addCanalPassord;
-	implementedFlags["-k"] = removeCanalPassord;
-	implementedFlags["+i"] = addInvitationOnly;
-	implementedFlags["-i"] = removeInvitationOnly;
-	implementedFlags["+o"] = addChanOp;
-	implementedFlags["-o"] = removedChanOp;
-	implementedFlags["+l"] = addLimit;
-	implementedFlags["-l"] = removeLimit;
-	implementedFlags["+t"] = addTopicProtection;
-	implementedFlags["-t"] = removeTopicProtection;
+	loadFunctions(implementedFlags);
+	getParams(param);
+
+
 
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		Message::unknowFlag(user, flag);
