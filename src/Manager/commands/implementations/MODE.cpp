@@ -180,7 +180,7 @@ static	void	removeTopicProtection(std::string usless, Canal &canal, User &user) 
 typedef void (*ActionFunction) (std::string arg, Canal &canal, User &user);
 
 
-void	loadFunctions(std::map<std::string, ActionFunction> container) {
+void	loadFunctions(std::map<std::string, ActionFunction> &container) {
 	container["+k"] = addCanalPassord;
 	container["+i"] = addInvitationOnly;
 	container["+t"] = addTopicProtection;
@@ -196,39 +196,67 @@ void	loadFunctions(std::map<std::string, ActionFunction> container) {
 
 static	std::vector<std::string>	getParams(std::string command) {
 	std::vector<std::string> result;
-	size_t flagIndex = command.find_first_of("+-");
+	std::vector<std::string> tmp;
 
-	if (flagIndex == std::string::npos)
-		return result;
-
-	command = command.substr(flagIndex, command.size());
 	size_t skipFlagIndex = command.find_first_of(" ");
 
 	if (skipFlagIndex == std::string::npos)
 		return result;
 
-	command = command.substr(skipFlagIndex + 1, command.size()); // trim command to get first of arg
-	std::cout << "command -> (" << command << ")" << std::endl;
-	//+qwe |     aze    aze    aze
+	command = command.substr(skipFlagIndex);
+
 	size_t start = 0;
-	size_t end = 0;
-	int i = 0;
-	while (end < command.size() && i < 20)
-	{
-		size_t jumpSpace = command.find_first_not_of(" ") + start + 1;
-		std::cout << "jumpSpace ? (" << jumpSpace << ")" << std::endl;
-		std::string tmp = command.substr(jumpSpace, command.size());
-		std::cout << "space ? (" << tmp << ")" << std::endl;
-		end = tmp.find_first_of(" ") + jumpSpace;
-		start = end;
-		std::cout << "full param ? (" << command.substr(start, end) << ")" << std::endl;
-		i ++;
+	
+	while (start < command.size()) {
+		size_t end = command.find_first_of(" ", start);
+
+		if (end == std::string::npos) {
+			tmp.push_back(command.substr(start));
+			break;
+		}
+		if (end > start)
+			tmp.push_back(command.substr(start, end - start));
+
+		size_t nextStart = command.find_first_not_of(" ", end);
+		if (nextStart == std::string::npos) {
+			tmp.push_back(command.substr(end));
+			break;
+		}
+		tmp.push_back(command.substr(end, nextStart - end));
+		start = nextStart;
 	}
+
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (i % 2 == 0) {
+			if ((i + 1) < tmp.size() && tmp[i].find(" ") != std::string::npos) {
+				result.push_back(tmp[i].substr(1).append(tmp[i + 1]));
+			} else {
+				result.push_back(tmp[i].substr(1));
+			}
+		}
+	}
+	
+	if (result.size() > 1 && result.back().find_last_not_of(" ") == std::string::npos) {
+		std::string spaces = result.back();
+		result.pop_back();
+		result.back().append(spaces);
+	}
+
 	return result;
 }
 
-// static	void	read
 
+static	bool	hasMultipleFlags(std::string &command) {
+	size_t endFlagIndex = command.find_first_of(" ");
+
+	std::string const trimFlag = command.substr(0, endFlagIndex);
+
+	if (trimFlag.size() > 2)
+		return true;
+	
+	return false;
+}
 
 void CommandManager::handleMode(std::string param, User &user) {
 	Server const &server = Server::getServer();
@@ -243,27 +271,28 @@ void CommandManager::handleMode(std::string param, User &user) {
 		Message::noSuchNickChannel(canalName, user);
 		return;
 	}
-	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size(), param.size());
+	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size());
 	
 	if (flag.size() < 1) {
 		canal->sendActiveMode(user);
 		return;
 	}
 
-	flag = flag.substr(1, flag.size());
+	flag = flag.substr(1);
 
 	std::map<std::string, ActionFunction> implementedFlags;
 
 	loadFunctions(implementedFlags);
-	getParams(param);
-
-
+	if (hasMultipleFlags(flag)) {
+		getParams(flag);
+		return;
+	}
 
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		Message::unknowFlag(user, flag);
 		return;
 	}
 	
-	std::string skipFlag = param.substr(param.find(flag) + flag.size(), param.size());
+	std::string skipFlag = param.substr(param.find(flag) + flag.size());
 	implementedFlags[flag](skipFlag, *canal, user);
 }
