@@ -13,7 +13,7 @@ static	void	getCurrentTopic(Canal &canal, User &user) {
 std::string	getCanalNameStart(std::string command) {
 	if (command.size() < 2)
 		return "";
-	return command.substr(2, command.size());
+	return command.substr(2);
 }
 
 std::string trimToFirstSpace(std::string command) {

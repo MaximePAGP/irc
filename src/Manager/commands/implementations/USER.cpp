@@ -8,7 +8,7 @@ void CommandManager::handleUsername(std::string param, User &user) {
 		return;
 	}
 
-	param = param.substr(1, param.size()); // jump space
+	param = param.substr(1);
 
 	size_t trimCommand = param.find("0 ");
 
