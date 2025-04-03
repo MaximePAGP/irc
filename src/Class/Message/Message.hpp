@@ -33,6 +33,8 @@ class Message
 		static	void	userCannotChange(User &user, std::string nickname);
 		static	void	userSet(User &user);
 
+		static	void	modeNotEnoughParams(User &user);
+		static	void	modeNotSuchChannal(User &user, std::string canalName);
 };
 
 

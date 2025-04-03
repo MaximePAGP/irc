@@ -279,3 +279,31 @@ void	Message::userSet(User &user) {
 	
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+
+void	Message::modeNotEnoughParams(User &user) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 001 USER ");
+	message.append("Username has been set to ");
+	message.append(user.getUserName());
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+void	Message::modeNotSuchChannal(User &user, std::string canalName) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 403 ");
+	message.append(user.getUserName());
+	message.append(" #");
+	message.append(canalName);
+	message.append(" :No such channel");
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}

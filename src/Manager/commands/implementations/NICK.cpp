@@ -8,7 +8,7 @@ void CommandManager::handleNick(std::string param, User &user) {
 		return;
 	}
 
-	param = param.substr(1, param.size()); // jump space
+	param = param.substr(1);
 
 	if (param.size() > LIMIT_USERNAME_NICKNAME) {
 		Message::nickToLongParam(user, param);
