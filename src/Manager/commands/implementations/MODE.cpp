@@ -66,6 +66,9 @@ static	void	removeInvitationOnly(std::string uslessArg, Canal &canal, User &user
 
 
 static	void	addChanOp(std::string nickname, Canal &canal, User &user) {
+	if (user.getNickName() == nickname)
+		return;
+	
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
 		return;
