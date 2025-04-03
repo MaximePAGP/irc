@@ -34,6 +34,7 @@ class Message
 		static	void	userSet(User &user);
 
 		static	void	modeNotEnoughParams(User &user);
+		static	void	modeNotSuchChannal(User &user, std::string canalName);
 };
 
 
