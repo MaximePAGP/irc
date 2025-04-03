@@ -261,6 +261,29 @@ static	bool	hasMultipleFlags(std::string &command) {
 	return false;
 }
 
+
+static	void	handleMultiFlags(std::string &command, std::vector<std::string> parsedParams, User &user) {
+	size_t flagIndex = command.find_first_of("+-");
+	if (flagIndex == std::string::npos)
+		return;
+	
+	size_t endFlagIndex = command.find_first_of(" ", flagIndex);
+	if (endFlagIndex == std::string::npos)
+		return;
+
+	size_t flagsLength = command.substr(flagIndex, endFlagIndex).substr(1).size();
+
+	if (flagsLength != parsedParams.size()) {
+		Message::
+		return;
+	}
+
+	(void)parsedParams;
+	(void)endFlagIndex;
+}
+
+
+
 void CommandManager::handleMode(std::string param, User &user) {
 	Server const &server = Server::getServer();
 	
@@ -287,7 +310,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 
 	loadFunctions(implementedFlags);
 	if (hasMultipleFlags(flag)) {
-		getParams(flag);
+		handleMultiFlags(flag, getParams(flag), user);
 		return;
 	}
 
