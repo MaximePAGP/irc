@@ -1,7 +1,7 @@
 #include "Message.hpp"
 
 // 482  :You're not channel operator
-void	Message::youreNotChanOp(std::string canalName, User &user) {
+void	Message::youreNotChanOp(std::string const canalName, User const &user) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -17,7 +17,7 @@ void	Message::youreNotChanOp(std::string canalName, User &user) {
 
 
 // 401   :No such nick/channel
-void	Message::noSuchNickChannel(std::string target, User &user) {
+void	Message::noSuchNickChannel(std::string const target, User const &user) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -32,7 +32,7 @@ void	Message::noSuchNickChannel(std::string target, User &user) {
 }
  
 
-void	Message::changedModeChan(std::string chanName, User &user, std::string flag) {
+void	Message::changedModeChan(std::string const chanName, User const &user, std::string const flag) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -49,7 +49,7 @@ void	Message::changedModeChan(std::string chanName, User &user, std::string flag
 
 
 // 472 :is unknown mode char to me
-void	Message::unknowFlag(User &user, std::string flag) {
+void	Message::unknowFlag(User const &user, std::string const flag) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -65,7 +65,7 @@ void	Message::unknowFlag(User &user, std::string flag) {
 
 
 // 696  :Channel key contains forbidden characters
-void	Message::chanPasswordForbiddenChar(std::string chanName, User &user, std::string password) {
+void	Message::chanPasswordForbiddenChar(std::string const chanName, User const &user, std::string const password) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -83,7 +83,7 @@ void	Message::chanPasswordForbiddenChar(std::string chanName, User &user, std::s
 
 
 // 696  :Channel key is too long
-void	Message::chanPassordToLong(std::string chanName, User &user, std::string password) {
+void	Message::chanPassordToLong(std::string const chanName, User const &user, std::string const password) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -101,7 +101,7 @@ void	Message::chanPassordToLong(std::string chanName, User &user, std::string pa
 
 
 // 431  :No nickname given
-void	Message::nickNoParam(User &user, std::string nickname) {
+void	Message::nickNoParam(User const &user, std::string const nickname) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -116,7 +116,7 @@ void	Message::nickNoParam(User &user, std::string nickname) {
 }
 
 // 432 :Erroneous nickname
-void	Message::nickToLongParam(User &user, std::string nickname) {
+void	Message::nickToLongParam(User const &user, std::string const nickname) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -132,7 +132,7 @@ void	Message::nickToLongParam(User &user, std::string nickname) {
 
 
 // 433   :Nickname is already in use
-void	Message::nickAlreadyUsed(User &user, std::string nickname) {
+void	Message::nickAlreadyUsed(User const &user, std::string const nickname) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -147,7 +147,7 @@ void	Message::nickAlreadyUsed(User &user, std::string nickname) {
 }
 
 // 432  :Nickname is unavailable: Illegal characters
-void	Message::nickIllegal(User &user, std::string nickname) {
+void	Message::nickIllegal(User const &user, std::string const nickname) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -161,7 +161,7 @@ void	Message::nickIllegal(User &user, std::string nickname) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
-void	Message::nickSet(User &user) {
+void	Message::nickSet(User const &user) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -174,7 +174,7 @@ void	Message::nickSet(User &user) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
-void	Message::nickSetUpdated(User &user, std::string newNick) {
+void	Message::nickSetUpdated(User const &user, std::string const newNick) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -190,7 +190,7 @@ void	Message::nickSetUpdated(User &user, std::string newNick) {
 
 
 // 461  USER :Not enough parameters
-void	Message::userNoParam(User &user, std::string username) {
+void	Message::userNoParam(User const &user, std::string const username) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -206,7 +206,7 @@ void	Message::userNoParam(User &user, std::string username) {
 
 
 // 432   :Erroneous username
-void	Message::userToLong(User &user, std::string username) {
+void	Message::userToLong(User const &user, std::string const username) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -222,7 +222,7 @@ void	Message::userToLong(User &user, std::string username) {
 
 
 // 433   :Username is already in use
-void	Message::userAlreadyTaken(User &user, std::string username) {
+void	Message::userAlreadyTaken(User const &user, std::string const username) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -238,7 +238,7 @@ void	Message::userAlreadyTaken(User &user, std::string username) {
 
 
 // 432  :Username contains forbidden characters
-void	Message::userForbiddenChar(User &user, std::string username) {
+void	Message::userForbiddenChar(User const &user, std::string const username) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -254,7 +254,7 @@ void	Message::userForbiddenChar(User &user, std::string username) {
 
 
 // 432 :You may not reregister
-void	Message::userCannotChange(User &user, std::string username) {
+void	Message::userCannotChange(User const &user, std::string const username) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -268,7 +268,7 @@ void	Message::userCannotChange(User &user, std::string username) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
-void	Message::userSet(User &user) {
+void	Message::userSet(User const &user) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -281,7 +281,7 @@ void	Message::userSet(User &user) {
 }
 
 
-void	Message::modeNotEnoughParams(User &user) {
+void	Message::modeNotEnoughParams(User const &user) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -294,7 +294,7 @@ void	Message::modeNotEnoughParams(User &user) {
 }
 
 // 403 :No such channel
-void	Message::modeNotSuchChannel(User &user, std::string canalName) {
+void	Message::modeNotSuchChannel(User const &user, const std::string canalName) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -309,15 +309,15 @@ void	Message::modeNotSuchChannel(User &user, std::string canalName) {
 }
 
 
-void	Message::topicSetTopic(User &user, std::string canalName, std::string topic) {
+void	Message::topicSetTopic(User const &user, Canal const &canal) {
 	std::string message = ":";
 
 	message.append(ENV);
 	message.append(user.getNickName());
 	message.append(" TOPIC #");
-	message.append(canalName);
+	message.append(canal.getName());
 	message.append(" :");
-	message.append(topic);
+	message.append(canal.getTopic());
 	message.append(END_CMD);
 	
 	send(user.getFd().fd, message.c_str(), message.size(), 0);

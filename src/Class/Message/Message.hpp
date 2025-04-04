@@ -12,32 +12,32 @@
 class Message
 {
 	public:
-		static	void	youreNotChanOp(std::string chanName, User &user);
-		static	void	noSuchNickChannel(std::string target, User &user);
-		static	void	changedModeChan(std::string chanName, User &user, std::string flag);
-		static	void	unknowFlag(User &user, std::string flag);
-		static	void	chanPasswordForbiddenChar(std::string chanName, User &user, std::string password);
-		static	void	chanPassordToLong(std::string chanName, User &user, std::string password);
+		static	void	youreNotChanOp(std::string const chanName, User const &user);
+		static	void	noSuchNickChannel(std::string const target, User const &user);
+		static	void	changedModeChan(std::string const chanName, User const &user, std::string const flag);
+		static	void	unknowFlag(User const &user, std::string const flag);
+		static	void	chanPasswordForbiddenChar(std::string const chanName, User const &user, std::string const password);
+		static	void	chanPassordToLong(std::string const chanName, User const &user, std::string const password);
 
-		static	void	nickNoParam(User &user, std::string nickname);
-		static	void	nickToLongParam(User &user, std::string nickname);
-		static	void	nickAlreadyUsed(User &user, std::string nickname);
-		static	void	nickIllegal(User &user, std::string nickname);
-		static	void	nickSet(User &user);
-		static	void	nickSetUpdated(User &user, std::string oldNick);
+		static	void	nickNoParam(User const &user, std::string const nickname);
+		static	void	nickToLongParam(User const &user, std::string const nickname);
+		static	void	nickAlreadyUsed(User const &user, std::string const nickname);
+		static	void	nickIllegal(User const &user, std::string const nickname);
+		static	void	nickSet(User const &user);
+		static	void	nickSetUpdated(User const &user, std::string const oldNick);
 
 
-		static	void	userNoParam(User &user, std::string nickname);
-		static	void	userToLong(User &user, std::string nickname);
-		static	void	userAlreadyTaken(User &user, std::string nickname);
-		static	void	userForbiddenChar(User &user, std::string nickname);
-		static	void	userCannotChange(User &user, std::string nickname);
-		static	void	userSet(User &user);
+		static	void	userNoParam(User const &user, std::string const nickname);
+		static	void	userToLong(User const &user, std::string const nickname);
+		static	void	userAlreadyTaken(User const &user, std::string const nickname);
+		static	void	userForbiddenChar(User const &user, std::string const nickname);
+		static	void	userCannotChange(User const &user, std::string const nickname);
+		static	void	userSet(User const &user);
 
-		static	void	modeNotEnoughParams(User &user);
-		static	void	modeNotSuchChannel(User &user, std::string canalName);
+		static	void	modeNotEnoughParams(User const &user);
+		static	void	modeNotSuchChannel(User const &user, std::string const canalName);
 
-		static	void	topicSetTopic(User &user, std::string canalName, std::string topic);
+		static	void	topicSetTopic(User const &user, Canal const &canal);
 		static	void	topicNoTopic(User const &user, std::string const canalName);
 		static	void	topicGetTopic(User const &user, Canal const &canal);
 	};
