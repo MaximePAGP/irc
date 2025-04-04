@@ -35,6 +35,20 @@ void CommandManager::handleJoin(std::string command, User &user)
         std::cerr << "Invalid channel name #" << std::endl;
         return;
     }
+
+    // AJOUTER ICI: Extraction du mot de passe s'il existe
+    std::string password = "";
+    size_t spacePos = command.find(' ');
+    if (spacePos != std::string::npos) 
+    {
+        password = command.substr(spacePos + 1);
+        // Supprimer espaces et caractères de fin de ligne
+        size_t pwEndPos = password.find_first_of(" \r\n");
+    if (pwEndPos != std::string::npos)
+    {
+        password = password.substr(0, pwEndPos);
+    }
+    }
     // Find or create the channel - using your getCanalByName function
     Canal* canal = server.getCanalByName(canalName);
     if (canal == NULL) 
@@ -43,6 +57,13 @@ void CommandManager::handleJoin(std::string command, User &user)
         canal = new Canal(canalName);
         server.addCanal(*canal);
         std::cout << "Canal " << canalName << " created." << std::endl;
+    }
+    // AJOUTER ICI: Vérification du mot de passe si canal existe
+    if (canal != NULL && canal->isProtectedByPassword() && password != canal->getPassword()) 
+    {
+        std::string errorMsg = ":server 475 " + user.getNickName() + " " + canalName + " :Cannot join channel (+k) - bad key\r\n";
+        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+        return;
     }
     canal->addUser(user);
     canal->addChanOps(user);
@@ -59,7 +80,6 @@ void CommandManager::handleJoin(std::string command, User &user)
         std::string topicResponse = ":server 332 " + user.getNickName() + " " + canalName + " :" + topic + "\r\n";
         send(user.getFd().fd, topicResponse.c_str(), topicResponse.length(), 0);
     }
-    
     // Send names list (users in channel)
     std::string namesResponse = ":server 353 " + user.getNickName() + " = " + canalName + " :";
     
@@ -67,7 +87,8 @@ void CommandManager::handleJoin(std::string command, User &user)
     std::set<User*> channelOps = canal->getChanOps();
     std::set<User*>::iterator userIt;
     
-    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
+    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt)
+    {
         User* channelUser = *userIt;
         
         // Check if this user is a channel operator
