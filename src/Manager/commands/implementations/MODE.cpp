@@ -298,7 +298,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 	Canal *canal = server.getCanalByName(canalName);
 
 	if (canal == NULL) {
-		Message::modeNotSuchChannal(user, canalName);
+		Message::modeNotSuchChannel(user, canalName);
 		return;
 	}
 	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size());

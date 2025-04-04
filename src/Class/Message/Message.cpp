@@ -293,8 +293,8 @@ void	Message::modeNotEnoughParams(User &user) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
-
-void	Message::modeNotSuchChannal(User &user, std::string canalName) {
+// 403 :No such channel
+void	Message::modeNotSuchChannel(User &user, std::string canalName) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -303,6 +303,52 @@ void	Message::modeNotSuchChannal(User &user, std::string canalName) {
 	message.append(" #");
 	message.append(canalName);
 	message.append(" :No such channel");
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+void	Message::topicSetTopic(User &user, std::string canalName, std::string topic) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(user.getNickName());
+	message.append(" TOPIC #");
+	message.append(canalName);
+	message.append(" :");
+	message.append(topic);
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+// 331 :No topic is set
+void	Message::topicNoTopic(User const &user, std::string const canalName) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 331 ");
+	message.append(user.getNickName());
+	message.append(" # ");
+	message.append(canalName);
+	message.append(" :No topic is set");
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+// 332
+void	Message::topicGetTopic(User const &user, Canal const &canal) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 332 ");
+	message.append(user.getNickName());
+	message.append(" # ");
+	message.append(canal.getName());
+	message.append(" :");
+	message.append(canal.getTopic());
 	message.append(END_CMD);
 	
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
