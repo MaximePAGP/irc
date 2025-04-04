@@ -2,18 +2,16 @@
 
 static	void	getCurrentTopic(Canal &canal, User &user) {
 	if (canal.getTopic().empty()) {
-		std::cout << ":localhost 331 " << user.getNickName() << " #" 
-			<< canal.getName() << " :No topic is set" << std::endl;
+		Message::topicNoTopic(user, canal.getName());
 		return;
     }
-	std::cout << ":localhost 332 " << user.getNickName() << " #" 
-		<< canal.getName() << " :" << canal.getTopic() << std::endl;
+	Message::topicGetTopic(user, canal);
 }
 
 std::string	getCanalNameStart(std::string command) {
 	if (command.size() < 2)
 		return "";
-	return command.substr(2, command.size());
+	return command.substr(2);
 }
 
 std::string trimToFirstSpace(std::string command) {
@@ -35,7 +33,7 @@ void	CommandManager::handleTopic(std::string command, User &user) {
 	Canal *targetCanal = server.getCanalByName(canalName);
 
 	if (targetCanal == NULL) {
-		std::cout << ":localhost 403 " << user.getNickName() <<" "  << command << " :No such channel" << std::endl;
+		Message::modeNotSuchChannel(user, canalName);
 		return;
 	}
 
@@ -51,5 +49,5 @@ void	CommandManager::handleTopic(std::string command, User &user) {
 	}
 	std::string newTopic = command.substr(topicParamIndex + 1, command.size());
 	targetCanal->setTopic(newTopic);
-	std::cout << ":localhost " << user.getNickName() << " TOPIC #" << targetCanal->getName() << " :" << newTopic << std::endl;
+	Message::topicSetTopic(user, *targetCanal);
 }

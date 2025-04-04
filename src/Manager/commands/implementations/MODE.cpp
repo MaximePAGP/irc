@@ -6,7 +6,7 @@ static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
 		Message::youreNotChanOp(canal.getName(), user);
 		return;
 	}
-	if (password.size() <= 1)
+	if (password.size() <= 1 || password.empty())
 		return;
 
 	password = password.substr(1, password.size());
@@ -71,7 +71,7 @@ static	void	addChanOp(std::string nickname, Canal &canal, User &user) {
 		return;
 	}
 
-	if (nickname.size() < 1)
+	if (nickname.size() < 1 || nickname.empty())
 		return;
 	nickname = nickname.substr(1, nickname.size());
 	
@@ -94,7 +94,7 @@ static	void	removedChanOp(std::string nickname, Canal &canal, User &user) {
 		return;
 	}
 
-	if (nickname.size() < 1)
+	if (nickname.size() < 1 || nickname.empty())
 		return;
 	nickname = nickname.substr(1, nickname.size());
 
@@ -117,7 +117,7 @@ static	void	addLimit(std::string limit, Canal &canal, User &user) {
 		return;
 	}
 
-	if (limit.size() < 1)
+	if (limit.size() < 1 || limit.empty())
 		return;
 	limit = limit.substr(1, limit.size());
 
@@ -177,49 +177,150 @@ static	void	removeTopicProtection(std::string usless, Canal &canal, User &user) 
 }
 
 
-
 typedef void (*ActionFunction) (std::string arg, Canal &canal, User &user);
+
+
+void	loadFunctions(std::map<std::string, ActionFunction> &container) {
+	container["+k"] = addCanalPassord;
+	container["+i"] = addInvitationOnly;
+	container["+t"] = addTopicProtection;
+	container["+o"] = addChanOp;
+	container["+l"] = addLimit;
+	container["-k"] = removeCanalPassord;
+	container["-i"] = removeInvitationOnly;
+	container["-t"] = removeTopicProtection;
+	container["-o"] = removedChanOp;
+	container["-l"] = removeLimit;
+}
+
+
+static	std::vector<std::string>	getParams(std::string command) {
+	std::vector<std::string> result;
+	std::vector<std::string> tmp;
+
+	size_t skipFlagIndex = command.find_first_of(" ");
+
+	if (skipFlagIndex == std::string::npos)
+		return result;
+
+	command = command.substr(skipFlagIndex);
+
+	size_t start = 0;
+	
+	while (start < command.size()) {
+		size_t end = command.find_first_of(" ", start);
+
+		if (end == std::string::npos) {
+			tmp.push_back(command.substr(start));
+			break;
+		}
+		if (end > start)
+			tmp.push_back(command.substr(start, end - start));
+
+		size_t nextStart = command.find_first_not_of(" ", end);
+		if (nextStart == std::string::npos) {
+			tmp.push_back(command.substr(end));
+			break;
+		}
+		tmp.push_back(command.substr(end, nextStart - end));
+		start = nextStart;
+	}
+
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (i % 2 == 0) {
+			if ((i + 1) < tmp.size() && tmp[i].find(" ") != std::string::npos) {
+				result.push_back(tmp[i].append(tmp[i + 1]));
+			} else {
+				result.push_back(tmp[i]);
+			}
+		}
+	}
+	
+	if (result.size() > 1 && result.back().find_last_not_of(" ") == std::string::npos) {
+		std::string spaces = result.back();
+		result.pop_back();
+		result.back().append(spaces);
+	}
+
+	return result;
+}
+
+
+static	bool	hasMultipleFlags(std::string &command) {
+	size_t endFlagIndex = command.find_first_of(" ");
+
+	std::string const trimFlag = command.substr(0, endFlagIndex);
+
+	if (trimFlag.size() > 2)
+		return true;
+	
+	return false;
+}
+
+std::map<std::string, ActionFunction> implementedFlags;
+
+static	void	handleMultiFlags(std::string &command, std::vector<std::string> parsedParams, User &user, Canal &canal) {
+	size_t flagIndex = command.find_first_of("+-");
+	if (flagIndex == std::string::npos)
+		return;
+	
+	size_t endFlagIndex = command.find_first_of(" ", flagIndex);
+	if (endFlagIndex == std::string::npos)
+		return;
+
+	std::string flags = command.substr(flagIndex, endFlagIndex);
+
+	if (flags.size() - 1 > parsedParams.size())
+		for (size_t i = 0; i < parsedParams.size() - flags.size(); i++)
+			parsedParams.push_back("");	
+
+	for (size_t i = 1; i < flags.size(); i++)
+	{
+		std::string	flag = flags.substr(0, 1);
+		flag += flags[i];
+		if (implementedFlags.find(flag) != implementedFlags.end())
+			implementedFlags[flag](parsedParams[i - 1], canal, user);			
+		else
+			Message::unknowFlag(user, flag);
+	}
+}
+
+
 
 void CommandManager::handleMode(std::string param, User &user) {
 	Server const &server = Server::getServer();
 	
 	if (param.empty() || param.size() < 2)
 		return;
-	
+
 	std::string canalName = CommandManager::trimFirstParamSpace(param);
 	Canal *canal = server.getCanalByName(canalName);
 
 	if (canal == NULL) {
-		Message::noSuchNickChannel(canalName, user);
+		Message::modeNotSuchChannel(user, canalName);
 		return;
 	}
-	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size(), param.size());
+	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size());
 	
 	if (flag.size() < 1) {
 		canal->sendActiveMode(user);
 		return;
 	}
 
-	flag = flag.substr(1, 2); // get the two first one after space
+	flag = flag.substr(1);
 
-	std::map<std::string, ActionFunction> implementedFlags;
-
-	implementedFlags["+k"] = addCanalPassord;
-	implementedFlags["-k"] = removeCanalPassord;
-	implementedFlags["+i"] = addInvitationOnly;
-	implementedFlags["-i"] = removeInvitationOnly;
-	implementedFlags["+o"] = addChanOp;
-	implementedFlags["-o"] = removedChanOp;
-	implementedFlags["+l"] = addLimit;
-	implementedFlags["-l"] = removeLimit;
-	implementedFlags["+t"] = addTopicProtection;
-	implementedFlags["-t"] = removeTopicProtection;
+	loadFunctions(implementedFlags);
+	if (hasMultipleFlags(flag)) {
+		handleMultiFlags(flag, getParams(flag), user, *canal);
+		return;
+	}
 
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		Message::unknowFlag(user, flag);
 		return;
 	}
 	
-	std::string skipFlag = param.substr(param.find(flag) + flag.size(), param.size());
+	std::string skipFlag = param.substr(param.find(flag) + flag.size());
 	implementedFlags[flag](skipFlag, *canal, user);
 }

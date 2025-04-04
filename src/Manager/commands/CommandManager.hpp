@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <string>
+#include <vector>
 #include <map>
 #include <iostream>
 #include "../../Class/Server/Server.hpp"
