@@ -90,7 +90,9 @@ std::string	Canal::replaceSpecialChar(std::string name) {
 			tmp[i] = ' ';
 		else if (tmp[i] == '}' || tmp[i] == ']')
 			tmp[i] = '\v';
-	}
+		else if (tmp[i] == '|' || tmp[i] == '\\')
+			tmp[i] = 8;
+		}
 	
 	return tmp;	
 }
