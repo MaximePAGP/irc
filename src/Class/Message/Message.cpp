@@ -353,3 +353,34 @@ void	Message::topicGetTopic(User const &user, Canal const &canal) {
 	
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+
+// 421 :Unknown command
+void	Message::noSuchCommand(User const &user, std::string const &command) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 421 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(command);
+	message.append(" :Unknown command");
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+// :server.example 414 YourNickname :Message too long
+void	Message::commandToLong(User const &user) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 414 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(" :Message too long");
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
