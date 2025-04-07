@@ -253,12 +253,12 @@ void	Message::userForbiddenChar(User const &user, std::string const username) {
 }
 
 
-// 432 :You may not reregister
+// 462 :You may not reregister
 void	Message::userCannotChange(User const &user, std::string const username) {
 	std::string message = ":";
 
 	message.append(ENV);
-	message.append(" 432 ");
+	message.append(" 462 ");
 	message.append(user.getNickName());
 	message.append(" ");
 	message.append(username);
