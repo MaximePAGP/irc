@@ -253,12 +253,12 @@ void	Message::userForbiddenChar(User const &user, std::string const username) {
 }
 
 
-// 432 :You may not reregister
+// 462 :You may not reregister
 void	Message::userCannotChange(User const &user, std::string const username) {
 	std::string message = ":";
 
 	message.append(ENV);
-	message.append(" 432 ");
+	message.append(" 462 ");
 	message.append(user.getNickName());
 	message.append(" ");
 	message.append(username);
@@ -349,6 +349,37 @@ void	Message::topicGetTopic(User const &user, Canal const &canal) {
 	message.append(canal.getName());
 	message.append(" :");
 	message.append(canal.getTopic());
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+// 421 :Unknown command
+void	Message::noSuchCommand(User const &user, std::string const &command) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 421 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(command);
+	message.append(" :Unknown command");
+	message.append(END_CMD);
+	
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+// :server.example 414 YourNickname :Message too long
+void	Message::commandToLong(User const &user) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 414 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(" :Message too long");
 	message.append(END_CMD);
 	
 	send(user.getFd().fd, message.c_str(), message.size(), 0);

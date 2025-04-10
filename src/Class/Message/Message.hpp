@@ -40,6 +40,9 @@ class Message
 		static	void	topicSetTopic(User const &user, Canal const &canal);
 		static	void	topicNoTopic(User const &user, std::string const canalName);
 		static	void	topicGetTopic(User const &user, Canal const &canal);
+
+		static	void	noSuchCommand(User const &user, std::string const &command);
+		static	void	commandToLong(User const &user);
 	};
 
 

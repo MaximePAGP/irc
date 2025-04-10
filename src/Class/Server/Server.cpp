@@ -141,9 +141,9 @@ User	*Server::getUserByFd(int fd) const {
 User	*Server::getUserByNickname(std::string nickname) const {
 	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {
 		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
-		if (tmpNick == nickname) {
+		std::string remplacedNick = User::replaceSpecialChar(nickname);
+		if (tmpNick == remplacedNick)
 			return *it;
-		}
 	}
 
 	return NULL;
@@ -152,9 +152,9 @@ User	*Server::getUserByNickname(std::string nickname) const {
 User	*Server::getUserByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->users.begin(); it != this->users.end(); it++) {
 		std::string tmpUsername = User::replaceSpecialChar((*it)->getUserName());
-		if (tmpUsername == username) {
+		std::string changedUsername = User::replaceSpecialChar(username);
+		if (tmpUsername == changedUsername)
 			return *it;
-		}
 	}
 
 	return NULL;
@@ -181,9 +181,7 @@ Canal* Server::findCanalByName(const std::string& name) {
 	{
 		Canal* canal = *it;
 		if (canal->getName() == name) 
-		{
 			return canal;
-		}
 	}
 	return NULL;
 }

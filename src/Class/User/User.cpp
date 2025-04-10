@@ -103,6 +103,8 @@ std::string User::replaceSpecialChar(std::string param) {
 			tmp[i] = ',';
 		else if (tmp[i] == '}' || tmp[i] == ']')
 			tmp[i] = ':';
+		else if (tmp[i] == '|' || tmp[i] == '\\')
+			tmp[i] = 8;
 	}
 	
 	return tmp;

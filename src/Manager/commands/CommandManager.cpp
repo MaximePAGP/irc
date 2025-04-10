@@ -35,17 +35,17 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		return;
 
 	if (CommandManager::hasLeadingSpaces(command)) {
-		std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
+		Message::noSuchCommand(user, command);
 		return;
 	}
+
 	std::string getFirstCommand = getCommand(command);
-	
 	std::map<std::string, commandsModel> commands;
 
-	// if (user.getIsConnected() == false || command.find("PASS") == 0) {
-	// 	CommandManager::handlePass(command, user);
-	// 	return ;
-	// }
+	if (user.getIsConnected() == false || command.find("PASS") == 0) {
+		CommandManager::handlePass(command, user);
+		return ;
+	}
 	
 	commands["MODE"] = CommandManager::handleMode;
 	commands["JOIN"] = CommandManager::handleJoin;
@@ -55,7 +55,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["PING"] = CommandManager::handlePing;
 
 	if (commands.find(getFirstCommand) == commands.end()) {
-		std::cout << ":localhost 421 " << user.getUserName() << " " << command << " :Unknown command" << std::endl;
+		Message::noSuchCommand(user, command);
 		return;
 	}
 
@@ -68,7 +68,7 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 	User *curUser = server.getUserByFd(clientFd);
 	
 	if ((curUser->getCommandBuffer().size() + command.size()) > MSG_LEN) {
-		// maybe send error to client ?
+		Message::commandToLong(*curUser);
 		curUser->flushCommandBuffer();
 		return;
 	}
