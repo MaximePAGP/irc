@@ -36,6 +36,11 @@ void	CommandManager::handleTopic(std::string command, User &user) {
 		Message::modeNotSuchChannel(user, canalName);
 		return;
 	}
+	if (targetCanal->getHasProtectedTopic() && targetCanal->getChanOpByNickname(user.getNickName()) == NULL)
+	{
+		Message::youreNotChanOp(targetCanal->getName(), user);
+    	return;
+	}
 
 	size_t	topicParamIndex = command.find_first_of(":"); 
 

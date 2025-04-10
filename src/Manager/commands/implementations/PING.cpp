@@ -6,7 +6,7 @@
 /*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 01:51:33 by leye              #+#    #+#             */
-/*   Updated: 2025/03/28 01:53:29 by leye             ###   ########.fr       */
+/*   Updated: 2025/04/10 18:29:54 by leye             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 void  CommandManager::handlePing(std::string command, User &user) {
 	(void)command;
-	Server const &server = Server::getServer();
-	std::string pong = ":" + server.getPassword() + " PONG " + server.getPassword() + " " + user.getNickName() + "\r\n";
+	// Server const &server = Server::getServer();
+	std::string pong = "PONG :server\r\n";
 	send(user.getFd().fd, pong.c_str(), pong.length(), 0);
 }
+

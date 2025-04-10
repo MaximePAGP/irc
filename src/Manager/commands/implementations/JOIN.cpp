@@ -84,31 +84,34 @@ void CommandManager::handleJoin(std::string command, User &user)
     }
     // Send names list (users in channel)
     std::string namesResponse = ":server 353 " + user.getNickName() + " = " + canalName + " :";
-    
+
     std::set<User*> channelUsers = canal->getCurrentUsers();
     std::set<User*> channelOps = canal->getChanOps();
     std::set<User*>::iterator userIt;
-    
-    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt)
-    {
+
+    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
         User* channelUser = *userIt;
-        
-        // Check if this user is a channel operator
-        std::set<User*>::iterator opIt = channelOps.find(channelUser);
-        if (opIt != channelOps.end()) 
-        {
+
+        // Ajouter le préfixe @ pour les chanops
+        if (channelOps.find(channelUser) != channelOps.end()) {
             namesResponse += "@";
         }
-        
+
         namesResponse += channelUser->getNickName() + " ";
     }
-    
+
     namesResponse += "\r\n";
-    send(user.getFd().fd, namesResponse.c_str(), namesResponse.length(), 0);
-    
-    // End of names list
+
+    // Envoyer la liste des membres à tous les utilisateurs du canal
+    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
+        send((*userIt)->getFd().fd, namesResponse.c_str(), namesResponse.length(), 0);
+    }
+
+    // Envoyer le message de fin de liste
     std::string endNamesResponse = ":server 366 " + user.getNickName() + " " + canalName + " :End of /NAMES list.\r\n";
-    send(user.getFd().fd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
+    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
+        send((*userIt)->getFd().fd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
+    }
     
     // Notify other users in the channel
     for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
