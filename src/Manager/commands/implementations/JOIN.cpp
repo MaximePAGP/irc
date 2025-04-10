@@ -18,6 +18,8 @@ bool	canalHasFlag(bool hasPasswordParam, Canal &canal, User &user) {
 	return false;
 }
 
+// JOIN #1,#2,#3 mdp1,,
+
 void CommandManager::handleJoin(std::string command, User &user) 
 {
     Server &server = Server::getServer();
