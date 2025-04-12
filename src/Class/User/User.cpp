@@ -94,7 +94,8 @@ void	User::flushCommandBuffer() {
 	this->setCommandBuffer("");
 }
 
-std::string User::replaceSpecialChar(std::string param) {
+std::string User::replaceSpecialChar(std::string param)
+{
 	std::string tmp = param;
 
 	for (size_t i = 0; i < tmp.size(); i++)
@@ -106,7 +107,6 @@ std::string User::replaceSpecialChar(std::string param) {
 		else if (tmp[i] == '|' || tmp[i] == '\\')
 			tmp[i] = 8;
 	}
-	
 	return tmp;
 }
 

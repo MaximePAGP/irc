@@ -23,7 +23,7 @@ bool	canalHasFlag(bool hasPasswordParam, Canal &canal, User &user) {
 void CommandManager::handleJoin(std::string command, User &user) 
 {
     Server &server = Server::getServer();
-    // Remove trailing whitespace or newlines
+
     std::string canalName = command;
     canalName = canalName.substr(1, canalName.size());
     std::cout << "canalName : " << canalName << std::endl;
@@ -61,7 +61,7 @@ void CommandManager::handleJoin(std::string command, User &user)
         std::cout << "Canal " << canalName << " created." << std::endl;
     }
     // AJOUTER ICI: Vérification du mot de passe si canal existe
-    if (canal != NULL && canal->isProtectedByPassword() && password != canal->getPassword()) 
+    if (canal != NULL && canal->isProtectedByPassword() && password != canal->getPassword())
     {
         std::string errorMsg = ":server 475 " + user.getNickName() + " " + canalName + " :Cannot join channel (+k) - bad key\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
@@ -69,7 +69,6 @@ void CommandManager::handleJoin(std::string command, User &user)
     }
     canal->addUser(user);
     canal->addChanOps(user);
-
     // Send JOIN confirmation to the user - fixed format
     std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN " + canalName + "\r\n";
     // std::string joinResponse = ":server 329 reo1 JOIN #general\r\n";
@@ -96,7 +95,6 @@ void CommandManager::handleJoin(std::string command, User &user)
         if (channelOps.find(channelUser) != channelOps.end()) {
             namesResponse += "@";
         }
-
         namesResponse += channelUser->getNickName() + " ";
     }
 
