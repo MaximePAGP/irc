@@ -6,7 +6,7 @@
 /*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/04/12 19:18:44 by leye             ###   ########.fr       */
+/*   Updated: 2025/04/14 19:29:18 by leye             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void CommandManager::handlePrivmsg(std::string command, User &user) {
         std::cout << "User is in the channel" << std::endl;
         // Envoyer le message à tous les utilisateurs du canal
         std::set<User*> channelUsers = canal->getCurrentUsers();
-        for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) 
+        for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it)
         {
             std::cout << "Sending message to user: " << (*it)->getNickName() << std::endl;
             std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " :" + message + "\r\n";
