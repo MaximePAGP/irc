@@ -8,7 +8,7 @@ void	CommandManager::handleKick(std::string param, User &user)
 	
 	if (canal == NULL)
 	{
-		user.send_message("test\r\n");
+		//user.send_message("test\r\n");
 		std::cout << "Error" << std::endl;
 		return ;
 	}
