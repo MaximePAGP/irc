@@ -6,18 +6,18 @@ void	CommandManager::handleKick(std::string param, User &user)
 	std::string canalName = CommandManager::trimFirstParamSpace(param);
 	Canal *canal = server.getCanalByName(canalName);
 	
+	std::cout << "Param = " << canalName << std::endl;
+
 	if (canal == NULL)
 	{
-		//user.send_message("test\r\n");
-		std::cout << "Error" << std::endl;
+		Message::modeNotSuchChannel(user, canalName);
 		return ;
 	}
 	if (canal->getChanOpByNickname(user.getNickName()) == NULL)
-		std::cout << "No" << std::endl;
+		Message::youreNotChanOp(canal->getName(), user);
 
 
 	//User user2 = user;
 
 	
-	std::cout << "Param = " << param << std::endl;
 }
