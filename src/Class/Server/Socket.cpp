@@ -54,6 +54,8 @@ void	Server::initServerSocket() {
 	this->sockets.push_back(serverPollFd);	
 }
 
+// handle control D entre les buffers et control Z pour les messages recu pendant que le processus est en background
+
 void	Server::handleClientMsg(int clientFd) {
 	char buffer[MSG_LEN];
 	ssize_t bytesRead = 1;

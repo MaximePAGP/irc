@@ -138,7 +138,7 @@ User	*Canal::getChanOpByNickname(std::string nickname) const {
 
 User	*Canal::getChanOpByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->chanOp.begin(); it != this->chanOp.end(); it++) {
-		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
+		std::string tmpUsername = User::replaceSpecialChar((*it)->getUserName());
 		if (tmpUsername == username) {
 			return *it;
 		}
@@ -200,7 +200,6 @@ bool	Canal::hasForbbidenCharPassword(std::string pw) {
 		if (!isascii(pw[i]))
 			return true;
 	}
-	
 	return false;
 }
 

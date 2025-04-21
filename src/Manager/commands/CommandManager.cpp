@@ -53,6 +53,8 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["NICK"] = CommandManager::handleNick;
 	commands["USER"] = CommandManager::handleUsername;
 	commands["KICK"] = CommandManager::handleKick;
+	commands["PING"] = CommandManager::handlePing;
+	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
 
 	if (commands.find(getFirstCommand) == commands.end()) {
 		Message::noSuchCommand(user, command);

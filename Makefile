@@ -15,8 +15,10 @@ SRCS 				= 	src/main.cpp \
 						src/Manager/commands/implementations/USER.cpp \
 						src/Manager/commands/implementations/JOIN.cpp \
 						src/Manager/commands/implementations/TOPIC.cpp \
+						src/Manager/commands/implementations/PING.cpp \
 						src/Manager/commands/implementations/PASS.cpp \
 						src/Manager/commands/implementations/KICK.cpp \
+						src/Manager/commands/implementations/PRIVMSG.cpp \
 						src/Manager/commands/CommandManager.cpp \
 						src/Manager/signals_manager.cpp \
 

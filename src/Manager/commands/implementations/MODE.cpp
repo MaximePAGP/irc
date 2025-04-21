@@ -37,8 +37,6 @@ static	void	removeCanalPassord(std::string uslessArg, Canal &canal, User &user) 
 	canal.setPassword("");
 }
 
-
-
 static	void	addInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
 	(void) uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
