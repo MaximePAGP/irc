@@ -18,7 +18,6 @@ bool	canalHasFlag(bool hasPasswordParam, Canal &canal, User &user) {
 	return false;
 }
 
-// JOIN #1,#2,#3 mdp1,,
 
 void CommandManager::handleJoin(std::string command, User &user) 
 {
@@ -63,7 +62,7 @@ void CommandManager::handleJoin(std::string command, User &user)
     // AJOUTER ICI: Vérification du mot de passe si canal existe
     if (canal != NULL && canal->isProtectedByPassword() && password != canal->getPassword())
     {
-        std::string errorMsg = ":server 475 " + user.getNickName() + " " + canalName + " :Cannot join channel (+k) - bad key\r\n";
+        std::string errorMsg = ":server 475 " + user.getNickName() + " " + canalName + " :Cannot join channel (+k) - bad key\r\n"; 
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return;
     }
