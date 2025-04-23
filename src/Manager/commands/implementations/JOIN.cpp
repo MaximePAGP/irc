@@ -75,11 +75,7 @@ void CommandManager::handleJoin(std::string command, User &user) {
         std::cerr << "Channel name too long" << std::endl;
         return;
     }
-    if (canal->getCurrentUsers().find(&user) != canal->getCurrentUsers().end()) {
-        std::cerr << "User already in channel" << std::endl;
-        return;
-    }
-
+    
     // Extraction du mot de passe
     std::string password = extractPassword(command);
 
@@ -90,7 +86,11 @@ void CommandManager::handleJoin(std::string command, User &user) {
         server.addCanal(*canal);
         std::cout << "Canal " << canalName << " created." << std::endl;
     }
-
+    if (canal->getCurrentUsers().find(&user) != canal->getCurrentUsers().end()) {
+        std::cerr << "User already in channel" << std::endl;
+        return;
+    }
+    
     // Validation des restrictions du canal
     if (!validateChannelRestrictions(*canal, user, password)) {
         return;
