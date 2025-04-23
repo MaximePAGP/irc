@@ -19,109 +19,114 @@ bool	canalHasFlag(bool hasPasswordParam, Canal &canal, User &user) {
 }
 
 
-void CommandManager::handleJoin(std::string command, User &user) 
-{
+#include "../CommandManager.hpp"
+
+// Fonction utilitaire pour extraire le mot de passe
+std::string extractPassword(const std::string &command) {
+    size_t spacePos = command.find(' ');
+    if (spacePos != std::string::npos) {
+        std::string password = command.substr(spacePos + 1);
+        size_t pwEndPos = password.find_first_of(" \r\n");
+        if (pwEndPos != std::string::npos) {
+            password = password.substr(0, pwEndPos);
+        }
+        return password;
+    }
+    return "";
+}
+
+// Fonction utilitaire pour envoyer un message à tous les utilisateurs d'un canal
+void sendToChannelUsers(const std::set<User*> &users, const std::string &message) {
+    for (std::set<User*>::iterator it = users.begin(); it != users.end(); ++it) {
+        send((*it)->getFd().fd, message.c_str(), message.length(), 0);
+    }
+}
+
+// Fonction pour valider les restrictions du canal
+bool validateChannelRestrictions(Canal &canal, User &user, const std::string &password) {
+    if (canal.isProtectedByPassword() && password != canal.getPassword()) {
+        std::string errorMsg = ":server 475 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+k) - bad key\r\n";
+        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+        return false;
+    }
+    if (canal.getUserLimits() <= static_cast<int>(canal.getCurrentUsers().size())) {
+        std::string errorMsg = ":server 471 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+l) - channel is full\r\n";
+        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+        return false;
+    }
+    if (canal.getIsOnInvitationOnly() && canal.getUserInvitation().find(&user) == canal.getUserInvitation().end()) {
+        std::string errorMsg = ":server 473 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+i) - invite only\r\n";
+        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+        return false;
+    }
+    return true;
+}
+
+void CommandManager::handleJoin(std::string command, User &user) {
     Server &server = Server::getServer();
 
-    std::string canalName = command;
-    canalName = canalName.substr(1, canalName.size());
-    std::cout << "canalName : " << canalName << std::endl;
-    if (canalName.empty())
-    {
-        std::cerr << "Channel name is empty" << std::endl;
+    // Extraction du nom du canal
+    std::string canalName = command.substr(1, command.find(' ') - 1);
+    if (canalName.empty() || canalName[0] != '#') {
+        std::cerr << "Invalid channel name" << std::endl;
         return;
     }
-    if (canalName[0] != '#')
-    {
-        std::cerr << "Invalid channel name #" << std::endl;
+    if (canalName.length() > 200) {
+        std::cerr << "Channel name too long" << std::endl;
+        return;
+    }
+    if (canal->getCurrentUsers().find(&user) != canal->getCurrentUsers().end()) {
+        std::cerr << "User already in channel" << std::endl;
         return;
     }
 
-    // AJOUTER ICI: Extraction du mot de passe s'il existe
-    std::string password = "";
-    size_t spacePos = command.find(' ');
-    if (spacePos != std::string::npos) 
-    {
-        password = command.substr(spacePos + 1);
-        // Supprimer espaces et caractères de fin de ligne
-        size_t pwEndPos = password.find_first_of(" \r\n");
-    if (pwEndPos != std::string::npos)
-    {
-        password = password.substr(0, pwEndPos);
-    }
-    }
-    // Find or create the channel - using your getCanalByName function
-    Canal* canal = server.getCanalByName(canalName);
-    if (canal == NULL) 
-    {
-        // Create new channel
+    // Extraction du mot de passe
+    std::string password = extractPassword(command);
+
+    // Recherche ou création du canal
+    Canal *canal = server.getCanalByName(canalName);
+    if (canal == NULL) {
         canal = new Canal(canalName);
         server.addCanal(*canal);
         std::cout << "Canal " << canalName << " created." << std::endl;
     }
-    // AJOUTER ICI: Vérification du mot de passe si canal existe
-    if (canal != NULL && canal->isProtectedByPassword() && password != canal->getPassword())
-    {
-        std::string errorMsg = ":server 475 " + user.getNickName() + " " + canalName + " :Cannot join channel (+k) - bad key\r\n"; 
-        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+
+    // Validation des restrictions du canal
+    if (!validateChannelRestrictions(*canal, user, password)) {
         return;
     }
+
+    // Ajout de l'utilisateur au canal
     canal->addUser(user);
     canal->addChanOps(user);
-    // Send JOIN confirmation to the user - fixed format
+
+    // Envoi de la confirmation de JOIN
     std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN " + canalName + "\r\n";
-    // std::string joinResponse = ":server 329 reo1 JOIN #general\r\n";
-    std::cout << "Join response: " << joinResponse << std::endl;
     send(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
-    std::cout << "Join response sent to user " << user.getNickName() << std::endl;
-    // Send channel topic if it exists
-    std::string topic = canal->getTopic();
-    if (!topic.empty()) {
-        std::string topicResponse = ":server 332 " + user.getNickName() + " " + canalName + " :" + topic + "\r\n";
+
+    // Envoi du topic du canal
+    if (!canal->getTopic().empty()) {
+        std::string topicResponse = ":server 332 " + user.getNickName() + " " + canalName + " :" + canal->getTopic() + "\r\n";
         send(user.getFd().fd, topicResponse.c_str(), topicResponse.length(), 0);
     }
-    // Send names list (users in channel)
+
+    // Envoi de la liste des utilisateurs
     std::string namesResponse = ":server 353 " + user.getNickName() + " = " + canalName + " :";
-
-    std::set<User*> channelUsers = canal->getCurrentUsers();
-    std::set<User*> channelOps = canal->getChanOps();
-    std::set<User*>::iterator userIt;
-
-    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
-        User* channelUser = *userIt;
-
-        // Ajouter le préfixe @ pour les chanops
-        if (channelOps.find(channelUser) != channelOps.end()) {
+    for (std::set<User*>::iterator it = canal->getCurrentUsers().begin(); it != canal->getCurrentUsers().end(); ++it) {
+        User *channelUser = *it;
+        if (canal->getChanOps().find(channelUser) != canal->getChanOps().end()) {
             namesResponse += "@";
         }
         namesResponse += channelUser->getNickName() + " ";
     }
-
     namesResponse += "\r\n";
+    send(user.getFd().fd, namesResponse.c_str(), namesResponse.length(), 0);
 
-    // Envoyer la liste des membres à tous les utilisateurs du canal
-    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
-        send((*userIt)->getFd().fd, namesResponse.c_str(), namesResponse.length(), 0);
-    }
-
-    // Envoyer le message de fin de liste
+    // Envoi du message de fin de liste
     std::string endNamesResponse = ":server 366 " + user.getNickName() + " " + canalName + " :End of /NAMES list.\r\n";
-    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
-        send((*userIt)->getFd().fd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
-    }
-    
-    // Notify other users in the channel
-    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
-        User* channelUser = *userIt;
-        
-        // Skip the joining user (already notified)
-        if (channelUser == &user) {
-            continue;
-        }
-        
-        int userFd = channelUser->getFd().fd;
-        send(userFd, joinResponse.c_str(), joinResponse.length(), 0);
-    }
-    
+    send(user.getFd().fd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
+
+    // Notification aux autres utilisateurs
+    sendToChannelUsers(canal->getCurrentUsers(), joinResponse);
     std::cout << "User " << user.getNickName() << " joined canal " << canalName << std::endl;
 }

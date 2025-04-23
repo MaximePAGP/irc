@@ -30,6 +30,7 @@ class CommandManager
 		static	bool		commandIsComplete(std::string command);
 		static	std::string getCommand(std::string command);
 		static	std::string	trimFirstParamSpace(std::string param);
+		
 							CommandManager();
     public:
 		virtual				~CommandManager();
