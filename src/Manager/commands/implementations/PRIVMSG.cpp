@@ -6,7 +6,7 @@
 /*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/04/24 06:21:37 by leye             ###   ########.fr       */
+/*   Updated: 2025/04/24 06:36:23 by leye             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../../../Class/Server/Server.hpp"
 
 void CommandManager::handlePrivmsg(std::string command, User &user) {
-    // Vérifiez si l'utilisateur est enregistré
+    // Vérifiez si l'utilisateur est enregistr
     if (user.getNickName().empty() || user.getUserName().empty()) {
         Message::noSuchCommand(user, "PRIVMSG");
         return;
