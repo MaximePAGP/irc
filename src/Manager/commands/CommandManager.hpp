@@ -27,10 +27,12 @@ class CommandManager
 		static	void		handleKick(std::string command, User &user);
 		static	void		handlePing(std::string command, User &user);
 		static  void handlePrivmsg(std::string command, User &user);
+		static	void		handleKick(std::string command, User &user);
 		static	bool		hasLeadingSpaces(std::string command);
 		static	bool		commandIsComplete(std::string command);
 		static	std::string getCommand(std::string command);
 		static	std::string	trimFirstParamSpace(std::string param);
+		
 							CommandManager();
     public:
 		virtual				~CommandManager();
