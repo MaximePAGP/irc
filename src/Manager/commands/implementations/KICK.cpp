@@ -2,13 +2,30 @@
 
 void CommandManager::handleKick(std::string param, User &user)
 {
-    Server &server = Server::getServer();
-    Message messageManager;
+	if (param.empty() || param.size() < 2) {
+		Message::kickNotEnoughParams(user);
+		return;
+	}
+    
+	Server &server = Server::getServer();
+	param = param.substr(1);
     std::istringstream iss(param);
     std::string channelName, targetNickname, reason;
+	std::string canalName = param.substr(0, param.find_first_of(" "));
+	std::string target = param.substr(param.find_first_of(" "));
+
+
+
+	std::cout << "param (" << param << ") channeNae (" << canalName << ") reason (" << target << ")" << std::endl;
+	Canal *canal = server.getCanalByName(canalName);
+
+	if (!canal) {
+		Message::noSuchNickChannel(canalName, user);
+		return;
+	}
 
     if (!(iss >> channelName >> targetNickname)) {
-        messageManager.userNoParam(user, "KICK");
+        Message::userNoParam(user, "KICK");
         return;
     }
 
@@ -20,23 +37,23 @@ void CommandManager::handleKick(std::string param, User &user)
 
     Canal* channel = server.getCanalByName(channelName);
     if (!channel) {
-        messageManager.modeNotSuchChannel(user, channelName);
+        Message::modeNotSuchChannel(user, channelName);
         return;
     }
 
     if (!channel->getConnectedUserByNickname(user.getNickName())) {
-        messageManager.youreNotChanOp(channelName, user);
+        Message::youreNotChanOp(channelName, user);
         return;
     }
 
     if (!channel->getChanOpByNickname(user.getNickName())) {
-        messageManager.youreNotChanOp(channelName, user);
+        Message::youreNotChanOp(channelName, user);
         return;
     }
 
     User* targetUser = channel->getConnectedUserByNickname(targetNickname);
     if (!targetUser) {
-        messageManager.noSuchNickChannel(targetNickname, user);
+        Message::noSuchNickChannel(targetNickname, user);
         return;
     }
 

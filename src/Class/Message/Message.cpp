@@ -395,3 +395,16 @@ void	Message::alreadyOnChannel(User const &user, Canal const &canal) {
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+
+// 461
+void	Message::kickNotEnoughParams(User const &user) {
+	std::string message = ":";
+	message.append(ENV);
+	message.append(" 461 ");
+	message.append(user.getNickName());
+	message.append(" KICK :Not enough parameters");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}

@@ -45,6 +45,8 @@ class Message
 		static	void	commandToLong(User const &user);
 
 		static	void	alreadyOnChannel(User const &user, Canal const &canal);
+
+		static	void	kickNotEnoughParams(User const &user);
 	};
 
 
