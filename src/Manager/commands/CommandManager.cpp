@@ -99,7 +99,7 @@ std::string	CommandManager::getCommand(std::string command) {
 }
 
 std::string CommandManager::trimFirstParamSpace(std::string param) {
-	std::string	jumpSpace = param.substr(2, param.size());
+	std::string	jumpSpace = param.substr(1, param.size());
 
 	size_t nextSpaceIndex = jumpSpace.find(" ");
 
