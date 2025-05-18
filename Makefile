@@ -17,7 +17,6 @@ SRCS 				= 	src/main.cpp \
 						src/Manager/commands/implementations/TOPIC.cpp \
 						src/Manager/commands/implementations/PING.cpp \
 						src/Manager/commands/implementations/PASS.cpp \
-						src/Manager/commands/implementations/KICK.cpp \
 						src/Manager/commands/implementations/PRIVMSG.cpp \
 						src/Manager/commands/implementations/KICK.cpp \
 						src/Manager/commands/implementations/INVITE.cpp \

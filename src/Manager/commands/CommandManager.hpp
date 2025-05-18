@@ -24,9 +24,8 @@ class CommandManager
 		static	void		handleJoin(std::string command, User &user);
 		static	void		handleTopic(std::string command, User &user);
 		static	void		handlePass(std::string command, User &user);
-		static	void		handleKick(std::string command, User &user);
 		static	void		handlePing(std::string command, User &user);
-		static  void handlePrivmsg(std::string command, User &user);
+		static  void		handlePrivmsg(std::string command, User &user);
 		static	void		handleKick(std::string command, User &user);
 		static	void		handleInvite(std::string param, User &user);
 		static	bool		hasLeadingSpaces(std::string command);
