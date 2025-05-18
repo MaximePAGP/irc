@@ -18,7 +18,7 @@ void CommandManager::handleInvite(std::string param, User &user)
         return;
     }
 
-    Canal* channel = server.getCanalByName(channelName);
+    Channel* channel = server.getChannelByName(channelName);
     if (!channel) {
         messageManager.noSuchNickChannel(channelName, user);
         return;

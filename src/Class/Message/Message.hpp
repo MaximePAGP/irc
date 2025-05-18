@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <string>
 #include "../User/User.hpp"
-#include "../Canal/Canal.hpp"
+#include "../Channel/Channel.hpp"
 
 #define ENV 	"localhost"
 #define END_CMD	"\r\n"
@@ -33,16 +33,16 @@ class Message
 		static	void	userCannotChange(User const &user, std::string const nickname);
 		static	void	userSet(User const &user);
 
-		static	void	modeNotSuchChannel(User const &user, std::string const canalName);
+		static	void	modeNotSuchChannel(User const &user, std::string const channelName);
 
-		static	void	topicSetTopic(User const &user, Canal const &canal);
-		static	void	topicNoTopic(User const &user, std::string const canalName);
-		static	void	topicGetTopic(User const &user, Canal const &canal);
+		static	void	topicSetTopic(User const &user, Channel const &channel);
+		static	void	topicNoTopic(User const &user, std::string const channelName);
+		static	void	topicGetTopic(User const &user, Channel const &channel);
 
 		static	void	noSuchCommand(User const &user, std::string const &command);
 		static	void	commandToLong(User const &user);
 
-		static	void	alreadyOnChannel(User const &user, Canal const &canal);
+		static	void	alreadyOnChannel(User const &user, Channel const &channel);
 
 
 		static	void	notEnoughParams(User const &user, std::string const &command);

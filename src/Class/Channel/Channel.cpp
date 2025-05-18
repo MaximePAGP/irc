@@ -1,18 +1,18 @@
-#include "Canal.hpp"
+#include "Channel.hpp"
 
-Canal::Canal(): userLimit(10), name("DEFAULT") {}
+Channel::Channel(): userLimit(10), name("DEFAULT") {}
 
-Canal::Canal(std::string name): userLimit(10), invitationOnly(false), hasProtectedTopic(true), name(name), password(""), topic("") {}
+Channel::Channel(std::string name): userLimit(10), invitationOnly(false), hasProtectedTopic(true), name(name), password(""), topic("") {}
 
-Canal::~Canal() {}
+Channel::~Channel() {}
 
 
-Canal::Canal(Canal const &copy) : userLimit(copy.userLimit),
+Channel::Channel(Channel const &copy) : userLimit(copy.userLimit),
 	invitationOnly(copy.invitationOnly), hasProtectedTopic(copy.hasProtectedTopic),
 	password(copy.password), topic(copy.topic), curUsers(copy.curUsers),
 	invUsers(copy.invUsers), chanOp(copy.chanOp) {}
 
-Canal	&Canal::operator=(Canal const &rhs) {
+Channel	&Channel::operator=(Channel const &rhs) {
 	if (this != &rhs) {
 		userLimit = rhs.userLimit;
 		password = rhs.password;
@@ -26,62 +26,62 @@ Canal	&Canal::operator=(Canal const &rhs) {
 	return *this;
 }
 
-int Canal::getUserLimits() const {
+int Channel::getUserLimits() const {
 	return this->userLimit;
 }
 
-std::string	Canal::getName() const {
+std::string	Channel::getName() const {
 	return this->name;
 }
 
-std::string	Canal::getPassword() const {
+std::string	Channel::getPassword() const {
 	return this->password;
 }
 
-std::string	Canal::getTopic() const {
+std::string	Channel::getTopic() const {
 	return this->topic;
 }
 
-std::set<User*> Canal::getCurrentUsers() const {
+std::set<User*> Channel::getCurrentUsers() const {
 	return this->curUsers;
 }
 
-std::set<User*> Canal::getUserInvitation() const {
+std::set<User*> Channel::getUserInvitation() const {
 	return this->invUsers;
 }
 
-std::set<User*> Canal::getChanOps() const {
+std::set<User*> Channel::getChanOps() const {
 	return this->chanOp;
 }
 
 
 
-void	Canal::setUserlimit(int value) {
+void	Channel::setUserlimit(int value) {
 	this->userLimit = value;
 }
 
-void	Canal::setPassword(std::string value) {
+void	Channel::setPassword(std::string value) {
 	this->password = value;
 }
 
-void	Canal::setTopic(std::string value) {
+void	Channel::setTopic(std::string value) {
 	this->topic = value;
 }
 
-std::pair<std::set<User*>::iterator, bool> Canal::addChanOps(User &value) {
+std::pair<std::set<User*>::iterator, bool> Channel::addChanOps(User &value) {
 	return this->chanOp.insert(&value);
 }
 
-std::pair<std::set<User*>::iterator, bool> Canal::addUser(User &value) {
+std::pair<std::set<User*>::iterator, bool> Channel::addUser(User &value) {
 	return this->curUsers.insert(&value);
 }
 
-std::pair<std::set<User*>::iterator, bool> Canal::addUserInvitation(User &value) {
+std::pair<std::set<User*>::iterator, bool> Channel::addUserInvitation(User &value) {
 	return this->invUsers.insert(&value);
 }
 
 
-std::string	Canal::replaceSpecialChar(std::string name) {
+std::string	Channel::replaceSpecialChar(std::string name) {
 	std::string tmp = name;
 
 	for (size_t i = 0; i < tmp.size(); i++)
@@ -98,24 +98,24 @@ std::string	Canal::replaceSpecialChar(std::string name) {
 }
 
 
-std::size_t	Canal::removeChanOps(User &target) {
+std::size_t	Channel::removeChanOps(User &target) {
 	return this->chanOp.erase(&target);
 }
 
-std::size_t	Canal::removeUser(User &target) {
+std::size_t	Channel::removeUser(User &target) {
 	return this->curUsers.erase(&target);
 }
 
-std::size_t	Canal::removeUserInvitation(User &target) {
+std::size_t	Channel::removeUserInvitation(User &target) {
 	return this->invUsers.erase(&target);
 }
 
-bool	Canal::operator<(const Canal &other) const {
+bool	Channel::operator<(const Channel &other) const {
 	return this->getName() < other.getName();
 }
 
 
-User	*Canal::getChanOpByFd(int fd) const {
+User	*Channel::getChanOpByFd(int fd) const {
 	for (std::set<User*>::const_iterator it = this->chanOp.begin(); it != this->chanOp.end(); it++) {
 		if ((*it)->getFd().fd == fd) {
 			return *it;
@@ -125,7 +125,7 @@ User	*Canal::getChanOpByFd(int fd) const {
 	return NULL;
 }
 
-User	*Canal::getChanOpByNickname(std::string nickname) const {
+User	*Channel::getChanOpByNickname(std::string nickname) const {
 	for (std::set<User*>::const_iterator it = this->chanOp.begin(); it != this->chanOp.end(); it++) {
 		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
 		if (tmpNick == nickname) {
@@ -136,7 +136,7 @@ User	*Canal::getChanOpByNickname(std::string nickname) const {
 	return NULL;
 }
 
-User	*Canal::getChanOpByUsername(std::string username) const {
+User	*Channel::getChanOpByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->chanOp.begin(); it != this->chanOp.end(); it++) {
 		std::string tmpUsername = User::replaceSpecialChar((*it)->getUserName());
 		if (tmpUsername == username) {
@@ -148,7 +148,7 @@ User	*Canal::getChanOpByUsername(std::string username) const {
 }
 
 
-User	*Canal::getConnectedUserByFd(int fd) const {
+User	*Channel::getConnectedUserByFd(int fd) const {
 	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
 		if ((*it)->getFd().fd == fd) {
 			return *it;
@@ -158,7 +158,7 @@ User	*Canal::getConnectedUserByFd(int fd) const {
 	return NULL;
 }
 
-User	*Canal::getConnectedUserByNickname(std::string nickname) const {
+User	*Channel::getConnectedUserByNickname(std::string nickname) const {
 	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
 		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
 		if (tmpNick == nickname) {
@@ -169,7 +169,7 @@ User	*Canal::getConnectedUserByNickname(std::string nickname) const {
 	return NULL;
 }
 
-User	*Canal::getConnectedUserByUsername(std::string username) const {
+User	*Channel::getConnectedUserByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
 		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
 		if (tmpUsername == username) {
@@ -180,7 +180,7 @@ User	*Canal::getConnectedUserByUsername(std::string username) const {
 	return NULL;
 }
 
-std::ostream &operator<<(std::ostream &out, Canal const &rhs) {
+std::ostream &operator<<(std::ostream &out, Channel const &rhs) {
 	out << rhs.getPassword() << " " << rhs.getTopic() << " "
 		<< rhs.getUserLimits() << " ";
 	out << "ChanOps : ";
@@ -192,7 +192,7 @@ std::ostream &operator<<(std::ostream &out, Canal const &rhs) {
 	return out;
 }
 
-bool	Canal::hasForbbidenCharPassword(std::string pw) {
+bool	Channel::hasForbbidenCharPassword(std::string pw) {
 	if (pw.find_first_of(" \t\r\v\n#&!:$") != std::string::npos)
 		return true;
 	for (size_t i = 0; i < pw.size(); i++)
@@ -203,32 +203,32 @@ bool	Canal::hasForbbidenCharPassword(std::string pw) {
 	return false;
 }
 
-bool	Canal::isProtectedByPassword() {
+bool	Channel::isProtectedByPassword() {
 	if (this->password.size() > 1)
 		return true;
 	return false;
 }
 
-bool	Canal::getIsOnInvitationOnly() {
+bool	Channel::getIsOnInvitationOnly() {
 	return this->invitationOnly;
 }
 
 
-bool	Canal::getHasProtectedTopic() {
+bool	Channel::getHasProtectedTopic() {
 	return this->hasProtectedTopic;
 }
 
-void	Canal::setIsOnInvitationOnly(bool value) {
+void	Channel::setIsOnInvitationOnly(bool value) {
 	this->invitationOnly = value;
 }
 
 
-void	Canal::setHasProtectedTopic(bool value) {
+void	Channel::setHasProtectedTopic(bool value) {
 	this->hasProtectedTopic = value;
 }	
 
 
-void	Canal::sendActiveMode(User &user) {
+void	Channel::sendActiveMode(User &user) {
 	std::string activeFlag = "+";
 
 	if (this->getIsOnInvitationOnly()) {
@@ -261,7 +261,7 @@ void	Canal::sendActiveMode(User &user) {
 }
 
 
-void			printCanals(std::set<Canal*> canals) {
-	for (std::set<Canal*>::iterator it = canals.begin(); it != canals.end(); ++it)
+void			printChannels(std::set<Channel*> channel) {
+	for (std::set<Channel*>::iterator it = channel.begin(); it != channel.end(); ++it)
     	std::cout << *it;
 }

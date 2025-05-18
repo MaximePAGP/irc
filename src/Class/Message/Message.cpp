@@ -280,7 +280,7 @@ void	Message::modeNotSuchChannel(User const &user, const std::string canalName) 
 }
 
 
-void	Message::topicSetTopic(User const &user, Canal const &canal) {
+void	Message::topicSetTopic(User const &user, Channel const &canal) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -310,7 +310,7 @@ void	Message::topicNoTopic(User const &user, std::string const canalName) {
 }
 
 // 332
-void	Message::topicGetTopic(User const &user, Canal const &canal) {
+void	Message::topicGetTopic(User const &user, Channel const &canal) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -357,7 +357,7 @@ void	Message::commandToLong(User const &user) {
 }
 
 // 443
-void	Message::alreadyOnChannel(User const &user, Canal const &canal) {
+void	Message::alreadyOnChannel(User const &user, Channel const &canal) {
 	std::string message = ":";
 	message.append(ENV);
 	message.append(" 443 ");

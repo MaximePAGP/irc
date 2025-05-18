@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 04:50:56 by leye              #+#    #+#             */
-/*   Updated: 2025/03/24 04:50:59 by leye             ###   ########.fr       */
+/*   Updated: 2025/05/19 01:40:15 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ Server::~Server() {
 	}
 	this->users.clear();
 
-	for (std::set<Canal *>::iterator it = this->canals.begin(); it != this->canals.end(); it++) {
+	for (std::set<Channel *>::iterator it = this->channels.begin(); it != this->channels.end(); it++) {
 		delete *it; 
 	}
-	this->canals.clear();
+	this->channels.clear();
 
 	this->serverOps.clear();
 }
@@ -88,16 +88,16 @@ std::set<User*>	Server::getUsers() const {
 	return this->users;
 }
 
-std::set<Canal*>	Server::getCanals() const {
-	return this->canals;
+std::set<Channel*>	Server::getChannels() const {
+	return this->channels;
 }
 
-std::pair<std::set<Canal*>::iterator, bool>	Server::addCanal(Canal &newCanal) {
-	return this->canals.insert(&newCanal);
+std::pair<std::set<Channel*>::iterator, bool>	Server::addCanal(Channel &newCanal) {
+	return this->channels.insert(&newCanal);
 }
 
-std::size_t	Server::removeCanal(Canal &target) {
-	return this->canals.erase(&target);
+std::size_t	Server::removeCanal(Channel &target) {
+	return this->channels.erase(&target);
 }
 
 std::pair<std::set<User*>::iterator, bool>	Server::addUser(User &newUser) {
@@ -116,9 +116,9 @@ std::size_t	Server::removeServerOps(User &target) {
 	return this->serverOps.erase(&target);
 }
 
-Canal	*Server::getCanalByName(std::string name) const {
-	for (std::set<Canal*>::const_iterator it = this->canals.begin(); it != this->canals.end(); it++) {
-		std::string tmpName = Canal::replaceSpecialChar((*it)->getName());
+Channel	*Server::getChannelByName(std::string name) const {
+	for (std::set<Channel*>::const_iterator it = this->channels.begin(); it != this->channels.end(); it++) {
+		std::string tmpName = Channel::replaceSpecialChar((*it)->getName());
 		if ((*it)->getName() == name) {
 			return *it;
 		}
@@ -172,14 +172,14 @@ std::ostream &operator<<(std::ostream &out, Server const &rhs) {
 	out << "Server Server ops : " << rhs.getServerOps().size() << "\n";
 	printUsers(rhs.getServerOps());
 	out << "Server canals : " << rhs.getServerOps().size() << "\n";
-	printCanals(rhs.getCanals());
+	printChannels(rhs.getChannels());
 	return out;
 }
 
-Canal* Server::findCanalByName(const std::string& name) {
-	for (std::set<Canal*>::iterator it = this->canals.begin(); it != this->canals.end(); ++it)
+Channel* Server::findChannelByName(const std::string& name) {
+	for (std::set<Channel*>::iterator it = this->channels.begin(); it != this->channels.end(); ++it)
 	{
-		Canal* canal = *it;
+		Channel* canal = *it;
 		if (canal->getName() == name) 
 			return canal;
 	}

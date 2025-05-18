@@ -6,7 +6,7 @@
 /*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/05/19 00:06:38 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/19 01:38:28 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void CommandManager::handlePrivmsg(std::string command, User &user) {
 	Server &server = Server::getServer();
 
 	if (target[0] == '#') {
-		Canal *canal = server.getCanalByName(target);
+		Channel *canal = server.getChannelByName(target);
 		
 		if (!canal) {
 			Message::noSuchNickChannel(target, user);

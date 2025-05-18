@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   JOIN.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/04/24 06:00:03 by leye             ###   ########.fr       */
+/*   Updated: 2025/05/19 01:38:28 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../CommandManager.hpp"
 
 
-bool	canalHasFlag(bool hasPasswordParam, Canal &canal, User &user) {
+bool	canalHasFlag(bool hasPasswordParam, Channel &canal, User &user) {
 	(void)user;
 	if (hasPasswordParam == false && canal.getPassword().size() > 1) {
 		// :localhost 475 nickname canalName :Cannot join channel (+k)
@@ -53,7 +53,7 @@ void sendToChannelUsers(const std::set<User*> &users, const std::string &message
     }
 }
 // Fonction pour valider les restrictions du canal
-bool validateChannelRestrictions(Canal &canal, User &user, const std::string &password) {
+bool validateChannelRestrictions(Channel &canal, User &user, const std::string &password) {
     if (canal.isProtectedByPassword() && password != canal.getPassword()) {
         std::string errorMsg = ":server 475 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+k) - bad key\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
@@ -91,9 +91,9 @@ void CommandManager::handleJoin(std::string command, User &user)
     std::string password = extractPassword(command);
 
     // Recherche ou création du canal
-    Canal *canal = server.getCanalByName(canalName);
+    Channel *canal = server.getChannelByName(canalName);
     if (canal == NULL) {
-        canal = new Canal(canalName);
+        canal = new Channel(canalName);
         server.addCanal(*canal);
         canal->addChanOps(user);
         std::cout << "Canal " << canalName << " created." << std::endl;

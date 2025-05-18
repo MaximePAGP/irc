@@ -1,7 +1,7 @@
 #include "../CommandManager.hpp"
 
 
-static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
+static	void	addCanalPassord(std::string password, Channel &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
 		return;
@@ -16,7 +16,7 @@ static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
 		return;
 	}
 
-	if (Canal::hasForbbidenCharPassword(password)) {
+	if (Channel::hasForbbidenCharPassword(password)) {
 		Message::chanPasswordForbiddenChar(canal.getName(), user, password);
 		return;
 	}
@@ -27,7 +27,7 @@ static	void	addCanalPassord(std::string password, Canal &canal, User &user) {
 	canal.setPassword(password);
 }
 
-static	void	removeCanalPassord(std::string uslessArg, Canal &canal, User &user) {
+static	void	removeCanalPassord(std::string uslessArg, Channel &canal, User &user) {
 	(void)uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
@@ -37,7 +37,7 @@ static	void	removeCanalPassord(std::string uslessArg, Canal &canal, User &user) 
 	canal.setPassword("");
 }
 
-static	void	addInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
+static	void	addInvitationOnly(std::string uslessArg, Channel &canal, User &user) {
 	(void) uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
@@ -49,7 +49,7 @@ static	void	addInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
 	Message::changedModeChan(canal.getName(), user, " +i");
 }
 
-static	void	removeInvitationOnly(std::string uslessArg, Canal &canal, User &user) {
+static	void	removeInvitationOnly(std::string uslessArg, Channel &canal, User &user) {
 	(void) uslessArg;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
@@ -63,7 +63,7 @@ static	void	removeInvitationOnly(std::string uslessArg, Canal &canal, User &user
 
 
 
-static	void	addChanOp(std::string nickname, Canal &canal, User &user) {
+static	void	addChanOp(std::string nickname, Channel &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
 		return;
@@ -86,7 +86,7 @@ static	void	addChanOp(std::string nickname, Canal &canal, User &user) {
 	Message::changedModeChan(canal.getName(), user, flagWithTarget);
 }
 
-static	void	removedChanOp(std::string nickname, Canal &canal, User &user) {
+static	void	removedChanOp(std::string nickname, Channel &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
 		return;
@@ -109,7 +109,7 @@ static	void	removedChanOp(std::string nickname, Canal &canal, User &user) {
 
 
 
-static	void	addLimit(std::string limit, Canal &canal, User &user) {
+static	void	addLimit(std::string limit, Channel &canal, User &user) {
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
 		return;
@@ -135,7 +135,7 @@ static	void	addLimit(std::string limit, Canal &canal, User &user) {
 	canal.setUserlimit(parsedLimit);
 }
 
-static	void	removeLimit(std::string usless, Canal &canal, User &user) {
+static	void	removeLimit(std::string usless, Channel &canal, User &user) {
 	(void)usless;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
@@ -148,7 +148,7 @@ static	void	removeLimit(std::string usless, Canal &canal, User &user) {
 
 
 
-static	void	addTopicProtection(std::string usless, Canal &canal, User &user) {
+static	void	addTopicProtection(std::string usless, Channel &canal, User &user) {
 	(void)usless;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
@@ -161,7 +161,7 @@ static	void	addTopicProtection(std::string usless, Canal &canal, User &user) {
 	}
 }
 
-static	void	removeTopicProtection(std::string usless, Canal &canal, User &user) {
+static	void	removeTopicProtection(std::string usless, Channel &canal, User &user) {
 	(void)usless;
 	if (canal.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(canal.getName(), user);
@@ -175,7 +175,7 @@ static	void	removeTopicProtection(std::string usless, Canal &canal, User &user) 
 }
 
 
-typedef void (*ActionFunction) (std::string arg, Canal &canal, User &user);
+typedef void (*ActionFunction) (std::string arg, Channel &canal, User &user);
 
 
 void	loadFunctions(std::map<std::string, ActionFunction> &container) {
@@ -258,7 +258,7 @@ static	bool	hasMultipleFlags(std::string &command) {
 
 std::map<std::string, ActionFunction> implementedFlags;
 
-static	void	handleMultiFlags(std::string &command, std::vector<std::string> parsedParams, User &user, Canal &canal) {
+static	void	handleMultiFlags(std::string &command, std::vector<std::string> parsedParams, User &user, Channel &canal) {
 	size_t flagIndex = command.find_first_of("+-");
 	if (flagIndex == std::string::npos)
 		return;
@@ -293,7 +293,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 		return;
 
 	std::string canalName = CommandManager::trimFirstParamSpace(param);
-	Canal *canal = server.getCanalByName(canalName);
+	Channel *canal = server.getChannelByName(canalName);
 
 	if (canal == NULL) {
 		Message::modeNotSuchChannel(user, canalName);

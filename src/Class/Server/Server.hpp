@@ -9,7 +9,7 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <stdbool.h>
-#include "../Canal/Canal.hpp"
+#include "../Channel/Channel.hpp"
 #include "../User/User.hpp"
 #include "../../Manager/commands/CommandManager.hpp"
 #include "ServerExepction.hpp"
@@ -19,7 +19,7 @@
 #define	MSG_LEN 512
 
 void	printUsers(std::set<User*>);
-void	printCanals(std::set<Canal*>);
+void	printChannels(std::set<Channel*>);
 void	redirectCommand(std::string command);
 bool	isNick(std::string command) ;
 
@@ -32,9 +32,9 @@ class Server: public ServerExepction
 		std::string 			password;
 		int 					portname;
 		bool					isRunning;
-		std::set<User*>			users;
-		std::set<User*>			serverOps;
-		std::set<Canal*>			canals;
+		std::set<User *>			users;
+		std::set<User *>			serverOps;
+		std::set<Channel *>		channels;
 		std::vector
 			<struct pollfd>		sockets;
 		void					handleClientLogout(int clientFd);
@@ -55,8 +55,8 @@ class Server: public ServerExepction
 		User					*getUserByFd(int fd) const;
 		User					*getUserByUsername(std::string username) const;
 		User					*getUserByNickname(std::string nickname) const;
-		Canal					*getCanalByName(std::string name) const;
-		std::set<Canal*>		getCanals() const;
+		Channel					*getChannelByName(std::string name) const;
+		std::set<Channel*>		getChannels() const;
 		
 		void					setPassword(std::string newPassword);
 		void					setState(bool value);
@@ -69,15 +69,15 @@ class Server: public ServerExepction
 								addUser(User &newUser);
 		std::size_t				removeUser(User &target);
 		
-		std::pair<std::set<Canal*>::iterator, bool>
-								addCanal(Canal &newCanal);
-								std::size_t				removeCanal(Canal &target);
+		std::pair<std::set<Channel*>::iterator, bool>
+								addCanal(Channel &newChannel);
+								std::size_t				removeCanal(Channel &target);
 
 								bool 					hasUser(std::set<User> usersContainer, User &target);
 								
 								void					running();
 		void					kill();
-		Canal* 					findCanalByName(const std::string& name);
+		Channel* 				findChannelByName(const std::string& name);
 		User					*findUserByFd(int clientFd);
 		//*********************************	 *
 };
