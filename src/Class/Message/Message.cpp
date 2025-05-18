@@ -177,16 +177,13 @@ void	Message::nickSet(User const &user) {
 void	Message::nickSetUpdated(User const &user, std::string const newNick) {
 	std::string message = ":";
 
-	message.append(ENV);
-	message.append(" 001 ");
 	message.append(user.getNickName());
-	message.append(" :You've set your nickname to ");
+	message.append(" NICK :");
 	message.append(newNick);
 	message.append(END_CMD);
-	
+
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
-
 
 
 // 461  USER :Not enough parameters
