@@ -53,6 +53,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["NICK"] = CommandManager::handleNick;
 	commands["USER"] = CommandManager::handleUsername;
 	commands["KICK"] = CommandManager::handleKick;
+	commands["INVITE"] = CommandManager::handleInvite;
 	commands["PING"] = CommandManager::handlePing;
 	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
 	commands["KICK"] = CommandManager::handleKick;
