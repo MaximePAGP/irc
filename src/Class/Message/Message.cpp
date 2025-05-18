@@ -384,3 +384,17 @@ void	Message::commandToLong(User const &user) {
 	
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+// 443
+void	Message::alreadyOnChannel(User const &user, Canal const &canal) {
+	std::string message = ":";
+	message.append(ENV);
+	message.append(" 443 ");
+	message.append(user.getNickName());
+	message.append(" # ");
+	message.append(canal.getName());
+	message.append(" :is already on channel");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}

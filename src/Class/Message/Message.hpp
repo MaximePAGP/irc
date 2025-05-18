@@ -43,6 +43,8 @@ class Message
 
 		static	void	noSuchCommand(User const &user, std::string const &command);
 		static	void	commandToLong(User const &user);
+
+		static	void	alreadyOnChannel(User const &user, Canal const &canal);
 	};
 
 
