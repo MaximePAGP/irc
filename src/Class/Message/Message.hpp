@@ -27,14 +27,12 @@ class Message
 		static	void	nickSetUpdated(User const &user, std::string const oldNick);
 
 
-		static	void	userNoParam(User const &user, std::string const nickname);
 		static	void	userToLong(User const &user, std::string const nickname);
 		static	void	userAlreadyTaken(User const &user, std::string const nickname);
 		static	void	userForbiddenChar(User const &user, std::string const nickname);
 		static	void	userCannotChange(User const &user, std::string const nickname);
 		static	void	userSet(User const &user);
 
-		static	void	modeNotEnoughParams(User const &user);
 		static	void	modeNotSuchChannel(User const &user, std::string const canalName);
 
 		static	void	topicSetTopic(User const &user, Canal const &canal);
@@ -46,7 +44,8 @@ class Message
 
 		static	void	alreadyOnChannel(User const &user, Canal const &canal);
 
-		static	void	kickNotEnoughParams(User const &user);
+
+		static	void	notEnoughParams(User const &user, std::string const &command);
 	};
 
 

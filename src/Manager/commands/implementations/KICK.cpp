@@ -3,7 +3,7 @@
 void CommandManager::handleKick(std::string param, User &user)
 {
 	if (param.empty() || param.size() < 2) {
-		Message::kickNotEnoughParams(user);
+		Message::notEnoughParams(user, "KICK");
 		return;
 	}
     
@@ -25,7 +25,7 @@ void CommandManager::handleKick(std::string param, User &user)
 	}
 
     if (!(iss >> channelName >> targetNickname)) {
-        Message::userNoParam(user, "KICK");
+        Message::noSuchCommand(user, "KICK");
         return;
     }
 

@@ -186,20 +186,6 @@ void	Message::nickSetUpdated(User const &user, std::string const newNick) {
 }
 
 
-// 461  USER :Not enough parameters
-void	Message::userNoParam(User const &user, std::string const username) {
-	std::string message = ":";
-
-	message.append(ENV);
-	message.append(" 461 ");
-	message.append(user.getNickName());
-	message.append(" ");
-	message.append(username);
-	message.append(" USER :Not enough parameters");
-	message.append(END_CMD);
-	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
-}
 
 
 // 432   :Erroneous username
@@ -277,18 +263,6 @@ void	Message::userSet(User const &user) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
-
-void	Message::modeNotEnoughParams(User const &user) {
-	std::string message = ":";
-
-	message.append(ENV);
-	message.append(" 001 USER ");
-	message.append("Username has been set to ");
-	message.append(user.getUserName());
-	message.append(END_CMD);
-	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
-}
 
 // 403 :No such channel
 void	Message::modeNotSuchChannel(User const &user, const std::string canalName) {
@@ -397,13 +371,16 @@ void	Message::alreadyOnChannel(User const &user, Canal const &canal) {
 }
 
 
+
 // 461
-void	Message::kickNotEnoughParams(User const &user) {
+void	Message::notEnoughParams(User const &user, std::string const &command) {
 	std::string message = ":";
 	message.append(ENV);
 	message.append(" 461 ");
 	message.append(user.getNickName());
-	message.append(" KICK :Not enough parameters");
+	message.append(" ");
+	message.append(command);
+	message.append(" :Not enough parameters");
 	message.append(END_CMD);
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
