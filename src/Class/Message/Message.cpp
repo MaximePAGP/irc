@@ -385,6 +385,25 @@ void	Message::notEnoughParams(User const &user, std::string const &command) {
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+
+void	Message::kickSucces(User const &user, Channel const &channel, std::string const &target, std::string const reason) {
+	std::string message = ":";
+	message.append(user.getNickName());
+	message.append(" KICK #");
+	message.append(channel.getName());
+	message.append(" ");
+	message.append(target);
+	if (!reason.empty()) {
+		message.append(" ");
+		message.append(reason);
+	}
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
 // 479
 void	Message::joinChannelNameIllegal(User const &user, std::string const &name) {
 	std::string message = ":";

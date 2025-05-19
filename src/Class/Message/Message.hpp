@@ -46,6 +46,9 @@ class Message
 
 
 		static	void	notEnoughParams(User const &user, std::string const &command);
+
+		static	void	kickSucces(User const &user, Channel const &chanel, std::string const &target, std::string const reason);
+
 		static	void	joinChannelNameIllegal(User const &user, std::string const &name);
 	};
 

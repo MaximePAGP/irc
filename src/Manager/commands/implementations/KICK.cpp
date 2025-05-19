@@ -1,41 +1,75 @@
 #include "../CommandManager.hpp"
 
+
+static	void	extractParams(std::string rawParams, std::string &canalName, std::string &targetName, std::string &reason) {
+	reason = "";
+	targetName = "";
+	canalName = "";
+
+	size_t canalNameSepPos = rawParams.find_first_of(" ");
+
+	if (canalNameSepPos == std::string::npos) {
+		canalName = rawParams;
+		return;
+	}
+	
+	canalName = rawParams.substr(0, canalNameSepPos);
+
+	rawParams = rawParams.substr(canalNameSepPos);
+
+	if (rawParams.empty())
+		return;
+
+	rawParams = rawParams.substr(1);
+		
+	size_t targetSepPos = rawParams.find_first_of(" ");
+
+	if (std::string::npos == targetSepPos) {
+		targetName = rawParams;
+		return;
+	}
+
+	targetName = rawParams.substr(0, targetSepPos);
+
+	rawParams = rawParams.substr(targetSepPos);
+
+	rawParams = rawParams.substr(1);
+
+	if (rawParams.empty())
+		return;
+
+	reason = rawParams;
+}
+
+
 void CommandManager::handleKick(std::string param, User &user)
 {
-	if (param.empty() || param.size() < 2) {
+	if (param.empty()) {
 		Message::notEnoughParams(user, "KICK");
 		return;
 	}
     
 	Server &server = Server::getServer();
+
 	param = param.substr(1);
-    std::istringstream iss(param);
-    std::string channelName, targetNickname, reason;
-	std::string canalName = param.substr(0, param.find_first_of(" "));
-	std::string target = param.substr(param.find_first_of(" "));
 
+    std::string channelName, target, reason = "";
 
+	extractParams(param, channelName, target, reason);
 
-	std::cout << "param (" << param << ") channeNae (" << canalName << ") reason (" << target << ")" << std::endl;
-	Canal *canal = server.getCanalByName(canalName);
-
-	if (!canal) {
-		Message::noSuchNickChannel(canalName, user);
+	if (channelName.empty() || target.empty()) {
+		Message::notEnoughParams(user, "KICK");
 		return;
 	}
 
-    if (!(iss >> channelName >> targetNickname)) {
-        Message::noSuchCommand(user, "KICK");
-        return;
-    }
+	if (channelName[0] != '#') {
+		Message::noSuchNickChannel(channelName, user);
+		return;
+	}
+	channelName = channelName.substr(1);
+	std::cout << "param (" << reason << ") channeNae (" << channelName << ") reason (" << target << ")" << std::endl;
+	Channel *channel = server.getChannelByName(channelName);
 
-    if (iss.peek() == ' ')
-        iss.ignore();
-    std::getline(iss, reason);
-    if (!reason.empty() && reason[0] == ':')
-        reason.erase(0, 1);
-
-    Canal* channel = server.getCanalByName(channelName);
     if (!channel) {
         Message::modeNotSuchChannel(user, channelName);
         return;
@@ -51,25 +85,15 @@ void CommandManager::handleKick(std::string param, User &user)
         return;
     }
 
-    User* targetUser = channel->getConnectedUserByNickname(targetNickname);
+    User* targetUser = channel->getConnectedUserByNickname(target);
     if (!targetUser) {
-        Message::noSuchNickChannel(targetNickname, user);
+        Message::noSuchNickChannel(target, user);
         return;
     }
 
-    channel->removeUser(*targetUser);
-
-    std::string kickMessage = ":" + user.getNickName() + " KICK #" + channelName + " " + targetNickname;
-    if (!reason.empty())
-        kickMessage += " :" + reason;
-    kickMessage += "\r\n";
-
-    send(targetUser->getFd().fd, kickMessage.c_str(), kickMessage.size(), 0);
-
     std::set<User*> usersInChannel = channel->getCurrentUsers();
     for (std::set<User*>::iterator it = usersInChannel.begin(); it != usersInChannel.end(); ++it) {
-        if ((*it)->getNickName() != targetNickname)
-            send((*it)->getFd().fd, kickMessage.c_str(), kickMessage.size(), 0);
+            Message::kickSucces(*(*it), *channel, target, reason);
     }
+    channel->removeUser(*targetUser);
 }
-
