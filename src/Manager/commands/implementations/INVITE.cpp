@@ -8,7 +8,7 @@ void CommandManager::handleInvite(std::string param, User &user)
     std::string targetUserName, channelName;
 
     if (!(iss >> targetUserName >> channelName)) {
-        messageManager.userNoParam(user, "INVITE");
+        messageManager.notEnoughParams(user, "INVITE");
         return;
     }
 
@@ -18,7 +18,7 @@ void CommandManager::handleInvite(std::string param, User &user)
         return;
     }
 
-    Canal* channel = server.getCanalByName(channelName);
+    Channel* channel = server.getChannelByName(channelName);
     if (!channel) {
         messageManager.noSuchNickChannel(channelName, user);
         return;

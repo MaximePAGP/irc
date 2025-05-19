@@ -186,20 +186,6 @@ void	Message::nickSetUpdated(User const &user, std::string const newNick) {
 }
 
 
-// 461  USER :Not enough parameters
-void	Message::userNoParam(User const &user, std::string const username) {
-	std::string message = ":";
-
-	message.append(ENV);
-	message.append(" 461 ");
-	message.append(user.getNickName());
-	message.append(" ");
-	message.append(username);
-	message.append(" USER :Not enough parameters");
-	message.append(END_CMD);
-	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
-}
 
 
 // 432   :Erroneous username
@@ -278,18 +264,6 @@ void	Message::userSet(User const &user) {
 }
 
 
-void	Message::modeNotEnoughParams(User const &user) {
-	std::string message = ":";
-
-	message.append(ENV);
-	message.append(" 001 USER ");
-	message.append("Username has been set to ");
-	message.append(user.getUserName());
-	message.append(END_CMD);
-	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
-}
-
 // 403 :No such channel
 void	Message::modeNotSuchChannel(User const &user, const std::string canalName) {
 	std::string message = ":";
@@ -306,7 +280,7 @@ void	Message::modeNotSuchChannel(User const &user, const std::string canalName) 
 }
 
 
-void	Message::topicSetTopic(User const &user, Canal const &canal) {
+void	Message::topicSetTopic(User const &user, Channel const &canal) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -336,7 +310,7 @@ void	Message::topicNoTopic(User const &user, std::string const canalName) {
 }
 
 // 332
-void	Message::topicGetTopic(User const &user, Canal const &canal) {
+void	Message::topicGetTopic(User const &user, Channel const &canal) {
 	std::string message = ":";
 
 	message.append(ENV);
@@ -383,7 +357,7 @@ void	Message::commandToLong(User const &user) {
 }
 
 // 443
-void	Message::alreadyOnChannel(User const &user, Canal const &canal) {
+void	Message::alreadyOnChannel(User const &user, Channel const &canal) {
 	std::string message = ":";
 	message.append(ENV);
 	message.append(" 443 ");
@@ -391,6 +365,54 @@ void	Message::alreadyOnChannel(User const &user, Canal const &canal) {
 	message.append(" # ");
 	message.append(canal.getName());
 	message.append(" :is already on channel");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+
+// 461
+void	Message::notEnoughParams(User const &user, std::string const &command) {
+	std::string message = ":";
+	message.append(ENV);
+	message.append(" 461 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(command);
+	message.append(" :Not enough parameters");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+void	Message::kickSucces(User const &user, Channel const &channel, std::string const &target, std::string const reason) {
+	std::string message = ":";
+	message.append(user.getNickName());
+	message.append(" KICK #");
+	message.append(channel.getName());
+	message.append(" ");
+	message.append(target);
+	if (!reason.empty()) {
+		message.append(" ");
+		message.append(reason);
+	}
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+// 479
+void	Message::joinChannelNameIllegal(User const &user, std::string const &name) {
+	std::string message = ":";
+	message.append(ENV);
+	message.append(" 479 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(name);
+	message.append(" :Illegal channel name");
 	message.append(END_CMD);
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);

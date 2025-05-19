@@ -1,5 +1,5 @@
-#ifndef CANAL_CLASS_HPP
-#define CANAL_CLASS_HPP
+#ifndef CHANNEL_CLASS_HPP
+#define CHANNEL_CLASS_HPP
 
 
 #include <string>
@@ -13,10 +13,12 @@
 
 void	printUsers(std::set<User*> users);
 
-class Canal
+#define MAX_NAME_LENGTH 200
+
+class Channel
 {
 	private:
-		Canal();
+		Channel();
 		int						userLimit; // flag +l 
 		bool					invitationOnly; // flag +i
 		bool					hasProtectedTopic; // flag +t
@@ -27,10 +29,10 @@ class Canal
 		std::set<User*>			invUsers;
 		std::set<User*>			chanOp;
 	public:
-		Canal(std::string name);
-		virtual ~Canal();
-		Canal(Canal const &copy);
-		Canal &operator=(Canal const &rhs);
+		Channel(std::string name);
+		virtual ~Channel();
+		Channel(Channel const &copy);
+		Channel &operator=(Channel const &rhs);
 
 		int				getUserLimits() const;
 		std::string		getName() const;
@@ -73,11 +75,11 @@ class Canal
 		static	bool	hasForbbidenCharPassword(std::string pw);
 
 		bool			isProtectedByPassword(); // used on +k flag !! PASSWORD IS NOT REQUIRED IF USER IS INVITED
-		bool			operator<(const Canal &other) const;
+		bool			operator<(const Channel &other) const;
 };
 
-std::ostream &operator<<(std::ostream &out, Canal const &rhs);
-void	printCanals(std::set<Canal*>);
+std::ostream &operator<<(std::ostream &out, Channel const &rhs);
+void	printChannels(std::set<Channel*>);
 
 
 #endif

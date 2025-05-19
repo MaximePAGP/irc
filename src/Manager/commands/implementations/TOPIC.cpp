@@ -1,6 +1,6 @@
 #include "../CommandManager.hpp"
 
-static	void	getCurrentTopic(Canal &canal, User &user) {
+static	void	getCurrentTopic(Channel &canal, User &user) {
 	if (canal.getTopic().empty()) {
 		Message::topicNoTopic(user, canal.getName());
 		return;
@@ -30,7 +30,7 @@ void	CommandManager::handleTopic(std::string command, User &user) {
 
 	std::string jumpedSpace = getCanalNameStart(command);
 	std::string canalName = trimToFirstSpace(jumpedSpace);
-	Canal *targetCanal = server.getCanalByName(canalName);
+	Channel *targetCanal = server.getChannelByName(canalName);
 
 	if (targetCanal == NULL) {
 		Message::modeNotSuchChannel(user, canalName);

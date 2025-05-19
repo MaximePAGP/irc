@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PRIVMSG.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/04/24 06:36:23 by leye             ###   ########.fr       */
+/*   Updated: 2025/05/19 01:38:28 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,73 +14,67 @@
 #include "../../../Class/Server/Server.hpp"
 
 void CommandManager::handlePrivmsg(std::string command, User &user) {
-    // Vérifiez si l'utilisateur est enregistr
-    if (user.getNickName().empty() || user.getUserName().empty()) {
-        Message::noSuchCommand(user, "PRIVMSG");
-        return;
-    }
-    command = command.substr(1); // Enlever le premier caractère ':'
-    std::cout << "Command: " << command << std::endl;
-    // Vérifiez si la commande est vide
-    if (command.empty()) {
-        Message::noSuchCommand(user, "PRIVMSG");
-        return;
-    }
-    // Extraire la cible = 1er paramètre de command
-    size_t firstSpace = command.find(' ');
-    if (firstSpace == std::string::npos) {
-        Message::noSuchCommand(user, "PRIVMSG");
-        return;
-    }
-    std::string target = command.substr(0, firstSpace);
-    if (target.empty()) {
-        Message::noSuchCommand(user, "PRIVMSG");
-        return;
-    }
-    std::cout << "Target: " << target << std::endl;
-    // Extraire le message = 2ème paramètre de command et tout le reste
-    std::string message = command.substr(firstSpace + 1);
-    if (message.empty()) {
-        Message::noSuchCommand(user, "PRIVMSG");
-        return;
-    }
-    std::cout << "Message: " << message << std::endl;
-    // Obtenir le serveur
-    Server &server = Server::getServer();
 
-    // Si la cible est un canal
-    if (target[0] == '#') {
-        Canal *canal = server.getCanalByName(target);
-        if (!canal) {
-            Message::noSuchNickChannel(target, user);
-            return;
-        }
-        // Vérifiez si l'utilisateur est dans le canal
-        if (canal->getConnectedUserByNickname(user.getNickName()) == NULL) {
-            Message::noSuchNickChannel(target, user);
-            return;
-        }
-        // Envoyer le message à tous les utilisateurs du canal sauf l'expéditeur
-        std::set<User*> channelUsers = canal->getCurrentUsers();
-        for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it)
-        {
-            if (*it == &user) {
-                continue; // Exclure l'utilisateur qui envoie le message
-            }
-            std::cout << "Sending message to user: " << (*it)->getNickName() << std::endl;
-            std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " :" + message + "\r\n";
-            send((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
-        }
-    }
-    // Si la cible est un utilisateur
-    else {
-        User *targetUser = server.getUserByNickname(target);
-        if (!targetUser) {
-            Message::noSuchNickChannel(target, user);
-            return;
-        }
-        // Envoyer le message à l'utilisateur cible
-        std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " :" + message + "\r\n";
-        send(targetUser->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
-    }
+	if (command.empty() || command.size() <= 2) {
+		Message::notEnoughParams(user, "PRIVMSG");
+		return;
+	}
+
+	command = command.substr(1);
+
+	size_t firstSpace = command.find(' ');
+	if (firstSpace == std::string::npos) {
+		Message::notEnoughParams(user, "PRIVMSG");
+		return;
+	}
+	std::string target = command.substr(0, firstSpace);
+	if (target.empty()) {
+		Message::notEnoughParams(user, "PRIVMSG");
+		return;
+	}
+
+	// Extraire le message = 2ème paramètre de command et tout le reste
+	std::string message = command.substr(firstSpace + 1);
+	if (message.empty()) {
+		Message::noSuchCommand(user, "PRIVMSG");
+		return;
+	}
+
+	Server &server = Server::getServer();
+
+	if (target[0] == '#') {
+		Channel *canal = server.getChannelByName(target);
+		
+		if (!canal) {
+			Message::noSuchNickChannel(target, user);
+			return;
+		}
+		
+		if (canal->getConnectedUserByNickname(user.getNickName()) == NULL) {
+			Message::noSuchNickChannel(target, user);
+			return;
+		}
+		
+		std::set<User*> channelUsers = canal->getCurrentUsers();
+		for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it)
+		{
+			if ((*it)->getNickName() == user.getNickName()) {
+				continue;
+			}
+			
+			std::cout << "Sending message to user: " << (*it)->getNickName() << std::endl;
+			std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " :" + message + END_CMD;
+			send((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
+		}
+	} else {
+		User *targetUser = server.getUserByNickname(target);
+		
+		if (!targetUser) {
+			Message::noSuchNickChannel(target, user);
+			return;
+		}
+
+		std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " :" + message + END_CMD;
+		send(targetUser->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
+	}
 }

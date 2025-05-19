@@ -4,7 +4,7 @@ void CommandManager::handleUsername(std::string param, User &user) {
 	Server const &server = Server::getServer();
 	
 	if (param.empty() || param.size() < 2) {
-		Message::userNoParam(user, param);
+		Message::notEnoughParams(user, "USER");
 		return;
 	}
 

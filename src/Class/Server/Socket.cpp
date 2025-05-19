@@ -10,9 +10,6 @@ void	Server::running() {
 		int	pollEvent = poll(this->sockets.data(), this->sockets.size(), -1);
 		if (pollEvent == -1)
 			break;
-		// std::cout << "pollevent : " << pollEvent << std::endl;
-		// if (pollEvent < 1)
-		// 	continue;
 
 		for (size_t i = 0; i < this->sockets.size(); i++) {
 			if (this->sockets[i].revents & POLLIN) {

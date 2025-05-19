@@ -56,7 +56,6 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["INVITE"] = CommandManager::handleInvite;
 	commands["PING"] = CommandManager::handlePing;
 	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
-	commands["KICK"] = CommandManager::handleKick;
 
 	if (commands.find(getFirstCommand) == commands.end()) {
 		Message::noSuchCommand(user, command);
@@ -80,8 +79,8 @@ void	CommandManager::buildCommand(std::string command, int clientFd) {
 		curUser->getCommandBuffer().append(command)
 	);
 
-	while (curUser->getCommandBuffer().find("\r\n") != std::string::npos) {
-		size_t pos = curUser->getCommandBuffer().find("\r\n");
+	while (curUser->getCommandBuffer().find(END_CMD) != std::string::npos) {
+		size_t pos = curUser->getCommandBuffer().find(END_CMD);
 	
 		std::string fullCommand = curUser->getCommandBuffer().substr(0, pos);
 		curUser->setCommandBuffer(curUser->getCommandBuffer().substr(pos + 2, curUser->getCommandBuffer().size()));
