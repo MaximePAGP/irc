@@ -13,6 +13,8 @@
 
 void	printUsers(std::set<User*> users);
 
+#define MAX_NAME_LENGTH 200
+
 class Channel
 {
 	private:

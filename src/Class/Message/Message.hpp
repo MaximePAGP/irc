@@ -46,6 +46,7 @@ class Message
 
 
 		static	void	notEnoughParams(User const &user, std::string const &command);
+		static	void	joinChannelNameIllegal(User const &user, std::string const &name);
 	};
 
 

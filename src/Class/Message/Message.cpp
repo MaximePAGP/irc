@@ -385,3 +385,16 @@ void	Message::notEnoughParams(User const &user, std::string const &command) {
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+// 479
+void	Message::joinChannelNameIllegal(User const &user, std::string const &name) {
+	std::string message = ":";
+	message.append(ENV);
+	message.append(" 479 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(name);
+	message.append(" :Illegal channel name");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
