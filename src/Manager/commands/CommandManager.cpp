@@ -56,6 +56,8 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["INVITE"] = CommandManager::handleInvite;
 	commands["PING"] = CommandManager::handlePing;
 	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
+	commands["PART"] = CommandManager::handlePart;
+
 
 	if (commands.find(getFirstCommand) == commands.end()) {
 		Message::noSuchCommand(user, command);

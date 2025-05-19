@@ -417,3 +417,29 @@ void	Message::joinChannelNameIllegal(User const &user, std::string const &name) 
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+
+// 442
+void	Message::joinChannelNameIllegal(User const &user, std::string const &chanName) {
+	std::string message = ":";
+	message.append(ENV);
+	message.append(" 442 ");
+	message.append(chanName);
+	message.append(" :You're not on that channel");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+void	Message::partNotification(User const &user,  std::string const &chanName, std::string const &userLeft, std::string const reason) {
+	std::string message = ":";
+	message.append(userLeft);
+	message.append(" PART #");
+	message.append(chanName);
+	message.append(" ");
+	message.append(reason);
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
