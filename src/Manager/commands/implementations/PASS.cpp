@@ -10,7 +10,7 @@ void	CommandManager::handlePass(std::string command, User &user) {
 	}
 	if (command.find("PASS") != 0)
 	{
-		send(user.getFd().fd, ":server 464 rgrangeo :Password required\r\n", 41, 0);
+		send(user.getFd().fd, ":server 464 * :Password required\r\n", 41, 0);
 		return ;
 	}
 	command = command.substr(5, command.size());
