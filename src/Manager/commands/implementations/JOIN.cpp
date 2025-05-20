@@ -3,27 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   JOIN.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/20 04:52:07 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:20:48 by leye             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../CommandManager.hpp"
 
 
-bool	canalHasFlag(bool hasPasswordParam, Channel &canal, User &user) {
+bool	canalHasFlag(bool hasPasswordParam, Channel &canal, User &user) 
+{
 	(void)user;
-	if (hasPasswordParam == false && canal.getPassword().size() > 1) {
+	if (hasPasswordParam == false && canal.getPassword().size() > 1) 
+    {
 		// :localhost 475 nickname canalName :Cannot join channel (+k)
 		return true;
 	}
-	if (canal.getUserLimits() < static_cast<int>(canal.getCurrentUsers().size()) + 1) {
+	if (canal.getUserLimits() < static_cast<int>(canal.getCurrentUsers().size()) + 1) 
+    {
 		// :localhost 471 nickname canalName :Cannot join channel (+l)
 		return true;
 	}
-	if (canal.getIsOnInvitationOnly()) {
+	if (canal.getIsOnInvitationOnly()) 
+    {
 		// :localhost 473 nickname canalName :Cannot join channel (+i)
 		return true;
 	}
@@ -32,9 +36,12 @@ bool	canalHasFlag(bool hasPasswordParam, Channel &canal, User &user) {
 
 
 
-void sendToChannelUsers(const std::set<User*> &users, const std::string &message, User *excludeUser = NULL) {
-    for (std::set<User*>::iterator it = users.begin(); it != users.end(); ++it) {
-        if (*it == excludeUser) {
+void sendToChannelUsers(const std::set<User*> &users, const std::string &message, User *excludeUser = NULL) 
+{
+    for (std::set<User*>::iterator it = users.begin(); it != users.end(); ++it) 
+    {
+        if (*it == excludeUser) 
+        {
             continue; // Exclure l'utilisateur émetteur
         }
         send((*it)->getFd().fd, message.c_str(), message.length(), 0);
@@ -42,18 +49,22 @@ void sendToChannelUsers(const std::set<User*> &users, const std::string &message
 }
 
 // Fonction pour valider les restrictions du canal
-bool validateChannelRestrictions(Channel &canal, User &user, const std::string &password) {
-    if (canal.isProtectedByPassword() && password != canal.getPassword()) {
+bool validateChannelRestrictions(Channel &canal, User &user, const std::string &password) 
+{
+    if (canal.isProtectedByPassword() && password != canal.getPassword()) 
+    {
         std::string errorMsg = ":server 475 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+k) - bad key\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
     }
-    if (canal.getUserLimits() <= static_cast<int>(canal.getCurrentUsers().size())) {
+    if (canal.getUserLimits() <= static_cast<int>(canal.getCurrentUsers().size())) 
+    {
         std::string errorMsg = ":server 471 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+l) - channel is full\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
     }
-    if (canal.getIsOnInvitationOnly() && canal.getUserInvitation().find(&user) == canal.getUserInvitation().end()) {
+    if (canal.getIsOnInvitationOnly() && canal.getUserInvitation().find(&user) == canal.getUserInvitation().end()) 
+    {
         std::string errorMsg = ":server 473 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+i) - invite only\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
@@ -62,7 +73,8 @@ bool validateChannelRestrictions(Channel &canal, User &user, const std::string &
  }
 
 
-static	bool	hasIllegalName(std::string const &name) {
+static	bool	hasIllegalName(std::string const &name) 
+{
 	if (name.size() > MAX_NAME_LENGTH) 
 		return true;
 	if (name.find_first_of(" \0:,") != std::string::npos)
@@ -72,7 +84,8 @@ static	bool	hasIllegalName(std::string const &name) {
 
 void CommandManager::handleJoin(std::string command, User &user) 
 {
-    if (command.empty()) {
+    if (command.empty()) 
+    {
         Message::notEnoughParams(user, "JOIN");
         return;
     }
@@ -84,34 +97,39 @@ void CommandManager::handleJoin(std::string command, User &user)
     command = command.substr(1);
     size_t sep = command.find_first_of(" ");
     
-    if (sep == std::string::npos) {
+    if (sep == std::string::npos) 
+    {
         chanalName = command;
     } else {
         chanalName = command.substr(0, sep);
         password = command.substr(sep);
     }
 
-    if (chanalName[0] != '#') {
+    if (chanalName[0] != '#') 
+    {
         Message::modeNotSuchChannel(user, chanalName);
         return;
     }
 	chanalName = chanalName.substr(1);
     
-    if (hasIllegalName(chanalName)) {
+    if (hasIllegalName(chanalName)) 
+    {
         Message::modeNotSuchChannel(user, chanalName);
         return;
     }
 
     Channel *canal = server.getChannelByName(chanalName);
 
-    if (canal == NULL) {
+    if (canal == NULL) 
+    {
         canal = new Channel(chanalName);
         server.addCanal(*canal);
         canal->addChanOps(user);
     }
 
     // Validation des restrictions du canal
-    if (!validateChannelRestrictions(*canal, user, password)) {
+    if (!validateChannelRestrictions(*canal, user, password)) 
+    {
         return;
     }
 
@@ -123,7 +141,8 @@ void CommandManager::handleJoin(std::string command, User &user)
     send(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
 
     // Envoi du topic du canal
-    if (!canal->getTopic().empty()) {
+    if (!canal->getTopic().empty()) 
+    {
         std::string topicResponse = ":server 332 " + user.getNickName() + " #" + chanalName + " :" + canal->getTopic() + "\r\n";
         send(user.getFd().fd, topicResponse.c_str(), topicResponse.length(), 0);
     }
@@ -133,9 +152,11 @@ void CommandManager::handleJoin(std::string command, User &user)
     std::set<User*> channelUsers = canal->getCurrentUsers();
     std::set<User*> chanOps = canal->getChanOps();
 
-    for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) {
+    for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) 
+    {
         User *channelUser = *it;
-        if (chanOps.find(channelUser) != chanOps.end()) {
+        if (chanOps.find(channelUser) != chanOps.end()) 
+        {
             namesResponse += "@";
         }
         namesResponse += channelUser->getNickName() + " ";

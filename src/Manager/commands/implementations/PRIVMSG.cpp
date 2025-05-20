@@ -3,19 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   PRIVMSG.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/05/19 01:38:28 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:21:16 by leye             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../CommandManager.hpp"
 #include "../../../Class/Server/Server.hpp"
 
-void CommandManager::handlePrivmsg(std::string command, User &user) {
+void CommandManager::handlePrivmsg(std::string command, User &user) 
+{
 
-	if (command.empty() || command.size() <= 2) {
+	if (command.empty() || command.size() <= 2) 
+	{
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
 	}
@@ -23,26 +25,30 @@ void CommandManager::handlePrivmsg(std::string command, User &user) {
 	command = command.substr(1);
 
 	size_t firstSpace = command.find(' ');
-	if (firstSpace == std::string::npos) {
+	if (firstSpace == std::string::npos) 
+	{
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
 	}
 	std::string target = command.substr(0, firstSpace);
-	if (target.empty()) {
+	if (target.empty()) 
+	{
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
 	}
 
 	// Extraire le message = 2ème paramètre de command et tout le reste
 	std::string message = command.substr(firstSpace + 1);
-	if (message.empty()) {
+	if (message.empty()) 
+	{
 		Message::noSuchCommand(user, "PRIVMSG");
 		return;
 	}
 
 	Server &server = Server::getServer();
 
-	if (target[0] == '#') {
+	if (target[0] == '#') 
+	{
 		Channel *canal = server.getChannelByName(target);
 		
 		if (!canal) {
@@ -50,7 +56,8 @@ void CommandManager::handlePrivmsg(std::string command, User &user) {
 			return;
 		}
 		
-		if (canal->getConnectedUserByNickname(user.getNickName()) == NULL) {
+		if (canal->getConnectedUserByNickname(user.getNickName()) == NULL) 
+		{
 			Message::noSuchNickChannel(target, user);
 			return;
 		}
@@ -58,7 +65,8 @@ void CommandManager::handlePrivmsg(std::string command, User &user) {
 		std::set<User*> channelUsers = canal->getCurrentUsers();
 		for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it)
 		{
-			if ((*it)->getNickName() == user.getNickName()) {
+			if ((*it)->getNickName() == user.getNickName()) 
+			{
 				continue;
 			}
 			
@@ -69,7 +77,8 @@ void CommandManager::handlePrivmsg(std::string command, User &user) {
 	} else {
 		User *targetUser = server.getUserByNickname(target);
 		
-		if (!targetUser) {
+		if (!targetUser) 
+		{
 			Message::noSuchNickChannel(target, user);
 			return;
 		}
