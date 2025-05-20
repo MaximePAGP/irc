@@ -9,6 +9,7 @@
 #define ENV 	"localhost"
 #define END_CMD	"\r\n"
 
+class Channel;
 class Message
 {
 	public:
@@ -34,6 +35,7 @@ class Message
 		static	void	userSet(User const &user);
 
 		static	void	modeNotSuchChannel(User const &user, std::string const channelName);
+		static	void	modeSendActiveMode(User const &user, Channel &channel, std::string const modes);
 
 		static	void	topicSetTopic(User const &user, Channel const &channel);
 		static	void	topicNoTopic(User const &user, std::string const channelName);

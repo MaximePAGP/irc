@@ -35,12 +35,9 @@ void	Message::noSuchNickChannel(std::string const target, User const &user) {
 void	Message::changedModeChan(std::string const chanName, User const &user, std::string const flag) {
 	std::string message = ":";
 
-	message.append(ENV);
-	message.append(" ");
 	message.append(user.getNickName());
 	message.append(" MODE #");
 	message.append(chanName);
-	message.append(" ");
 	message.append(flag);
 	message.append(END_CMD);
 	
@@ -425,6 +422,23 @@ void	Message::partNotification(User const &user,  std::string const &chanName, s
 	message.append(userLeft);
 	message.append(" PART #");
 	message.append(chanName);
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+// 324
+void	Message::modeSendActiveMode(User const &user,  Channel &channel, std::string const activeFlags) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 324 ");
+	message.append(user.getNickName());
+	message.append(" #");
+	message.append(channel.getName());
+	message.append(" ");
+	message.append(activeFlags);
 	message.append(END_CMD);
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);

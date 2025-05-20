@@ -256,8 +256,7 @@ void	Channel::sendActiveMode(User &user) {
 		std::string convertValue = convertInt.str();
 		activeFlag.append(convertValue);
 	}
-	std::string clientMsg = ":localhost 324 " + user.getNickName() + " #" + this->getName() + " " + activeFlag;
-	send(user.getFd().fd, clientMsg.c_str(), clientMsg.size(), 0);
+	Message::modeSendActiveMode(user, *this, activeFlag);
 }
 
 

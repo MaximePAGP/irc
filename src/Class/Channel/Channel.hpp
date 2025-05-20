@@ -10,6 +10,7 @@
 #include <cstdlib> 
 #include <set>
 #include "../User/User.hpp"
+#include "../Message/Message.hpp"
 
 void	printUsers(std::set<User*> users);
 
