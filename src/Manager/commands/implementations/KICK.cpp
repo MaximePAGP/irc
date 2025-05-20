@@ -67,7 +67,7 @@ void CommandManager::handleKick(std::string param, User &user)
 		return;
 	}
 	channelName = channelName.substr(1);
-	std::cout << "param (" << reason << ") channeNae (" << channelName << ") reason (" << target << ")" << std::endl;
+
 	Channel *channel = server.getChannelByName(channelName);
 
     if (!channel) {
