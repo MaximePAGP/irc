@@ -420,13 +420,11 @@ void	Message::partYoureNotInChan(User const &user, std::string const &chanName) 
 }
 
 
-void	Message::partNotification(User const &user,  std::string const &chanName, std::string const &userLeft, std::string const reason) {
+void	Message::partNotification(User const &user,  std::string const &chanName, std::string const &userLeft) {
 	std::string message = ":";
 	message.append(userLeft);
 	message.append(" PART #");
 	message.append(chanName);
-	message.append(" ");
-	message.append(reason);
 	message.append(END_CMD);
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);

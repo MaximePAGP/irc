@@ -50,7 +50,7 @@ class Message
 		static	void	kickSucces(User const &user, Channel const &chanel, std::string const &target, std::string const reason);
 
 		static	void	partYoureNotInChan(User const &user, std::string const &chanName);
-		static	void	partNotification(User const &user, std::string const &chanName, std::string const &userLeft, std::string const reason);
+		static	void	partNotification(User const &user, std::string const &chanName, std::string const &userLeft);
 	};
 
 
