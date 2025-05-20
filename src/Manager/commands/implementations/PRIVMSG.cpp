@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PRIVMSG.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/05/20 17:21:16 by leye             ###   ########.fr       */
+/*   Updated: 2025/05/21 00:45:52 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,16 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 	}
 
 	command = command.substr(1);
-
 	size_t firstSpace = command.find(' ');
+	
 	if (firstSpace == std::string::npos) 
 	{
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
 	}
+	
 	std::string target = command.substr(0, firstSpace);
+	
 	if (target.empty()) 
 	{
 		Message::notEnoughParams(user, "PRIVMSG");
@@ -39,6 +41,7 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 
 	// Extraire le message = 2ème paramètre de command et tout le reste
 	std::string message = command.substr(firstSpace + 1);
+
 	if (message.empty()) 
 	{
 		Message::noSuchCommand(user, "PRIVMSG");
@@ -46,9 +49,10 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 	}
 
 	Server &server = Server::getServer();
-
+	
 	if (target[0] == '#') 
 	{
+		target = target.substr(1);
 		Channel *canal = server.getChannelByName(target);
 		
 		if (!canal) {
@@ -70,11 +74,11 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 				continue;
 			}
 			
-			std::cout << "Sending message to user: " << (*it)->getNickName() << std::endl;
-			std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " :" + message + END_CMD;
+			std::string msgToSend = ":" + user.getNickName() + " PRIVMSG #" + target + " " + message + END_CMD;
 			send((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 		}
 	} else {
+		
 		User *targetUser = server.getUserByNickname(target);
 		
 		if (!targetUser) 
@@ -83,7 +87,7 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 			return;
 		}
 
-		std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " :" + message + END_CMD;
+		std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " " + message + END_CMD;
 		send(targetUser->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 	}
 }
