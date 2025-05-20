@@ -404,15 +404,27 @@ void	Message::kickSucces(User const &user, Channel const &channel, std::string c
 }
 
 
-// 479
-void	Message::joinChannelNameIllegal(User const &user, std::string const &name) {
+
+
+
+// 442
+void	Message::partYoureNotInChan(User const &user, std::string const &chanName) {
 	std::string message = ":";
 	message.append(ENV);
-	message.append(" 479 ");
-	message.append(user.getNickName());
-	message.append(" ");
-	message.append(name);
-	message.append(" :Illegal channel name");
+	message.append(" 442 ");
+	message.append(chanName);
+	message.append(" :You're not on that channel");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
+
+void	Message::partNotification(User const &user,  std::string const &chanName, std::string const &userLeft) {
+	std::string message = ":";
+	message.append(userLeft);
+	message.append(" PART #");
+	message.append(chanName);
 	message.append(END_CMD);
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);

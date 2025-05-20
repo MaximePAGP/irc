@@ -6,7 +6,7 @@
 /*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/19 04:52:35 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/20 04:52:07 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,9 @@ void CommandManager::handleJoin(std::string command, User &user)
         return;
     }
 	chanalName = chanalName.substr(1);
+    
     if (hasIllegalName(chanalName)) {
-        Message::nickIllegal(user, chanalName);
+        Message::modeNotSuchChannel(user, chanalName);
         return;
     }
 

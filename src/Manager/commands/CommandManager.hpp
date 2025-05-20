@@ -22,6 +22,7 @@ class CommandManager
 		static	void		handleUsername(std::string param, User &user);
 		static	void		handleMode(std::string param, User &user);
 		static	void		handleJoin(std::string command, User &user);
+		static	void		handlePart(std::string param, User &user);
 		static	void		handleTopic(std::string command, User &user);
 		static	void		handlePass(std::string command, User &user);
 		static	void		handlePing(std::string command, User &user);
