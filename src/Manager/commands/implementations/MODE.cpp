@@ -333,7 +333,7 @@ static	void	handleMultiFlags(std::string &command, std::vector<std::string> pars
 		return;
 	
 	size_t endFlagIndex = command.find_first_of(" ", flagIndex);
-	if (endFlagIndex == std::string::npos)
+	if (endFlagIndex == std::string::npos && command[flagIndex] != '-')
 		return;
 
 	std::string flags = command.substr(flagIndex, endFlagIndex);
@@ -399,9 +399,6 @@ void CommandManager::handleMode(std::string param, User &user) {
 		args = flag.substr(3);
 		flag = flag.substr(0, argSep);
 	}
-
-	std::cout << "flag ? (" << flag << ")" << std::endl;
-	std::cout << "args ? (" << args << ")" << std::endl;
 	
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		Message::unknowFlag(user, flag);
