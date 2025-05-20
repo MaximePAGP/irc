@@ -23,8 +23,15 @@ static	void	addChannelPassord(std::string password, Channel &channel, User &user
 
 	std::string flagWithPassword = " +k ";
 	flagWithPassword.append(password);
-	Message::changedModeChan(channel.getName(), user, flagWithPassword);
 	channel.setPassword(password);
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), flagWithPassword);
+		it++;
+	}
 }
 
 static	void	removeChannelPassord(std::string uslessArg, Channel &channel, User &user) {
@@ -33,8 +40,16 @@ static	void	removeChannelPassord(std::string uslessArg, Channel &channel, User &
 		Message::youreNotChanOp(channel.getName(), user);
 		return;
 	}
-	Message::changedModeChan(channel.getName(), user, " -k");
+
 	channel.setPassword("");
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), " -k");
+		it++;
+	}
 }
 
 static	void	addInvitationOnly(std::string uslessArg, Channel &channel, User &user) {
@@ -46,7 +61,14 @@ static	void	addInvitationOnly(std::string uslessArg, Channel &channel, User &use
 	if (channel.getIsOnInvitationOnly())
 		return;
 	channel.setIsOnInvitationOnly(true);
-	Message::changedModeChan(channel.getName(), user, " +i");
+	
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), " +i");
+		it++;
+	}
 }
 
 static	void	removeInvitationOnly(std::string uslessArg, Channel &channel, User &user) {
@@ -58,7 +80,14 @@ static	void	removeInvitationOnly(std::string uslessArg, Channel &channel, User &
 	if (!channel.getIsOnInvitationOnly())
 		return;
 	channel.setIsOnInvitationOnly(false);
-	Message::changedModeChan(channel.getName(), user, " -i");
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), " -i");
+		it++;
+	}
 }
 
 
@@ -71,7 +100,6 @@ static	void	addChanOp(std::string nickname, Channel &channel, User &user) {
 
 	if (nickname.size() < 1 || nickname.empty())
 		return;
-	nickname = nickname.substr(1, nickname.size());
 	
 	User *targetUser = channel.getConnectedUserByNickname(nickname);
 	if (targetUser == NULL) {
@@ -83,7 +111,15 @@ static	void	addChanOp(std::string nickname, Channel &channel, User &user) {
 
 	std::string flagWithTarget = " +o ";
 	flagWithTarget.append(targetUser->getNickName());
-	Message::changedModeChan(channel.getName(), user, flagWithTarget);
+
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), flagWithTarget);
+		it++;
+	}
 }
 
 static	void	removedChanOp(std::string nickname, Channel &channel, User &user) {
@@ -94,8 +130,7 @@ static	void	removedChanOp(std::string nickname, Channel &channel, User &user) {
 
 	if (nickname.size() < 1 || nickname.empty())
 		return;
-	nickname = nickname.substr(1, nickname.size());
-
+	std::cout << nickname << " nic " << std::endl;
 	User *targetUser = channel.getConnectedUserByNickname(nickname);
 	if (targetUser == NULL) {
 		Message::noSuchNickChannel(nickname, user);
@@ -103,8 +138,15 @@ static	void	removedChanOp(std::string nickname, Channel &channel, User &user) {
 	}
 	std::string flagWithTarget = " -o ";
 	flagWithTarget.append(targetUser->getNickName());
-	Message::changedModeChan(channel.getName(), user, flagWithTarget);
 	channel.removeChanOps(*targetUser);
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), flagWithTarget);
+		it++;
+	}
 }
 
 
@@ -117,7 +159,6 @@ static	void	addLimit(std::string limit, Channel &channel, User &user) {
 
 	if (limit.size() < 1 || limit.empty())
 		return;
-	limit = limit.substr(1, limit.size());
 
 	int parsedLimit = atoi(limit.c_str());
 
@@ -131,8 +172,15 @@ static	void	addLimit(std::string limit, Channel &channel, User &user) {
  	std::string convertValue = convertInt.str();
  	flagWithTarget.append(convertValue);
 
-	Message::changedModeChan(channel.getName(), user, flagWithTarget);
 	channel.setUserlimit(parsedLimit);
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), flagWithTarget);
+		it++;
+	}
 }
 
 static	void	removeLimit(std::string usless, Channel &channel, User &user) {
@@ -143,7 +191,14 @@ static	void	removeLimit(std::string usless, Channel &channel, User &user) {
 	}
 
 	channel.setUserlimit(10);
-	Message::changedModeChan(channel.getName(), user, " -l");
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), " -l");
+		it++;
+	}
 }
 
 
@@ -157,8 +212,15 @@ static	void	addTopicProtection(std::string usless, Channel &channel, User &user)
 
 	if (!channel.getHasProtectedTopic() == false)
 		return;
-	Message::changedModeChan(channel.getName(), user, " +t");
 	channel.setHasProtectedTopic(true);
+	
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), " +t");
+		it++;
+	}
 }
 
 static	void	removeTopicProtection(std::string usless, Channel &channel, User &user) {
@@ -170,8 +232,15 @@ static	void	removeTopicProtection(std::string usless, Channel &channel, User &us
 
 	if (!channel.getHasProtectedTopic())
 		return;
-	Message::changedModeChan(channel.getName(), user, " -t");
 	channel.setHasProtectedTopic(false);
+
+	std::set<User *> usersInChan = channel.getCurrentUsers();
+	std::set<User *>::iterator it = usersInChan.begin();
+	while (it != usersInChan.end())
+	{
+		Message::changedModeChan(user.getNickName(), channel.getName(), *(*it), " -t");
+		it++;
+	}
 }
 
 
@@ -307,6 +376,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 		Message::modeNotSuchChannel(user, canalName);
 		return;
 	}
+
 	std::string flag = param.substr(param.find_first_of(canalName) + canalName.size());
 
 	if (flag.size() <= 1) {
@@ -317,16 +387,26 @@ void CommandManager::handleMode(std::string param, User &user) {
 	flag = flag.substr(1);
 
 	loadFunctions(implementedFlags);
+
 	if (hasMultipleFlags(flag)) {
 		handleMultiFlags(flag, getParams(flag), user, *canal);
 		return;
 	}
+	
+	size_t argSep = flag.find_first_of(" ");
+	std::string args = "";
+	if (argSep != std::string::npos) {
+		args = flag.substr(3);
+		flag = flag.substr(0, argSep);
+	}
 
+	std::cout << "flag ? (" << flag << ")" << std::endl;
+	std::cout << "args ? (" << args << ")" << std::endl;
+	
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		Message::unknowFlag(user, flag);
 		return;
 	}
 	
-	std::string skipFlag = param.substr(param.find(flag) + flag.size());
-	implementedFlags[flag](skipFlag, *canal, user);
+	implementedFlags[flag](args, *canal, user);
 }

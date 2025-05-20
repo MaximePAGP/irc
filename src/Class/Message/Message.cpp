@@ -32,10 +32,10 @@ void	Message::noSuchNickChannel(std::string const target, User const &user) {
 }
  
 
-void	Message::changedModeChan(std::string const chanName, User const &user, std::string const flag) {
+void	Message::changedModeChan(std::string const &chanOp, std::string const chanName, User const &user, std::string const flag) {
 	std::string message = ":";
 
-	message.append(user.getNickName());
+	message.append(chanOp);
 	message.append(" MODE #");
 	message.append(chanName);
 	message.append(flag);

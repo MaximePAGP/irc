@@ -15,7 +15,7 @@ class Message
 	public:
 		static	void	youreNotChanOp(std::string const chanName, User const &user);
 		static	void	noSuchNickChannel(std::string const target, User const &user);
-		static	void	changedModeChan(std::string const chanName, User const &user, std::string const flag);
+		static	void	changedModeChan(std::string const &chanOp, std::string const chanName, User const &user, std::string const flag);
 		static	void	unknowFlag(User const &user, std::string const flag);
 		static	void	chanPasswordForbiddenChar(std::string const chanName, User const &user, std::string const password);
 		static	void	chanPassordToLong(std::string const chanName, User const &user, std::string const password);
