@@ -280,8 +280,7 @@ void	Message::modeNotSuchChannel(User const &user, const std::string canalName) 
 void	Message::topicSetTopic(User const &user, Channel const &canal) {
 	std::string message = ":";
 
-	message.append(ENV);
-	message.append(user.getNickName());
+	message.append(user.getNickName());	
 	message.append(" TOPIC #");
 	message.append(canal.getName());
 	message.append(" :");
@@ -298,7 +297,7 @@ void	Message::topicNoTopic(User const &user, std::string const canalName) {
 	message.append(ENV);
 	message.append(" 331 ");
 	message.append(user.getNickName());
-	message.append(" # ");
+	message.append(" #");
 	message.append(canalName);
 	message.append(" :No topic is set");
 	message.append(END_CMD);
@@ -313,7 +312,7 @@ void	Message::topicGetTopic(User const &user, Channel const &canal) {
 	message.append(ENV);
 	message.append(" 332 ");
 	message.append(user.getNickName());
-	message.append(" # ");
+	message.append(" #");
 	message.append(canal.getName());
 	message.append(" :");
 	message.append(canal.getTopic());
