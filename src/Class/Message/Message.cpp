@@ -358,7 +358,7 @@ void	Message::alreadyOnChannel(User const &user, Channel const &canal) {
 	message.append(ENV);
 	message.append(" 443 ");
 	message.append(user.getNickName());
-	message.append(" # ");
+	message.append(" #");
 	message.append(canal.getName());
 	message.append(" :is already on channel");
 	message.append(END_CMD);

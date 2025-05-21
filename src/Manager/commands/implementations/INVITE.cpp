@@ -2,44 +2,53 @@
 
 void CommandManager::handleInvite(std::string param, User &user)
 {
-    Server &server = Server::getServer();
-    Message messageManager;
-    std::istringstream iss(param);
-    std::string targetUserName, channelName;
-
-    if (!(iss >> targetUserName >> channelName)) {
-        messageManager.notEnoughParams(user, "INVITE");
+    if (param.empty()) {
+        Message::notEnoughParams(user, "INVITE");
         return;
     }
 
+    Server &server = Server::getServer();
+    std::string targetUserName, channelName;
+
+    param = param.substr(1);
+
+    size_t spaceSep = param.find_first_of(" ");
+    if (spaceSep == std::string::npos) {
+        Message::notEnoughParams(user, "INVITE");
+        return;
+    }
+
+    targetUserName = param.substr(0, spaceSep);
+    channelName = param.substr(spaceSep + 2);
+
     User* targetUser = server.getUserByNickname(targetUserName);
     if (!targetUser) {
-        messageManager.noSuchNickChannel(targetUserName, user);
+        Message::noSuchNickChannel(targetUserName, user);
         return;
     }
 
     Channel* channel = server.getChannelByName(channelName);
     if (!channel) {
-        messageManager.noSuchNickChannel(channelName, user);
+        Message::noSuchNickChannel(channelName, user);
         return;
     }
 
     if (!channel->getConnectedUserByNickname(user.getNickName())) {
-        messageManager.modeNotSuchChannel(user, channelName);
+        Message::modeNotSuchChannel(user, channelName);
         return;
     }
 
     if (channel->getIsOnInvitationOnly() && !channel->getChanOpByNickname(user.getNickName())) {
-        messageManager.youreNotChanOp(channelName, user);
+        Message::youreNotChanOp(channelName, user);
         return;
     }
 
     if (channel->getConnectedUserByNickname(targetUser->getNickName())) {
-        messageManager.alreadyOnChannel(user, channelName);
+        Message::alreadyOnChannel(user, channelName);
         return;
     }
 
-	channel->addUserInvitation(*targetUser);
+    channel->addUserInvitation(*targetUser);
 
     std::string inviteMsg = ":" + user.getNickName() + " INVITE " + targetUserName + " :" + channelName + "\r\n";
 
@@ -47,4 +56,4 @@ void CommandManager::handleInvite(std::string param, User &user)
 
     std::string confirmMsg = ":server 341 " + user.getNickName() + " " + targetUserName + " " + channelName + "\r\n";
     send(user.getFd().fd, confirmMsg.c_str(), confirmMsg.length(), 0);
-} 
+}

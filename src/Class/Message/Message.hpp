@@ -12,6 +12,8 @@
 class Channel;
 class Message
 {
+	private:
+		Message();
 	public:
 		static	void	youreNotChanOp(std::string const chanName, User const &user);
 		static	void	noSuchNickChannel(std::string const target, User const &user);
