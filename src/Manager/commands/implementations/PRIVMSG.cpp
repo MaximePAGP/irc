@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PRIVMSG.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/05/21 00:45:52 by magrondi         ###   ########.fr       */
-=======
-/*   Updated: 2025/05/20 17:43:02 by leye             ###   ########.fr       */
->>>>>>> 1884e03 (pull)
+/*   Updated: 2025/05/21 18:03:00 by leye             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +23,8 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 	}
 	command = command.substr(1);
 	size_t firstSpace = command.find(' ');
-<<<<<<< HEAD
 	
 	if (firstSpace == std::string::npos) 
-=======
-	if (firstSpace == std::string::npos)
->>>>>>> 1884e03 (pull)
 	{
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
@@ -54,10 +46,7 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 		return;
 	}
 	Server &server = Server::getServer();
-<<<<<<< HEAD
 	
-=======
->>>>>>> 1884e03 (pull)
 	if (target[0] == '#') 
 	{
 		target = target.substr(1);
@@ -86,13 +75,8 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 			std::string msgToSend = ":" + user.getNickName() + " PRIVMSG #" + target + " " + message + END_CMD;
 			send((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 		}
-<<<<<<< HEAD
 	} else {
 		
-=======
-	} else 
-	{
->>>>>>> 1884e03 (pull)
 		User *targetUser = server.getUserByNickname(target);
 		
 		if (!targetUser) 

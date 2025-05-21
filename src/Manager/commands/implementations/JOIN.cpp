@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JOIN.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/21 04:40:27 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/21 22:52:12 by leye             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,11 @@ bool validateChannelRestrictions(Channel &canal, User &user, const std::string &
         return false;
     }
     return true;
- }
-
+}
 
 static	bool	hasIllegalName(std::string const &name) 
 {
-	if (name.size() > MAX_NAME_LENGTH) 
+	if (name.size() > MAX_NAME_LENGTH)
 		return true;
 	if (name.find_first_of(" \0:,") != std::string::npos)
 		return true;
@@ -133,22 +132,18 @@ void CommandManager::handleJoin(std::string command, User &user)
     {
         return;
     }
-
     // Ajout de l'utilisateur au canal
     canal->addUser(user);
 	canal->removeUserInvitation(user);
-
     // Envoi de la confirmation de JOIN
     std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN #" + chanalName + "\r\n";
     send(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
-
     // Envoi du topic du canal
     if (!canal->getTopic().empty()) 
     {
         std::string topicResponse = ":server 332 " + user.getNickName() + " #" + chanalName + " :" + canal->getTopic() + "\r\n";
         send(user.getFd().fd, topicResponse.c_str(), topicResponse.length(), 0);
     }
-
     // Envoi de la liste des utilisateurs
     std::string namesResponse = ":server 353 " + user.getNickName() + " = #" + chanalName + " :";
     std::set<User*> channelUsers = canal->getCurrentUsers();
