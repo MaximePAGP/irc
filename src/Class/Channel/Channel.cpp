@@ -215,7 +215,7 @@ bool	Channel::hasForbbidenCharPassword(std::string pw) {
 }
 
 bool	Channel::isProtectedByPassword() {
-	if (this->password.size() > 1)
+	if (this->password.size() >= 1)
 		return true;
 	return false;
 }

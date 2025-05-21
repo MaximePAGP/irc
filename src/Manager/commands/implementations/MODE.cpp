@@ -6,10 +6,8 @@ static	void	addChannelPassord(std::string password, Channel &channel, User &user
 		Message::youreNotChanOp(channel.getName(), user);
 		return;
 	}
-	if (password.size() <= 1 || password.empty())
+	if (password.size() < 1 || password.empty())
 		return;
-
-	password = password.substr(1, password.size());
 
 	if (password.size() > 12) {
 		Message::chanPassordToLong(channel.getName(), user, password);
@@ -399,7 +397,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 		args = flag.substr(3);
 		flag = flag.substr(0, argSep);
 	}
-	
+	std::cout << "flag (" << flag << ") arg (" << args << ") " << std::endl;
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		Message::unknowFlag(user, flag);
 		return;

@@ -19,7 +19,14 @@ void CommandManager::handleInvite(std::string param, User &user)
     }
 
     targetUserName = param.substr(0, spaceSep);
-    channelName = param.substr(spaceSep + 2);
+    channelName = param.substr(spaceSep + 1);
+
+    if (channelName.empty()) {
+        Message::notEnoughParams(user, "INVITE");
+        return;
+    }
+
+    channelName = channelName.substr(1);
 
     User* targetUser = server.getUserByNickname(targetUserName);
     if (!targetUser) {

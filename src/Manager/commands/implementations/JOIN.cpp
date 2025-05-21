@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JOIN.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/21 02:45:51 by rgrangeo         ###   ########.fr       */
+/*   Updated: 2025/05/21 04:40:27 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,19 +51,20 @@ void sendToChannelUsers(const std::set<User*> &users, const std::string &message
 // Fonction pour valider les restrictions du canal
 bool validateChannelRestrictions(Channel &canal, User &user, const std::string &password) 
 {
-    if (canal.isProtectedByPassword() && password != canal.getPassword()) 
+    User *invitation = canal.getInvitationUserByUsername(user.getNickName());
+    if (canal.isProtectedByPassword() && password != canal.getPassword() && !invitation) 
     {
         std::string errorMsg = ":server 475 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+k) - bad key\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
-    }
+    }   
     if (canal.getUserLimits() <= static_cast<int>(canal.getCurrentUsers().size())) 
     {
         std::string errorMsg = ":server 471 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+l) - channel is full\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
     }
-	if (canal.getIsOnInvitationOnly() && !canal.getInvitationUserByUsername(user.getNickName()))
+	if (canal.getIsOnInvitationOnly() && !invitation)
     {
         std::string errorMsg = ":server 473 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+i) - invite only\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
@@ -171,6 +172,4 @@ void CommandManager::handleJoin(std::string command, User &user)
 
     // Notification aux autres utilisateurs
     sendToChannelUsers(channelUsers, joinResponse, &user);
-
-    std::cout << "User " << user.getNickName() << " joined canal #" << chanalName << std::endl;
 }
