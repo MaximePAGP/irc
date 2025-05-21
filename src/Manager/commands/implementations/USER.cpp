@@ -51,7 +51,5 @@ void CommandManager::handleUsername(std::string param, User &user) {
         
         std::string myinfo = ":server 004 " + user.getNickName() + " server 1.0 o mt\r\n";
         send(user.getFd().fd, myinfo.c_str(), myinfo.length(), 0);
-        
-        std::cout << "User " << user.getNickName() << " (" << user.getUserName() << ") registered successfully" << std::endl;
     }
 }

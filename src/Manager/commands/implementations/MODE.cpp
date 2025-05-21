@@ -128,7 +128,7 @@ static	void	removedChanOp(std::string nickname, Channel &channel, User &user) {
 
 	if (nickname.size() < 1 || nickname.empty())
 		return;
-	std::cout << nickname << " nic " << std::endl;
+
 	User *targetUser = channel.getConnectedUserByNickname(nickname);
 	if (targetUser == NULL) {
 		Message::noSuchNickChannel(nickname, user);
@@ -397,7 +397,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 		args = flag.substr(3);
 		flag = flag.substr(0, argSep);
 	}
-	std::cout << "flag (" << flag << ") arg (" << args << ") " << std::endl;
+
 	if (implementedFlags.find(flag) == implementedFlags.end()) {
 		Message::unknowFlag(user, flag);
 		return;
