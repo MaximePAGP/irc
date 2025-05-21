@@ -7,7 +7,7 @@ size_t write_callback(void* contents, size_t size, size_t nmemb, void* userp)
     return size * nmemb;
 }
 
-void		handleGpt(std::string param, User &user)
+void		CommandManager::handleGpt(std::string param, User &user)
 {
 	CURL*				curl = curl_easy_init();
 	struct curl_slist*	headers = NULL;
