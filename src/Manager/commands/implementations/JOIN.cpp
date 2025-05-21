@@ -6,7 +6,7 @@
 /*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/21 02:33:01 by rgrangeo         ###   ########.fr       */
+/*   Updated: 2025/05/21 02:45:51 by rgrangeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ void CommandManager::handleJoin(std::string command, User &user)
 
     // Ajout de l'utilisateur au canal
     canal->addUser(user);
+	canal->removeUserInvitation(user);
 
     // Envoi de la confirmation de JOIN
     std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN #" + chanalName + "\r\n";
