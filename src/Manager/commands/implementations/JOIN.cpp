@@ -6,7 +6,7 @@
 /*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/20 17:20:48 by leye             ###   ########.fr       */
+/*   Updated: 2025/05/21 02:33:01 by rgrangeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ bool validateChannelRestrictions(Channel &canal, User &user, const std::string &
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
     }
-    if (canal.getIsOnInvitationOnly() && canal.getUserInvitation().find(&user) == canal.getUserInvitation().end()) 
+	if (canal.getIsOnInvitationOnly() && !canal.getInvitationUserByUsername(user.getNickName()))
     {
         std::string errorMsg = ":server 473 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+i) - invite only\r\n";
         send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
@@ -123,7 +123,7 @@ void CommandManager::handleJoin(std::string command, User &user)
     if (canal == NULL) 
     {
         canal = new Channel(chanalName);
-        server.addCanal(*canal);
+       server.addCanal(*canal);
         canal->addChanOps(user);
     }
 
@@ -173,5 +173,3 @@ void CommandManager::handleJoin(std::string command, User &user)
 
     std::cout << "User " << user.getNickName() << " joined canal #" << chanalName << std::endl;
 }
-
-

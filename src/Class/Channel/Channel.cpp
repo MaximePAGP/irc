@@ -180,6 +180,17 @@ User	*Channel::getConnectedUserByUsername(std::string username) const {
 	return NULL;
 }
 
+User	*Channel::getInvitationUserByUsername(std::string username) const {
+	for (std::set<User*>::const_iterator it = this->invUsers.begin(); it != this->invUsers.end(); it++) {
+		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
+		if (tmpUsername == username) {
+			return *it;
+		}
+	}
+
+	return NULL;
+}
+
 std::ostream &operator<<(std::ostream &out, Channel const &rhs) {
 	out << rhs.getPassword() << " " << rhs.getTopic() << " "
 		<< rhs.getUserLimits() << " ";
@@ -264,3 +275,4 @@ void			printChannels(std::set<Channel*> channel) {
 	for (std::set<Channel*>::iterator it = channel.begin(); it != channel.end(); ++it)
     	std::cout << *it;
 }
+

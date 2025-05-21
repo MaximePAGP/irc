@@ -73,6 +73,8 @@ class Channel
 		User			*getConnectedUserByUsername(std::string username) const;
 		User			*getConnectedUserByFd(int fd) const;
 
+        User            *getInvitationUserByUsername(std::string username) const;
+
 		static	bool	hasForbbidenCharPassword(std::string pw);
 
 		bool			isProtectedByPassword(); // used on +k flag !! PASSWORD IS NOT REQUIRED IF USER IS INVITED
