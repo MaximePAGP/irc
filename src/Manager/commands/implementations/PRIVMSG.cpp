@@ -6,7 +6,11 @@
 /*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/05/21 00:45:52 by magrondi         ###   ########.fr       */
+=======
+/*   Updated: 2025/05/20 17:43:02 by leye             ###   ########.fr       */
+>>>>>>> 1884e03 (pull)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +25,14 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
 	}
-
 	command = command.substr(1);
 	size_t firstSpace = command.find(' ');
+<<<<<<< HEAD
 	
 	if (firstSpace == std::string::npos) 
+=======
+	if (firstSpace == std::string::npos)
+>>>>>>> 1884e03 (pull)
 	{
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
@@ -38,7 +45,6 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 		Message::notEnoughParams(user, "PRIVMSG");
 		return;
 	}
-
 	// Extraire le message = 2ème paramètre de command et tout le reste
 	std::string message = command.substr(firstSpace + 1);
 
@@ -47,15 +53,18 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 		Message::noSuchCommand(user, "PRIVMSG");
 		return;
 	}
-
 	Server &server = Server::getServer();
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 1884e03 (pull)
 	if (target[0] == '#') 
 	{
 		target = target.substr(1);
 		Channel *canal = server.getChannelByName(target);
 		
-		if (!canal) {
+		if (!canal) 
+		{
 			Message::noSuchNickChannel(target, user);
 			return;
 		}
@@ -77,8 +86,13 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 			std::string msgToSend = ":" + user.getNickName() + " PRIVMSG #" + target + " " + message + END_CMD;
 			send((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 		}
+<<<<<<< HEAD
 	} else {
 		
+=======
+	} else 
+	{
+>>>>>>> 1884e03 (pull)
 		User *targetUser = server.getUserByNickname(target);
 		
 		if (!targetUser) 
