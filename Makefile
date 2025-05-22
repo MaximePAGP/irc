@@ -4,7 +4,7 @@ CC 					= c++
 
 
 SRCS 				= 	src/main.cpp \
-						src/args_handler.cpp \
+						src/argsHandler.cpp \
 						src/Class/User/User.cpp \
 						src/Class/Channel/Channel.cpp \
 						src/Class/Server/Server.cpp \
