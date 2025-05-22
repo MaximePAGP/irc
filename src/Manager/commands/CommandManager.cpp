@@ -56,12 +56,12 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["GPT"] = CommandManager::handleGpt;
 
 
-	if (user.getNickName() == "" || user.getUserName() == "") {
-		if (getFirstCommand != "NICK" && getFirstCommand != "USER") {
-			Message::noRegistered(user);
-			return ;
-		}
-	}
+	// if (user.getNickName() == "" || user.getUserName() == "") {
+	// 	if (getFirstCommand != "NICK" || getFirstCommand != "USER") {
+	// 		Message::noRegistered(user);
+	// 		return ;
+	// 	}
+	// }
 	if (commands.find(getFirstCommand) == commands.end()) {
 		Message::noSuchCommand(user, command);
 		return;

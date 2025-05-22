@@ -43,8 +43,7 @@ test_irc_server() {
     # User1 crée et rejoint un canal
     echo "User1 rejoint le canal #testchannel..."
     send_command $SOCKET_USER1 "JOIN #testchannel"
-    read_response $SOCKET_USER1
-
+    read_response $SOCKET_USER1       
     # User2 rejoint le même canal
     echo "User2 rejoint le canal #testchannel..."
     send_command $SOCKET_USER2 "JOIN #testchannel"
