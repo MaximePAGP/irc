@@ -442,3 +442,14 @@ void	Message::modeSendActiveMode(User const &user,  Channel &channel, std::strin
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+void	Message::noRegistered(User const &user) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 451 ");
+	message.append(" * ");
+	message.append(": You have not registered");
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}

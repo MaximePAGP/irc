@@ -55,6 +55,8 @@ class Message
 
 		static	void	partYoureNotInChan(User const &user, std::string const &chanName);
 		static	void	partNotification(User const &user, std::string const &chanName, std::string const &userLeft);
+
+		static	void	noRegistered(User const &user);
 	};
 
 

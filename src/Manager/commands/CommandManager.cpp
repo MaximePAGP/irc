@@ -39,11 +39,11 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	std::string getFirstCommand = getCommand(command);
 	std::map<std::string, commandsModel> commands;
 
-	if (user.getIsConnected() == false || command.find("PASS") == 0 || user.getNickName() == "" || user.getUserName() == "") {
+	if (user.getIsConnected() == false || command.find("PASS") == 0) {
 		CommandManager::handlePass(command, user);
 		return ;
 	}
-	
+
 	commands["MODE"] = CommandManager::handleMode;
 	commands["JOIN"] = CommandManager::handleJoin;
 	commands["TOPIC"] = CommandManager::handleTopic;
@@ -56,6 +56,12 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["GPT"] = CommandManager::handleGpt;
 
 
+	if (user.getNickName() == "" || user.getUserName() == "") {
+		if (getFirstCommand != "NICK" || getFirstCommand != "USER") {
+			Message::noRegistered(user);
+			return ;
+		}
+	}
 	if (commands.find(getFirstCommand) == commands.end()) {
 		Message::noSuchCommand(user, command);
 		return;
