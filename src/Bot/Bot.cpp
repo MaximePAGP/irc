@@ -28,14 +28,11 @@ void		CommandManager::handleGpt(std::string param, User &user)
 	if (!curl)
 		return ;
 
-	(void)user;
-
-
 	json.append("\"model\":\"gpt-3.5-turbo\",");
 	json.append("\"messages\":[{\"role\":\"user\",\"content\":\"");
 	json.append(param);
 	json.append("\"}],");
-	json.append("\"max_tokens\":30");
+	json.append("\"max_tokens\":500");
 	json.append("}");
 
 	curl_easy_setopt(curl, CURLOPT_URL, "https://api.openai.com/v1/chat/completions");
@@ -50,7 +47,8 @@ void		CommandManager::handleGpt(std::string param, User &user)
 	if (error != CURLE_OK)
 		std::cerr << "Error curl : " << curl_easy_strerror(error) << std::endl;
 
-	std::cout << content(response) << std::endl;
+	std::string	message = ":gpt PRIVMSG " + user.getNickName() + " " + content(response) + END_CMD;
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
 
 	curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
