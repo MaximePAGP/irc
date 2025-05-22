@@ -11,14 +11,21 @@ void		CommandManager::handleGpt(std::string param, User &user)
 {
 	CURL*				curl = curl_easy_init();
 	struct curl_slist*	headers = NULL;
-	std::string			json = "{\"model\":\"gpt-3.5-turbo\",\"messages\":[{\"role\":\"user\",\"content\":\"Bonjour\"}],\"max_tokens\":30}";
+	std::string			json = "{";
 	std::string			response;
+	std::cout << "coucou" << std::endl;
 	if (!curl)
 		return ;
 
-	(void)param;
 	(void)user;
 
+
+	json.append("\"model\":\"gpt-3.5-turbo\",");
+	json.append("\"messages\":[{\"role\":\"user\",\"content\":\"");
+	json.append(param);
+	json.append("\"}],");
+	json.append("\"max_tokens\":30");
+	json.append("}");
 	curl_easy_setopt(curl, CURLOPT_URL, "https://api.openai.com/v1/chat/completions");
 	headers = curl_slist_append(headers, "Content-Type: application/json");
 	headers = curl_slist_append(headers, "Authorization: Bearer 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");
@@ -28,7 +35,10 @@ void		CommandManager::handleGpt(std::string param, User &user)
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-	curl_easy_perform(curl);
+	CURLcode error = curl_easy_perform(curl);
+	
+	if (error != CURLE_OK)
+		std::cerr << "Erreur curl : " << curl_easy_strerror(error) << std::endl;
 
 	std::cout << response << std::endl;
 
