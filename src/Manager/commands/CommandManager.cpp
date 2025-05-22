@@ -58,7 +58,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 
 
 	if (user.getNickName() == "" || user.getUserName() == "") {
-		if (getFirstCommand != "NICK" || getFirstCommand != "USER") {
+		if (getFirstCommand != "NICK" && getFirstCommand != "USER") {
 			Message::noRegistered(user);
 			return ;
 		}

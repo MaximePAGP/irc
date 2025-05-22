@@ -450,6 +450,7 @@ void	Message::noRegistered(User const &user) {
 	message.append(" 451 ");
 	message.append(" * ");
 	message.append(": You have not registered");
+	message.append(END_CMD);
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
