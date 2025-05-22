@@ -12,10 +12,9 @@ std::string	content(std::string response) {
 	if (start == std::string::npos)
 		return "Error content";
 	start += 12;
-	size_t end = response.find("\n", start);
+	size_t end = response.find("\",\n", start);
 	if (end == std::string::npos)
 		return "Error content";
-	end -= 2;
 	return response.substr(start, end-start);
 }
 
@@ -44,8 +43,11 @@ void		CommandManager::handleGpt(std::string param, User &user)
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
 	CURLcode error = curl_easy_perform(curl);
-	if (error != CURLE_OK)
+	if (error != CURLE_OK) {
 		std::cerr << "Error curl : " << curl_easy_strerror(error) << std::endl;
+		std::string	message = ":gpt PRIVMSG " + user.getNickName() + " Error curl" + END_CMD;
+		return ;
+	}
 
 	std::string	message = ":gpt PRIVMSG " + user.getNickName() + " " + content(response) + END_CMD;
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
@@ -53,4 +55,3 @@ void		CommandManager::handleGpt(std::string param, User &user)
 	curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
 }
-
