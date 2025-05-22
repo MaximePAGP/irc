@@ -11,7 +11,7 @@ CommandManager::~CommandManager() {}
 	has less then 4 and more then 7 size, it is our minimal and maximal handled command
 */
 bool CommandManager::hasLeadingSpaces(std::string command) {
-	int	const minimalCommandSize = 4;
+	int	const minimalCommandSize = 3;
 	int	const maximalCommandSize = 7;
 
 	size_t firstSpaceIndex = command.find_first_of(" ");
@@ -51,7 +51,6 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["USER"] = CommandManager::handleUsername;
 	commands["KICK"] = CommandManager::handleKick;
 	commands["INVITE"] = CommandManager::handleInvite;
-	// commands["PING"] = CommandManager::handlePing;
 	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
 	commands["PART"] = CommandManager::handlePart;
 	commands["GPT"] = CommandManager::handleGpt;
