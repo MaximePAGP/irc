@@ -23,10 +23,7 @@ bool CommandManager::hasLeadingSpaces(std::string command) {
 		return true;
 	}
 
-	return false;
-}
-
-
+	return false; }
 
 typedef void (*commandsModel) (std::string command, User &user);
 
@@ -57,6 +54,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	// commands["PING"] = CommandManager::handlePing;
 	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
 	commands["PART"] = CommandManager::handlePart;
+	commands["GPT"] = CommandManager::handleGpt;
 
 
 	if (commands.find(getFirstCommand) == commands.end()) {

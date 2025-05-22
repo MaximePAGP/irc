@@ -23,12 +23,13 @@ SRCS 				= 	src/main.cpp \
 						src/Manager/commands/implementations/INVITE.cpp \
 						src/Manager/commands/CommandManager.cpp \
 						src/Manager/signals_manager.cpp \
+						src/Bot/Bot.cpp \
 
 OBJS_DIR			= .objs
 OBJS				= ${SRCS:%.cpp=$(OBJS_DIR)/%.o}
 DEPS				= ${OBJS:.o=.d}
 
-CFLAGS				= -Wall -Wextra -Werror -std=c++98 -MMD -MP
+CFLAGS				= -Wall -Wextra -Werror -std=c++98 -MMD -MP -Ilibcurl/libcurl-built/include
 
 $(OBJS_DIR)/%.o: %.cpp Makefile
 			@mkdir -p $(dir $@)
@@ -37,7 +38,7 @@ $(OBJS_DIR)/%.o: %.cpp Makefile
 all:		${NAME}
 
 ${NAME}:	${OBJS}
-			${CC} ${CFLAGS} ${OBJS} -o ${NAME}
+			${CC} ${CFLAGS} ${OBJS} -o ${NAME} libcurl/libcurl-built/lib/libcurl.a -lssl -lcrypto -lz
 
 -include ${DEPS}
 
