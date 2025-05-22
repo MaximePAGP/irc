@@ -112,6 +112,7 @@ void	Message::nickNoParam(User const &user, std::string const nickname) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
 // 432 :Erroneous nickname
 void	Message::nickToLongParam(User const &user, std::string const nickname) {
 	std::string message = ":";
@@ -143,6 +144,7 @@ void	Message::nickAlreadyUsed(User const &user, std::string const nickname) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
 // 432  :Nickname is unavailable: Illegal characters
 void	Message::nickIllegal(User const &user, std::string const nickname) {
 	std::string message = ":";
@@ -158,6 +160,7 @@ void	Message::nickIllegal(User const &user, std::string const nickname) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
 void	Message::nickSet(User const &user) {
 	std::string message = ":";
 
@@ -171,6 +174,7 @@ void	Message::nickSet(User const &user) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
 void	Message::nickSetUpdated(User const &user, std::string const newNick) {
 	std::string message = ":";
 
@@ -181,8 +185,6 @@ void	Message::nickSetUpdated(User const &user, std::string const newNick) {
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
-
-
 
 
 // 432   :Erroneous username
@@ -352,6 +354,7 @@ void	Message::commandToLong(User const &user) {
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
 // 443
 void	Message::alreadyOnChannel(User const &user, Channel const &canal) {
 	std::string message = ":";
@@ -365,7 +368,6 @@ void	Message::alreadyOnChannel(User const &user, Channel const &canal) {
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
-
 
 
 // 461
@@ -398,9 +400,6 @@ void	Message::kickSucces(User const &user, Channel const &channel, std::string c
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
-
-
-
 
 
 // 442
@@ -443,6 +442,8 @@ void	Message::modeSendActiveMode(User const &user,  Channel &channel, std::strin
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+
+//451
 void	Message::noRegistered(User const &user) {
 	std::string message = ":";
 
