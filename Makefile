@@ -22,7 +22,7 @@ SRCS 				= 	src/main.cpp \
 						src/Manager/commands/implementations/KICK.cpp \
 						src/Manager/commands/implementations/INVITE.cpp \
 						src/Manager/commands/CommandManager.cpp \
-						src/Manager/signals_manager.cpp \
+						src/Manager/signalsManager.cpp \
 						src/Bot/Bot.cpp \
 
 OBJS_DIR			= .objs
