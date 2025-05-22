@@ -39,7 +39,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	std::string getFirstCommand = getCommand(command);
 	std::map<std::string, commandsModel> commands;
 
-	if (user.getIsConnected() == false || command.find("PASS") == 0) {
+	if (user.getIsConnected() == false || command.find("PASS") == 0 || user.getNickName() == "" || user.getUserName() == "") {
 		CommandManager::handlePass(command, user);
 		return ;
 	}
