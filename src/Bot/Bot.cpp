@@ -10,11 +10,11 @@ size_t write_callback(void* contents, size_t size, size_t nmemb, void* userp)
 std::string	content(std::string response) {
 	size_t start = response.find("\"content\": \"");
 	if (start == std::string::npos)
-		return "Error content";
+		return "Error API gpt";
 	start += 12;
 	size_t end = response.find("\",\n", start);
 	if (end == std::string::npos)
-		return "Error content";
+		return "Error API gpt";
 	return response.substr(start, end-start);
 }
 
