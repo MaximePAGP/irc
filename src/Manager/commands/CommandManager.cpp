@@ -66,7 +66,6 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		Message::noSuchCommand(user, command);
 		return;
 	}
-
 	commands[getFirstCommand](command.substr(getFirstCommand.size(), command.size()), user);
 }
 
