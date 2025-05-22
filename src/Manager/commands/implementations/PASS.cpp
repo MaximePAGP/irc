@@ -7,6 +7,7 @@ void	CommandManager::handlePass(std::string command, User &user) {
 	if (user.getIsConnected() == true)
 	{
 		send(user.getFd().fd, ":server 462 * :You may not reregister\r\n", 39, 0);
+		return ;
 	}
 	if (command.find("PASS") != 0)
 	{
