@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JOIN.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rgrangeo <rgrangeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/23 13:49:27 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/23 21:34:25 by rgrangeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ bool validateChannelRestrictions(Channel &canal, User &user, const std::string &
     return true;
 }
 
-static	bool	hasIllegalName(std::string const &name) 
+	bool	hasIllegalName(std::string const &name) 
 {
 	if (name.size() > MAX_NAME_LENGTH)
 		return true;
@@ -79,7 +79,7 @@ static	bool	hasIllegalName(std::string const &name)
 	return false;
 }
 
-static void splitByDelimiter(const std::string &input, char delimiter, std::vector<std::string> &output)
+ void splitByDelimiter(const std::string &input, char delimiter, std::vector<std::string> &output)
 {
     size_t start = 0, end;
     while ((end = input.find(delimiter, start)) != std::string::npos)
@@ -93,18 +93,8 @@ static void splitByDelimiter(const std::string &input, char delimiter, std::vect
     }
 }
 
-static void extractChannelsAndPasswords(const std::string &command, std::vector<std::string> &channels, std::vector<std::string> &passwords)
-{
-    size_t spacePos = command.find(' ');
 
-    std::string channelsPart =  (spacePos != std::string::npos) ? command.substr(1, spacePos - 1) : command.substr(1, command.size());
-    std::string passwordsPart = (spacePos != std::string::npos) ? command.substr(spacePos + 1) : "";
-
-    splitByDelimiter(channelsPart, ',', channels);
-    splitByDelimiter(passwordsPart, ',', passwords);
-}
-
-static bool isValidChannelName(std::string &channelName, User &user)
+ bool isValidChannelName(std::string &channelName, User &user)
 {
     if (channelName[0] != '#')
     {
@@ -180,31 +170,29 @@ void CommandManager::handleJoin(std::string command, User &user)
     
     std::vector<std::string> channels;
     std::vector<std::string> passwords;
-    extractChannelsAndPasswords(command, channels, passwords);
+
     
-    if (channels.size() > 10) {
-        Message::joinToMuchChan(user, command.data());
-        return;
-    }
+    std::string channelName;
+    std::string password;
 
-    for (size_t i = 0; i < channels.size(); ++i)
+    command = command.substr(1);
+    channelName = command;
+    
+    size_t sepPos = command.find_first_of(" ");
+    
+    if (sepPos != std::string::npos) {
+        password = command.substr(sepPos + 1);
+        channelName = command.substr(0, sepPos);
+    }
+    
+    if (!isValidChannelName(channelName, user))
+        return ;
+    Channel *channel = server.getChannelByName(channelName);
+    if (!channel)
     {
-        std::string channelName = channels[i];
-        std::string password = (i < passwords.size()) ? passwords[i] : "";
-        if (channelName.size() <= 1) {
-            Message::notEnoughParams(user, channelName);
-            continue;
-        }
-        if (!isValidChannelName(channelName, user))
-            continue;
-        Channel *channel = server.getChannelByName(channelName);
-       if (!channel)
-       {
-            channel = createNewChannel(channelName, user, server);
-       }
-       if (!validateChannelRestrictions(*channel, user, password))
-            continue;
-
-        joinChannel(*channel, user);
+        channel = createNewChannel(channelName, user, server);
     }
+    if (!validateChannelRestrictions(*channel, user, password))
+        return ;
+    joinChannel(*channel, user);
 }
