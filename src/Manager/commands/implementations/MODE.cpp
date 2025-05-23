@@ -9,6 +9,8 @@ static	void	addChannelPassord(std::string password, Channel &channel, User &user
 	if (password.size() < 1 || password.empty())
 		return;
 
+	password = password.substr(1);
+
 	if (password.size() > 12) {
 		Message::chanPassordToLong(channel.getName(), user, password);
 		return;
@@ -98,6 +100,8 @@ static	void	addChanOp(std::string nickname, Channel &channel, User &user) {
 
 	if (nickname.size() < 1 || nickname.empty())
 		return;
+	
+	nickname = nickname.substr(1);
 	
 	User *targetUser = channel.getConnectedUserByNickname(nickname);
 	if (targetUser == NULL) {
@@ -394,7 +398,7 @@ void CommandManager::handleMode(std::string param, User &user) {
 	size_t argSep = flag.find_first_of(" ");
 	std::string args = "";
 	if (argSep != std::string::npos) {
-		args = flag.substr(3);
+		args = flag.substr(2);
 		flag = flag.substr(0, argSep);
 	}
 
@@ -402,6 +406,5 @@ void CommandManager::handleMode(std::string param, User &user) {
 		Message::unknowFlag(user, flag);
 		return;
 	}
-	
 	implementedFlags[flag](args, *canal, user);
 }
