@@ -93,6 +93,7 @@ void	Server::handleClientLogout(int clientFd) {
 	}
 
 	close(clientFd);
+	std::cout << "Client disconected" << std::endl;
 }
 
 void Server::createNewClient() {

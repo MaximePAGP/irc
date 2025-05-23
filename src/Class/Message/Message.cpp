@@ -455,3 +455,21 @@ void	Message::noRegistered(User const &user) {
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+
+//451
+void	Message::joinToMuchChan(User const &user, std::string const &channels) {
+	std::string message = ":";
+
+	message.append(ENV);
+	message.append(" 405 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(channels);
+
+	message.append(" :You have joined too many channels");
+	message.append(END_CMD);
+
+	send(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+

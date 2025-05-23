@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JOIN.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/23 01:17:57 by leye             ###   ########.fr       */
+/*   Updated: 2025/05/23 13:49:27 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,96 +79,11 @@ static	bool	hasIllegalName(std::string const &name)
 	return false;
 }
 
-// void CommandManager::handleJoin(std::string command, User &user) 
-// {
-//     if (command.empty()) 
-//     {
-//         Message::notEnoughParams(user, "JOIN");
-//         return;
-//     }
-//     Server &server = Server::getServer();
-//     std::string chanalName = "";
-//     std::string password = "";
-
-//     // faire une fonction qui extrait le nom de canal et le mot de passe 
-//     // de la commande , et qui retourne chaque nom de canal avec son mdp associe dans le cas ou
-//     // il y'a plusieurs canaux avec plusieurs mdp,
-//     command = command.substr(1);
-//     size_t sep = command.find_first_of(" ");
-//     if (sep == std::string::npos)
-//     {
-//         chanalName = command;
-//     } else {
-//         chanalName = command.substr(0, sep);
-//         password = command.substr(sep);
-//     }
-
-//     if (chanalName[0] != '#')
-//     {
-//         Message::modeNotSuchChannel(user, chanalName);
-//         return;
-//     }
-// 	chanalName = chanalName.substr(1);
-//     if (hasIllegalName(chanalName)) 
-//     {
-//         Message::modeNotSuchChannel(user, chanalName);
-//         return;
-//     }
-//     Channel *canal = server.getChannelByName(chanalName);
-
-//     if (canal == NULL) 
-//     {
-//         canal = new Channel(chanalName);
-//        server.addCanal(*canal);
-//         canal->addChanOps(user);
-//     }
-//     // Validation des restrictions du canal
-//     if (!validateChannelRestrictions(*canal, user, password)) 
-//     {
-//         return;
-//     }
-//     // Ajout de l'utilisateur au canal
-//     canal->addUser(user);
-// 	canal->removeUserInvitation(user);
-//     // Envoi de la confirmation de JOIN
-//     std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN #" + chanalName + "\r\n";
-//     send(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
-//     // Envoi du topic du canal
-//     if (!canal->getTopic().empty()) 
-//     {
-//         std::string topicResponse = ":server 332 " + user.getNickName() + " #" + chanalName + " :" + canal->getTopic() + "\r\n";
-//         send(user.getFd().fd, topicResponse.c_str(), topicResponse.length(), 0);
-//     }
-//     // Envoi de la liste des utilisateurs
-//     std::string namesResponse = ":server 353 " + user.getNickName() + " = #" + chanalName + " :";
-//     std::set<User*> channelUsers = canal->getCurrentUsers();
-//     std::set<User*> chanOps = canal->getChanOps();
-
-//     for (std::set<User*>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) 
-//     {
-//         User *channelUser = *it;
-//         if (chanOps.find(channelUser) != chanOps.end()) 
-//         {
-//             namesResponse += "@";
-//         }
-//         namesResponse += channelUser->getNickName() + " ";
-//     }
-//     namesResponse += "\r\n";
-//     send(user.getFd().fd, namesResponse.c_str(), namesResponse.length(), 0);
-
-//     // Envoi du message de fin de liste
-//     std::string endNamesResponse = ":server 366 " + user.getNickName() + " #" + chanalName + " :End of /NAMES list.\r\n";
-//     send(user.getFd().fd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
-
-//     // Notification aux autres utilisateurs
-//     sendToChannelUsers(channelUsers, joinResponse, &user);
-// }
-
 static void splitByDelimiter(const std::string &input, char delimiter, std::vector<std::string> &output)
 {
     size_t start = 0, end;
     while ((end = input.find(delimiter, start)) != std::string::npos)
-    {
+    {  
         output.push_back(input.substr(start, end - start));
         start = end + 1;
     }
@@ -181,7 +96,8 @@ static void splitByDelimiter(const std::string &input, char delimiter, std::vect
 static void extractChannelsAndPasswords(const std::string &command, std::vector<std::string> &channels, std::vector<std::string> &passwords)
 {
     size_t spacePos = command.find(' ');
-    std::string channelsPart = command.substr(1, spacePos - 1);
+
+    std::string channelsPart =  (spacePos != std::string::npos) ? command.substr(1, spacePos - 1) : command.substr(1, command.size());
     std::string passwordsPart = (spacePos != std::string::npos) ? command.substr(spacePos + 1) : "";
 
     splitByDelimiter(channelsPart, ',', channels);
@@ -266,16 +182,21 @@ void CommandManager::handleJoin(std::string command, User &user)
     std::vector<std::string> passwords;
     extractChannelsAndPasswords(command, channels, passwords);
     
-    //check chaque canal
+    if (channels.size() > 10) {
+        Message::joinToMuchChan(user, command.data());
+        return;
+    }
+
     for (size_t i = 0; i < channels.size(); ++i)
     {
         std::string channelName = channels[i];
         std::string password = (i < passwords.size()) ? passwords[i] : "";
-        
-        if (!isValidChannelName(channelName, user))
-        {
+        if (channelName.size() <= 1) {
+            Message::notEnoughParams(user, channelName);
             continue;
         }
+        if (!isValidChannelName(channelName, user))
+            continue;
         Channel *channel = server.getChannelByName(channelName);
        if (!channel)
        {

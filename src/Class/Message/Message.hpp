@@ -57,6 +57,8 @@ class Message
 		static	void	partNotification(User const &user, std::string const &chanName, std::string const &userLeft);
 
 		static	void	noRegistered(User const &user);
+
+		static	void	joinToMuchChan(User const &user, std::string const &channels);
 	};
 
 

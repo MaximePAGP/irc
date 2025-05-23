@@ -19,13 +19,13 @@ void CommandManager::handleUsername(std::string param, User &user) {
 		return;
 	}
 
-	if (server.getUserByUsername(param) != NULL) {
-		Message::userAlreadyTaken(user, param);
+	if (User::hasForbiddenUsernameChar(param)) {
+		Message::userForbiddenChar(user, param);
 		return;
 	}
 
-	if (User::hasForbiddenUsernameChar(param)) {
-		Message::userForbiddenChar(user, param);
+	if (server.getUserByUsername(param) != NULL) {
+		Message::userAlreadyTaken(user, param);
 		return;
 	}
 
@@ -37,7 +37,7 @@ void CommandManager::handleUsername(std::string param, User &user) {
 	user.setUsername(param);
 	Message::userSet(user);
 
-	if (!user.getNickName().empty() && !user.getUserName().empty()) {
+	if (!user.getNickName().empty() && !user.getUserName().empty()) {	
         // Envoyer les messages de bienvenue
         std::string welcome = ":server 001 " + user.getNickName() + " :Welcome to the IRC Network " 
                     + user.getNickName() + "!~" + user.getUserName() + "@localhost\r\n";
