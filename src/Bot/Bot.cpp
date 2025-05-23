@@ -49,7 +49,12 @@ void		CommandManager::handleGpt(std::string param, User &user)
 		return ;
 	}
 
-	std::string	message = ":gpt PRIVMSG " + user.getNickName() + " " + content(response) + END_CMD;
+	std::string	message = ":gpt PRIVMSG ";
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(content(response));
+	message.append(END_CMD);
+
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 
 	curl_slist_free_all(headers);
