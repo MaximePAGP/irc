@@ -6,7 +6,7 @@
 /*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/05/21 18:03:00 by leye             ###   ########.fr       */
+/*   Updated: 2025/05/23 02:08:31 by rgrangeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,14 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 			return;
 		}
 
-		std::string msgToSend = ":" + user.getNickName() + " PRIVMSG " + target + " " + message + END_CMD;
+		std::string msgToSend = ":";
+		msgToSend.append(user.getNickName());
+		msgToSend.append(" PRIVMSG ");
+		msgToSend.append(target);
+		msgToSend.append(" ");
+		msgToSend.append(message);
+		msgToSend.append(END_CMD);
+
 		send(targetUser->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 	}
 }
