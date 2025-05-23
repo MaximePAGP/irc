@@ -39,33 +39,41 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	std::string getFirstCommand = getCommand(command);
 	std::map<std::string, commandsModel> commands;
 
+	if (getFirstCommand == "AAA") {
+		CommandManager::handlePrintUsers(command, user);
+		return;
+	}
+
 	if (user.getIsConnected() == false || command.find("PASS") == 0) {
 		CommandManager::handlePass(command, user);
-		return ;
+		return;
 	}
+	
+	if (user.getNickName() == "" || user.getUserName() == "") {
+		if (getFirstCommand == "NICK" || getFirstCommand == "USER") {
+			CommandManager::handleUsername(command.substr(getFirstCommand.size(), command.size()), user);
+			CommandManager::handleNick(command.substr(getFirstCommand.size(), command.size()), user);
+		} else
+			Message::noRegistered(user);
+		return;
+	}
+	
 
 	commands["MODE"] = CommandManager::handleMode;
 	commands["JOIN"] = CommandManager::handleJoin;
 	commands["TOPIC"] = CommandManager::handleTopic;
 	commands["NICK"] = CommandManager::handleNick;
-	commands["USER"] = CommandManager::handleUsername;
 	commands["KICK"] = CommandManager::handleKick;
 	commands["INVITE"] = CommandManager::handleInvite;
 	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
 	commands["PART"] = CommandManager::handlePart;
 	commands["GPT"] = CommandManager::handleGpt;
 
-
-	// if (user.getNickName() == "" || user.getUserName() == "") {
-	// 	if (getFirstCommand != "NICK" || getFirstCommand != "USER") {
-	// 		Message::noRegistered(user);
-	// 		return ;
-	// 	}
-	// }
 	if (commands.find(getFirstCommand) == commands.end()) {
 		Message::noSuchCommand(user, command);
 		return;
 	}
+
 	commands[getFirstCommand](command.substr(getFirstCommand.size(), command.size()), user);
 }
 
