@@ -91,9 +91,10 @@ void CommandManager::handleKick(std::string param, User &user)
         return;
     }
 
+
     std::set<User*> usersInChannel = channel->getCurrentUsers();
     for (std::set<User*>::iterator it = usersInChannel.begin(); it != usersInChannel.end(); ++it) {
-            Message::kickSucces(*(*it), *channel, target, reason);
+            Message::kickSucces(*(*it), *channel, user.getNickName(), target, reason);
     }
-    channel->removeUser(*targetUser);
+  	channel->removeUser(*targetUser);
 }

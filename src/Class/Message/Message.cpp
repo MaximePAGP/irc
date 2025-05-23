@@ -385,9 +385,9 @@ void	Message::notEnoughParams(User const &user, std::string const &command) {
 }
 
 
-void	Message::kickSucces(User const &user, Channel const &channel, std::string const &target, std::string const reason) {
+void	Message::kickSucces(User const &user, Channel const &channel, std::string const &from, std::string const &target, std::string const reason) {
 	std::string message = ":";
-	message.append(user.getNickName());
+	message.append(from);
 	message.append(" KICK #");
 	message.append(channel.getName());
 	message.append(" ");
@@ -400,6 +400,8 @@ void	Message::kickSucces(User const &user, Channel const &channel, std::string c
 
 	send(user.getFd().fd, message.c_str(), message.size(), 0);
 }
+
+// :youpi!~coucou@3BB0F153.D7A806CA.377D0A50.IP KICK #d toc :pas trop
 
 
 // 442
