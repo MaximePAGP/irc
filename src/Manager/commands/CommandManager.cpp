@@ -39,6 +39,17 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	std::string getFirstCommand = getCommand(command);
 	std::map<std::string, commandsModel> commands;
 
+	commands["MODE"] = CommandManager::handleMode;
+	commands["JOIN"] = CommandManager::handleJoin;
+	commands["TOPIC"] = CommandManager::handleTopic;
+	commands["KICK"] = CommandManager::handleKick;
+	commands["INVITE"] = CommandManager::handleInvite;
+	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
+	commands["PART"] = CommandManager::handlePart;
+	commands["GPT"] = CommandManager::handleGpt;
+	commands["NICK"] = CommandManager::handleNick;
+	commands["USER"] = CommandManager::handleUsername;
+	commands["PASS"] = CommandManager::handlePass;
 
 	if (user.getIsConnected() == false || command.find("PASS") == 0) {
 		CommandManager::handlePass(command, user);
@@ -52,19 +63,6 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 		}
 	}
 	
-
-	commands["MODE"] = CommandManager::handleMode;
-	commands["JOIN"] = CommandManager::handleJoin;
-	commands["TOPIC"] = CommandManager::handleTopic;
-	commands["KICK"] = CommandManager::handleKick;
-	commands["INVITE"] = CommandManager::handleInvite;
-	commands["PRIVMSG"] = CommandManager::handlePrivmsg;
-	commands["PART"] = CommandManager::handlePart;
-	commands["GPT"] = CommandManager::handleGpt;
-	commands["NICK"] = CommandManager::handleNick;
-	commands["USER"] = CommandManager::handleUsername;
-	
-
 	if (commands.find(getFirstCommand) == commands.end()) {
 		Message::noSuchCommand(user, command);
 		return;
