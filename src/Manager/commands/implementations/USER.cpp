@@ -39,17 +39,17 @@ void CommandManager::handleUsername(std::string param, User &user) {
 
 	if (!user.getNickName().empty() && !user.getUserName().empty()) {	
         // Envoyer les messages de bienvenue
-        std::string welcome = ":server 001 " + user.getNickName() + " :Welcome to the IRC Network " 
+        std::string welcome = ":localhost 001 " + user.getNickName() + " :Welcome to the IRC Network " 
                     + user.getNickName() + "!~" + user.getUserName() + "@localhost\r\n";
         send(user.getFd().fd, welcome.c_str(), welcome.length(), 0);
         
-        std::string yourhost = ":server 002 " + user.getNickName() + " :Your host is server, running version 1.0\r\n";
+        std::string yourhost = ":localhost 002 " + user.getNickName() + " :Your host is server, running version 1.0\r\n";
         send(user.getFd().fd, yourhost.c_str(), yourhost.length(), 0);
         
-        std::string created = ":server 003 " + user.getNickName() + " :This server was created today\r\n";
+        std::string created = ":localhost 003 " + user.getNickName() + " :This server was created today\r\n";
         send(user.getFd().fd, created.c_str(), created.length(), 0);
         
-        std::string myinfo = ":server 004 " + user.getNickName() + " server 1.0 o mt\r\n";
+        std::string myinfo = ":localhost 004 " + user.getNickName() + " server 1.0 o mt\r\n";
         send(user.getFd().fd, myinfo.c_str(), myinfo.length(), 0);
     }
 }
