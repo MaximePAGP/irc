@@ -149,6 +149,22 @@ bool	User::hasForbiddenUsernameChar(std::string usnername) {
 }
 
 
+std::set<std::string>	User::getChannelsName() const {
+	return this->channelsName;
+}
+
+
+void	User::addChannelName(std::string &name) {
+	this->channelsName.insert(name);
+}
+
+
+void	User::removeChannelName(std::string &name) {
+	this->channelsName.erase(name);
+}
+
+
+
 void	printUsers(std::set<User*> users) {
 	for (std::set<User*>::iterator it = users.begin(); it != users.end(); ++it)
     	std::cout << *it;
