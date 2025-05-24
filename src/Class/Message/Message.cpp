@@ -175,10 +175,10 @@ void	Message::nickSet(User const &user) {
 }
 
 
-void	Message::nickSetUpdated(User const &user, std::string const newNick) {
+void	Message::nickSetUpdated(User const &user, std::string const oldNick, std::string const newNick) {
 	std::string message = ":";
 
-	message.append(user.getNickName());
+	message.append(oldNick);
 	message.append(" NICK :");
 	message.append(newNick);
 	message.append(END_CMD);

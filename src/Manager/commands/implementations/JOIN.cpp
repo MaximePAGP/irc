@@ -116,6 +116,7 @@ Channel *createNewChannel(std::string &channelName, User &user, Server &server)
     Channel *channel = new Channel(channelName);
     server.addCanal(*channel);
     channel->addChanOps(user);
+    user.addChannelName(channelName);
     return channel;
 }
 
@@ -195,4 +196,5 @@ void CommandManager::handleJoin(std::string command, User &user)
     if (!validateChannelRestrictions(*channel, user, password))
         return ;
     joinChannel(*channel, user);
+    user.addChannelName(channelName);
 }

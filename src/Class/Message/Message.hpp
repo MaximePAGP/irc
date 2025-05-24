@@ -27,7 +27,7 @@ class Message
 		static	void	nickAlreadyUsed(User const &user, std::string const nickname);
 		static	void	nickIllegal(User const &user, std::string const nickname);
 		static	void	nickSet(User const &user);
-		static	void	nickSetUpdated(User const &user, std::string const oldNick);
+		static	void	nickSetUpdated(User const &user, std::string const oldNick, std::string const newNick);
 
 
 		static	void	userToLong(User const &user, std::string const nickname);

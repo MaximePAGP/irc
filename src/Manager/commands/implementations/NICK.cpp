@@ -29,6 +29,23 @@ void CommandManager::handleNick(std::string param, User &user) {
 		Message::nickSet(user);
 		return;
 	}
-	Message::nickSetUpdated(user, param);
+	Message::nickSetUpdated(user, user.getNickName(), param);
+
+	std::set<std::string> const channelsNames = user.getChannelsName();
+	std::set<std::string>::const_iterator itChans = channelsNames.begin();
+
+	while (itChans != channelsNames.end()) {
+		Channel const *channel = server.getChannelByName(*itChans);
+		
+		std::set<User *> channelUsers = channel->getCurrentUsers();
+		std::set<User *>::iterator itChannelUsers = channelUsers.begin();
+
+		while (itChannelUsers != channelUsers.end()) {
+			if (user.getNickName() != (*itChannelUsers)->getNickName())
+				Message::nickSetUpdated(*(*itChannelUsers), user.getNickName(), param);
+			itChannelUsers++;
+		}
+		itChans++;
+	}
 	user.setNickName(param);
 }
