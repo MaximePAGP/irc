@@ -44,7 +44,7 @@ class User
 		static	bool	hasForbiddenUsernameChar(std::string usnername);
 
 		void			addChannelName(std::string &name);
-		void			removeChannelName(std::string &name);
+		void			removeChannelName(std::string const &name);
 
 		static	std::string	replaceSpecialChar(std::string param);
 

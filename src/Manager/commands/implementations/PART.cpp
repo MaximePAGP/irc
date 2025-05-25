@@ -43,6 +43,7 @@ static	void	findAndQuitChannels(User &user, std::string const &channelName) {
 		Message::partNotification(*(*it), channelName, user.getNickName());
 		it++;
 	}
+	user.removeChannelName(channelName);
 	channel->removeUser(user);
 	if (channel->getCurrentUsers().size() > 0)
 		return;

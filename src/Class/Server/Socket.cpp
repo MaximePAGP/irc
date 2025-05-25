@@ -84,6 +84,29 @@ void	Server::handleClientLogout(int clientFd) {
 	{
 		User *cur = *it;
 		if (cur != NULL && cur->getFd().fd == clientFd) {
+			std::set<std::string> userChannels =  cur->getChannelsName();
+			std::set<std::string>::iterator chanIt = userChannels.begin();
+
+			while (chanIt != userChannels.end()) {
+				Channel *channel = this->getChannelByName(*chanIt);
+				if (!channel)
+					continue;
+		
+				channel->removeChanOps(*(*it));	
+				channel->removeUserInvitation(*(*it));	
+				channel->removeUser(*(*it));	
+				
+				std::set<User *> userInChan = channel->getCurrentUsers();	
+				std::set<User *>::iterator itUserToNotify = userInChan.begin();
+
+				while (itUserToNotify != userInChan.end()) {
+					Message::partNotification(*(*itUserToNotify), channel->getName(), cur->getNickName());
+					itUserToNotify++;
+				}
+
+				chanIt++;
+			}
+
 			this->users.erase(it);  
 			delete cur;
 			break;

@@ -159,7 +159,7 @@ void	User::addChannelName(std::string &name) {
 }
 
 
-void	User::removeChannelName(std::string &name) {
+void	User::removeChannelName(std::string const &name) {
 	this->channelsName.erase(name);
 }
 
