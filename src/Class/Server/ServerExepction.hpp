@@ -56,6 +56,22 @@ class ServerExepction
 					return "Socket options failed";
 				}
 		};
+		class SendCrashException : public std::exception
+		{
+			public:
+				virtual const char* what() const throw()
+				{
+					return "Send server failed";
+				}
+		};
+		class CloseCrashException : public std::exception
+		{
+			public:
+				virtual const char* what() const throw()
+				{
+					return "Close failed";
+				}
+		};
 };
 
 

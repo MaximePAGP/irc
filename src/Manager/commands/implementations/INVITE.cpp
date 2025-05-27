@@ -59,8 +59,8 @@ void CommandManager::handleInvite(std::string param, User &user)
 
     std::string inviteMsg = ":" + user.getNickName() + " INVITE " + targetUserName + " :" + channelName + "\r\n";
 
-    send(targetUser->getFd().fd, inviteMsg.c_str(), inviteMsg.length(), 0);
+    Server::psend(targetUser->getFd().fd, inviteMsg.c_str(), inviteMsg.length(), 0);
 
     std::string confirmMsg = ":server 341 " + user.getNickName() + " " + targetUserName + " " + channelName + "\r\n";
-    send(user.getFd().fd, confirmMsg.c_str(), confirmMsg.length(), 0);
+    Server::psend(user.getFd().fd, confirmMsg.c_str(), confirmMsg.length(), 0);
 }

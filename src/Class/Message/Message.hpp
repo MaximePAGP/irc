@@ -4,12 +4,14 @@
 #include <sys/socket.h>
 #include <string>
 #include "../User/User.hpp"
+#include "../Server/Server.hpp"
 #include "../Channel/Channel.hpp"
 
 #define ENV 	"localhost"
 #define END_CMD	"\r\n"
 
 class Channel;
+class Server;
 class Message
 {
 	private:

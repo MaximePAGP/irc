@@ -115,7 +115,7 @@ void	Server::handleClientLogout(int clientFd) {
 		}
 	}
 
-	close(clientFd);
+	Server::pclose(clientFd);
 	std::cout << "Client disconected" << std::endl;
 }
 
@@ -130,7 +130,7 @@ void Server::createNewClient() {
 	}
 	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) == -1) {
 		std::cerr << "Fcntl crash and close connection !" << std::endl;
-		close(clientFd);
+		Server::pclose(clientFd);
 		return ;
 	}
 	std::cout << "New client connected : " << clientFd << std::endl;

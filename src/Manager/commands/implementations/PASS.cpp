@@ -8,13 +8,13 @@ void	CommandManager::handlePass(std::string command, User &user) {
 	if (user.getIsConnected() == true)
 	{
 		msg = ":localhost 462 * :You may not reregister\r\n";
-		send(user.getFd().fd, msg.c_str(), msg.length(), 0);
+		Server::psend(user.getFd().fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
 	if (command.find("PASS") != 0)
 	{
 		msg = ":localhost 464 * :Password required\r\n";
-		send(user.getFd().fd, msg.c_str(), msg.length(), 0);
+		Server::psend(user.getFd().fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
 	command = command.substr(5, command.size());
@@ -25,7 +25,7 @@ void	CommandManager::handlePass(std::string command, User &user) {
 	else
 	{
 		msg = ":localhost 464 * :Password incorrect\r\n";
-		send(user.getFd().fd, msg.c_str(), msg.length(), 0);
+		Server::psend(user.getFd().fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
 }

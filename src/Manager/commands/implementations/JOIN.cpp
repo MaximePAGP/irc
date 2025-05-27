@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JOIN.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgrangeo <rgrangeo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:15:32 by leye              #+#    #+#             */
-/*   Updated: 2025/05/23 21:34:25 by rgrangeo         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:44:29 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void sendToChannelUsers(const std::set<User*> &users, const std::string &message
         {
             continue; // Exclure l'utilisateur émetteur
         }
-        send((*it)->getFd().fd, message.c_str(), message.length(), 0);
+        Server::psend((*it)->getFd().fd, message.c_str(), message.length(), 0);
     }
 }
 
@@ -52,19 +52,19 @@ bool validateChannelRestrictions(Channel &canal, User &user, const std::string &
     if (canal.isProtectedByPassword() && password != canal.getPassword() && !invitation) 
     {
         std::string errorMsg = ":server 475 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+k) - bad key\r\n";
-        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+        Server::psend(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
     }   
     if (canal.getUserLimits() <= static_cast<int>(canal.getCurrentUsers().size())) 
     {
         std::string errorMsg = ":server 471 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+l) - channel is full\r\n";
-        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+        Server::psend(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
     }
 	if (canal.getIsOnInvitationOnly() && !invitation)
     {
         std::string errorMsg = ":server 473 " + user.getNickName() + " " + canal.getName() + " :Cannot join channel (+i) - invite only\r\n";
-        send(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
+        Server::psend(user.getFd().fd, errorMsg.c_str(), errorMsg.length(), 0);
         return false;
     }
     return true;
@@ -136,10 +136,10 @@ void sendUserList(Channel &channel, User &user)
         namesResponse += channelUser->getNickName() + " ";
     }
     namesResponse += "\r\n";
-    send(user.getFd().fd, namesResponse.c_str(), namesResponse.length(), 0);
+    Server::psend(user.getFd().fd, namesResponse.c_str(), namesResponse.length(), 0);
 
     std::string endNamesResponse = ":server 366 " + user.getNickName() + " #" + channel.getName() + " :End of /NAMES list.\r\n";
-    send(user.getFd().fd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
+    Server::psend(user.getFd().fd, endNamesResponse.c_str(), endNamesResponse.length(), 0);
 }
 void joinChannel(Channel &channel, User &user)
 {
@@ -147,12 +147,12 @@ void joinChannel(Channel &channel, User &user)
     channel.removeUserInvitation(user);
 
     std::string joinResponse = ":" + user.getNickName() + "!~" + user.getUserName() + "@localhost JOIN #" + channel.getName() + "\r\n";
-    send(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
+    Server::psend(user.getFd().fd, joinResponse.c_str(), joinResponse.length(), 0);
 
     if (!channel.getTopic().empty())
     {
         std::string topicResponse = ":server 332 " + user.getNickName() + " #" + channel.getName() + " :" + channel.getTopic() + "\r\n";
-        send(user.getFd().fd, topicResponse.c_str(), topicResponse.length(), 0);
+        Server::psend(user.getFd().fd, topicResponse.c_str(), topicResponse.length(), 0);
     }
 
     sendUserList(channel, user);

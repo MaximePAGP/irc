@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PRIVMSG.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leye <leye@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/05/23 02:08:31 by rgrangeo         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:45:10 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 			}
 			
 			std::string msgToSend = ":" + user.getNickName() + " PRIVMSG #" + target + " " + message + END_CMD;
-			send((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
+			Server::psend((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 		}
 	} else {
 		
@@ -93,6 +93,6 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 		msgToSend.append(message);
 		msgToSend.append(END_CMD);
 
-		send(targetUser->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
+		Server::psend(targetUser->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 	}
 }

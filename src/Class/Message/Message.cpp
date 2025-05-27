@@ -12,7 +12,7 @@ void	Message::youreNotChanOp(std::string const canalName, User const &user) {
 	message.append(" :You're not channel operator");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -28,7 +28,7 @@ void	Message::noSuchNickChannel(std::string const target, User const &user) {
 	message.append(" :No such nick/channel");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
  
 
@@ -41,7 +41,7 @@ void	Message::changedModeChan(std::string const &chanOp, std::string const chanN
 	message.append(flag);
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -57,7 +57,7 @@ void	Message::unknowFlag(User const &user, std::string const flag) {
 	message.append(" :is unknown mode char to me");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -75,7 +75,7 @@ void	Message::chanPasswordForbiddenChar(std::string const chanName, User const &
 	message.append(" :Channel key contains forbidden characters");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -93,7 +93,7 @@ void	Message::chanPassordToLong(std::string const chanName, User const &user, st
 	message.append(" :Channel key is too long");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -109,7 +109,7 @@ void	Message::nickNoParam(User const &user, std::string const nickname) {
 	message.append(" :No nickname given");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -125,7 +125,7 @@ void	Message::nickToLongParam(User const &user, std::string const nickname) {
 	message.append(" :Erroneous nickname");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -141,7 +141,7 @@ void	Message::nickAlreadyUsed(User const &user, std::string const nickname) {
 	message.append(" :Nickname is already in use");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -157,7 +157,7 @@ void	Message::nickIllegal(User const &user, std::string const nickname) {
 	message.append(" :Nickname is unavailable: Illegal characters");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -171,7 +171,7 @@ void	Message::nickSet(User const &user) {
 	message.append(user.getNickName());
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -183,7 +183,7 @@ void	Message::nickSetUpdated(User const &user, std::string const oldNick, std::s
 	message.append(newNick);
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -199,7 +199,7 @@ void	Message::userToLong(User const &user, std::string const username) {
 	message.append(" :Erroneous username");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -215,7 +215,7 @@ void	Message::userAlreadyTaken(User const &user, std::string const username) {
 	message.append(" :Username is already in use");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -231,7 +231,7 @@ void	Message::userForbiddenChar(User const &user, std::string const username) {
 	message.append(" :Username contains forbidden characters");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -247,7 +247,7 @@ void	Message::userCannotChange(User const &user, std::string const username) {
 	message.append(" :You may not reregister");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 void	Message::userSet(User const &user) {
@@ -259,7 +259,7 @@ void	Message::userSet(User const &user) {
 	message.append(user.getUserName());
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -275,7 +275,7 @@ void	Message::modeNotSuchChannel(User const &user, const std::string canalName) 
 	message.append(" :No such channel");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -289,7 +289,7 @@ void	Message::topicSetTopic(User const &user, Channel const &canal) {
 	message.append(canal.getTopic());
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 // 331 :No topic is set
@@ -304,7 +304,7 @@ void	Message::topicNoTopic(User const &user, std::string const canalName) {
 	message.append(" :No topic is set");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 // 332
@@ -320,7 +320,7 @@ void	Message::topicGetTopic(User const &user, Channel const &canal) {
 	message.append(canal.getTopic());
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -336,7 +336,7 @@ void	Message::noSuchCommand(User const &user, std::string const &command) {
 	message.append(" :Unknown command");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -351,7 +351,7 @@ void	Message::commandToLong(User const &user) {
 	message.append(" :Message too long");
 	message.append(END_CMD);
 	
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -366,7 +366,7 @@ void	Message::alreadyOnChannel(User const &user, Channel const &canal) {
 	message.append(" :is already on channel");
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -381,7 +381,7 @@ void	Message::notEnoughParams(User const &user, std::string const &command) {
 	message.append(" :Not enough parameters");
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -413,7 +413,7 @@ void	Message::partYoureNotInChan(User const &user, std::string const &chanName) 
 	message.append(" :You're not on that channel");
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -424,7 +424,7 @@ void	Message::partNotification(User const &user,  std::string const &chanName, s
 	message.append(chanName);
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -441,7 +441,7 @@ void	Message::modeSendActiveMode(User const &user,  Channel &channel, std::strin
 	message.append(activeFlags);
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -455,7 +455,7 @@ void	Message::noRegistered(User const &user) {
 	message.append(": You have not registered");
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
 
@@ -472,6 +472,6 @@ void	Message::joinToMuchChan(User const &user, std::string const &channels) {
 	message.append(" :You have joined too many channels");
 	message.append(END_CMD);
 
-	send(user.getFd().fd, message.c_str(), message.size(), 0);
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 

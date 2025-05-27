@@ -18,10 +18,17 @@
 #define MAX_PORT 65535
 #define	MSG_LEN 512
 
+class Channel;
+class User;
+class Message;
+
+
 void	printUsers(std::set<User*>);
 void	printChannels(std::set<Channel*>);
 void	redirectCommand(std::string command);
 bool	isNick(std::string command) ;
+
+
 
 class Server: public ServerExepction
 {
@@ -77,6 +84,9 @@ class Server: public ServerExepction
 								
 								void					running();
 		void					kill();
+		static	void			psend(int fd, const void *buffer, size_t size, int flags);
+		static	void			pclose(int fd);
+
 		Channel* 				findChannelByName(const std::string& name);
 		User					*findUserByFd(int clientFd);
 		//*********************************	 *

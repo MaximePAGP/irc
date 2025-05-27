@@ -6,7 +6,7 @@
 /*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 04:50:56 by leye              #+#    #+#             */
-/*   Updated: 2025/05/19 01:40:15 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:51:46 by magrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,4 +197,16 @@ User* Server::findUserByFd(int clientFd)
 		}
 	}
 	return NULL;
+}
+
+
+void	Server::psend(int fd, const void *buffer, size_t size, int flags) {
+		if (send(fd, buffer, size, flags) < 0)
+			throw SendCrashException();
+}
+
+
+void	Server::pclose(int fd) {
+	if (close(fd) < 0)
+		throw CloseCrashException();
 }
