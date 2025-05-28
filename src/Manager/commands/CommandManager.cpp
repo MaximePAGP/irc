@@ -111,4 +111,3 @@ std::string CommandManager::trimFirstParamSpace(std::string param) {
 
 	return jumpSpace.substr(0, nextSpaceIndex);
 }
-
