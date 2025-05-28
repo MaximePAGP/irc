@@ -80,40 +80,43 @@ void	Server::handleClientLogout(int clientFd) {
 		}
 	}
 
-	for (std::set<User*>::iterator it = this->users.begin(); it != this->users.end();)
-	{
-		User *cur = *it;
-		if (cur != NULL && cur->getFd().fd == clientFd) {
-			std::set<std::string> userChannels =  cur->getChannelsName();
-			std::set<std::string>::iterator chanIt = userChannels.begin();
+	User* leavingUser = this->getUserByFd(clientFd);
 
-			while (chanIt != userChannels.end()) {
-				Channel *channel = this->getChannelByName(*chanIt);
-				if (!channel)
-					continue;
-		
-				channel->removeChanOps(*(*it));	
-				channel->removeUserInvitation(*(*it));	
-				channel->removeUser(*(*it));	
-				
-				std::set<User *> userInChan = channel->getCurrentUsers();	
-				std::set<User *>::iterator itUserToNotify = userInChan.begin();
+	std::set<Channel *> allChannels = this->getChannels();
+	std::set<Channel *>::iterator itChannels = allChannels.begin();
 
-				while (itUserToNotify != userInChan.end()) {
-					Message::partNotification(*(*itUserToNotify), channel->getName(), cur->getNickName());
-					itUserToNotify++;
-				}
-
-				chanIt++;
-			}
-
-			this->users.erase(it);  
-			delete cur;
-			break;
-		} else {
-			it++;
-		}
+	while (itChannels != allChannels.end()) {
+		(*itChannels)->removeUserInvitation(*leavingUser);
+		itChannels++;
 	}
+
+	std::set<std::string> userChannels =  leavingUser->getChannelsName();
+	std::set<std::string>::iterator chanIt = userChannels.begin();
+	
+	while (chanIt != userChannels.end()) {
+		Channel *channel = this->getChannelByName(*chanIt);
+		if (!channel)
+			continue;
+
+		channel->removeChanOps(*leavingUser);	
+		channel->removeUserInvitation(*leavingUser);	
+		channel->removeUser(*leavingUser);	
+		
+		std::set<User *> userInChan = channel->getCurrentUsers();	
+		std::set<User *>::iterator itUserToNotify = userInChan.begin();
+
+		while (itUserToNotify != userInChan.end()) {
+			Message::partNotification(*(*itUserToNotify), channel->getName(), leavingUser->getNickName());
+			itUserToNotify++;
+		}
+
+		chanIt++;
+	}
+
+
+	this->users.erase(leavingUser);  
+	delete leavingUser;
+
 
 	Server::pclose(clientFd);
 	std::cout << "Client disconected" << std::endl;

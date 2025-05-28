@@ -116,7 +116,10 @@ bool	Channel::operator<(const Channel &other) const {
 
 
 User	*Channel::getChanOpByFd(int fd) const {
+	
 	for (std::set<User*>::const_iterator it = this->chanOp.begin(); it != this->chanOp.end(); it++) {
+		if (!*it)
+			continue;
 		if ((*it)->getFd().fd == fd) {
 			return *it;
 		}
@@ -127,6 +130,8 @@ User	*Channel::getChanOpByFd(int fd) const {
 
 User	*Channel::getChanOpByNickname(std::string nickname) const {
 	for (std::set<User*>::const_iterator it = this->chanOp.begin(); it != this->chanOp.end(); it++) {
+		if (!*it)
+			continue;
 		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
 		if (tmpNick == nickname) {
 			return *it;
@@ -138,6 +143,8 @@ User	*Channel::getChanOpByNickname(std::string nickname) const {
 
 User	*Channel::getChanOpByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->chanOp.begin(); it != this->chanOp.end(); it++) {
+		if (!*it)
+			continue;
 		std::string tmpUsername = User::replaceSpecialChar((*it)->getUserName());
 		if (tmpUsername == username) {
 			return *it;
@@ -150,6 +157,8 @@ User	*Channel::getChanOpByUsername(std::string username) const {
 
 User	*Channel::getConnectedUserByFd(int fd) const {
 	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		if (!*it)
+			continue;
 		if ((*it)->getFd().fd == fd) {
 			return *it;
 		}
@@ -160,6 +169,8 @@ User	*Channel::getConnectedUserByFd(int fd) const {
 
 User	*Channel::getConnectedUserByNickname(std::string nickname) const {
 	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		if (!*it)
+			continue;
 		std::string tmpNick = User::replaceSpecialChar((*it)->getNickName());
 		if (tmpNick == nickname) {
 			return *it;
@@ -171,6 +182,8 @@ User	*Channel::getConnectedUserByNickname(std::string nickname) const {
 
 User	*Channel::getConnectedUserByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->curUsers.begin(); it != this->curUsers.end(); it++) {
+		if (!*it)
+			continue;
 		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
 		if (tmpUsername == username) {
 			return *it;
@@ -182,6 +195,8 @@ User	*Channel::getConnectedUserByUsername(std::string username) const {
 
 User	*Channel::getInvitationUserByUsername(std::string username) const {
 	for (std::set<User*>::const_iterator it = this->invUsers.begin(); it != this->invUsers.end(); it++) {
+		if (!*it)
+			continue;
 		std::string tmpUsername = User::replaceSpecialChar((*it)->getNickName());
 		if (tmpUsername == username) {
 			return *it;
