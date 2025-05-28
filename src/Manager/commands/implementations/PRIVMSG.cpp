@@ -6,7 +6,7 @@
 /*   By: magrondi <magrondi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:06:40 by leye              #+#    #+#             */
-/*   Updated: 2025/05/27 09:45:10 by magrondi         ###   ########.fr       */
+/*   Updated: 2025/05/28 15:16:11 by rgrangeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 void CommandManager::handlePrivmsg(std::string command, User &user) 
 {
-
 	if (command.empty() || command.size() <= 2) 
 	{
 		Message::notEnoughParams(user, "PRIVMSG");
@@ -76,7 +75,11 @@ void CommandManager::handlePrivmsg(std::string command, User &user)
 			Server::psend((*it)->getFd().fd, msgToSend.c_str(), msgToSend.length(), 0);
 		}
 	} else {
-		
+		if (target == "gpt") {
+			handleGpt(message, user);
+			return ;
+		}
+
 		User *targetUser = server.getUserByNickname(target);
 		
 		if (!targetUser) 

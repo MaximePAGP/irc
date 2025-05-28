@@ -27,6 +27,7 @@ void		CommandManager::handleGpt(std::string param, User &user)
 	if (!curl)
 		return ;
 
+	std::cout << "Param = " << param << std::endl;
 	json.append("\"model\":\"gpt-3.5-turbo\",");
 	json.append("\"messages\":[{\"role\":\"user\",\"content\":\"");
 	json.append(param);
@@ -51,7 +52,7 @@ void		CommandManager::handleGpt(std::string param, User &user)
 
 	std::string	message = ":gpt PRIVMSG ";
 	message.append(user.getNickName());
-	message.append(" ");
+	message.append(" :");
 	message.append(content(response));
 	message.append(END_CMD);
 
