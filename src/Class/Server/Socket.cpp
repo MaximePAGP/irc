@@ -6,6 +6,8 @@ void	Server::running() {
 	this->bindAndListenPort();
 	this->setState(true);
 	std::cout << "Server is running on port : " << this->getPortname() << std::endl;
+	User *user = new User("gpt", "gpt", "");
+	this->addUser(*user);
 	while (this->getState()) {
 		int	pollEvent = poll(this->sockets.data(), this->sockets.size(), -1);
 		if (pollEvent == -1)
