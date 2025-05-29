@@ -8,39 +8,47 @@ static	void	getCurrentTopic(Channel &canal, User &user) {
 	Message::topicGetTopic(user, canal);
 }
 
-std::string	getCanalNameStart(std::string command) {
-	if (command.size() < 2)
-		return "";
-	return command.substr(2);
-}
-
-std::string trimToFirstSpace(std::string command) {
-    size_t firstSpaceIndex = command.find(' ');
-    if (firstSpaceIndex != std::string::npos){
-        return command.substr(0, firstSpaceIndex);
-	}
-    return command;
-}
-
 void	CommandManager::handleTopic(std::string command, User &user) {
 	Server &server = Server::getServer();
 
-	if (command.empty())
+	if (command.empty()) {
+		Message::notEnoughParams(user, "TOPIC");
 		return;
+	}
 
-	std::string jumpedSpace = getCanalNameStart(command);
-	std::string canalName = trimToFirstSpace(jumpedSpace);
-	Channel *targetCanal = server.getChannelByName(canalName);
+	command = command.substr(1);
 
-	if (targetCanal == NULL) {
+	size_t nextSpaceJump = command.find_first_of(" ");
+	if (nextSpaceJump == std::string::npos) {
+		Message::notEnoughParams(user, "TOPIC");
+		return;
+	}
+
+	std::string canalName = command.substr(0, nextSpaceJump);
+	std::string newTopic = command.substr(nextSpaceJump + 1, command.size());
+	
+	if (newTopic.empty()) {
+		Message::notEnoughParams(user, "TOPIC");
+		return;
+	}
+	
+	if (canalName[0] != '#') {
 		Message::modeNotSuchChannel(user, canalName);
 		return;
 	}
 
-	size_t	topicParamIndex = command.find_first_of(":"); 
+	canalName = canalName.substr(1);
+	Channel *targetCanal = server.getChannelByName(canalName);
 
-	if (topicParamIndex == std::string::npos) {
+	if (newTopic[0] != ':') {
 		getCurrentTopic(*targetCanal, user);
+		return;
+	}
+
+	newTopic = newTopic.substr(1);
+	
+	if (targetCanal == NULL) {
+		Message::modeNotSuchChannel(user, canalName);
 		return;
 	}
 
@@ -49,7 +57,6 @@ void	CommandManager::handleTopic(std::string command, User &user) {
 		return;
 	}
 
-	std::string newTopic = command.substr(topicParamIndex + 1, command.size());
 	targetCanal->setTopic(newTopic);
 
 	std::set<User *> usersInChan = targetCanal->getCurrentUsers();
