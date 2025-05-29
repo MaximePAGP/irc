@@ -110,6 +110,11 @@ void	Server::handleClientLogout(int clientFd) {
 			itUserToNotify++;
 		}
 
+		if (channel->getCurrentUsers().size() < 1) {
+			this->removeCanal(*channel);
+			delete channel;
+		}
+
 		chanIt++;
 	}
 

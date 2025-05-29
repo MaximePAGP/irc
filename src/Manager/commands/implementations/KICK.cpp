@@ -96,7 +96,8 @@ void CommandManager::handleKick(std::string param, User &user)
     for (std::set<User*>::iterator it = usersInChannel.begin(); it != usersInChannel.end(); ++it) {
             Message::kickSucces(*(*it), *channel, user.getNickName(), target, reason);
     }
-  	channel->removeUser(*targetUser);
+	channel->removeUser(*targetUser);
 	channel->removeUserInvitation(*targetUser);
 	channel->removeChanOps(*targetUser);
+	targetUser->removeChannelName(channel->getName());
 }
