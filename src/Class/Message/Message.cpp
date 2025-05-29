@@ -279,10 +279,10 @@ void	Message::modeNotSuchChannel(User const &user, const std::string canalName) 
 }
 
 
-void	Message::topicSetTopic(User const &user, Channel const &canal) {
+void	Message::topicSetTopic(User const &user,  std::string const chanOp, Channel const &canal) {
 	std::string message = ":";
 
-	message.append(user.getNickName());	
+	message.append(chanOp);	
 	message.append(" TOPIC #");
 	message.append(canal.getName());
 	message.append(" :");

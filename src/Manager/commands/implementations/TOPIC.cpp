@@ -56,7 +56,7 @@ void	CommandManager::handleTopic(std::string command, User &user) {
 	std::set<User *>::iterator it = usersInChan.begin();
 	while (it != usersInChan.end())
 	{
-		Message::topicSetTopic(*(*it), *targetCanal);
+		Message::topicSetTopic(*(*it), user.getNickName(), *targetCanal);
 		it++;
 	}
 }
