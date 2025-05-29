@@ -15,7 +15,7 @@ void	Server::running() {
 
 		for (size_t i = 0; i < this->sockets.size(); i++) {
 			if (this->sockets[i].revents & POLLIN) {
-				std::cout << "trigger " << std::endl;
+				std::cout << "Trigger " << std::endl;
 				if (i == 0)
 					this->createNewClient();
 				else
@@ -62,7 +62,7 @@ void	Server::handleClientMsg(int clientFd) {
 	while ((bytesRead = recv(clientFd, buffer, sizeof(buffer), 0)) > 0) {
 		buffer[bytesRead] = '\0';
 		CommandManager::buildCommand(buffer, clientFd);
-		std::cout << "Received : <" << buffer << ">" << std::endl;
+		std::cout << "Received -> " << buffer << std::endl;
 		// send(clientFd, "Message received", 16, 0);
 	}
 	// handle if recv crash send a response to client to say we cannot handle the commmand
