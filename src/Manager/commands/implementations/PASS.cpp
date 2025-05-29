@@ -23,7 +23,13 @@ void	CommandManager::handlePass(std::string command, User &user) {
 		Server::psend(user.getFd().fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	command = command.substr(5, command.size());
+	command = command.substr(getCommand(command).size(), command.size());
+	if (command.empty())
+	{
+		Message::notEnoughParams(user, "PASS");
+		return ;
+	}
+	command = CommandManager::trimFirstParamSpace(command);
 	if (command == server.getPassword())
 	{
 		user.setIsConnected(true);

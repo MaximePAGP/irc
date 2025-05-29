@@ -51,7 +51,7 @@ void	CommandManager::redirectCommand(std::string command, User &user) {
 	commands["USER"] = CommandManager::handleUsername;
 	commands["PASS"] = CommandManager::handlePass;
 
-	if (user.getIsConnected() == false || command.find("PASS") == 0) {
+	if (user.getIsConnected() == false || getFirstCommand == "PASS") {
 		CommandManager::handlePass(command, user);
 		return;
 	}
