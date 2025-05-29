@@ -5,7 +5,7 @@ void	CommandManager::handlePass(std::string command, User &user) {
 	Server const &server = Server::getServer();
 	std::string msg = "";
 
-	if (command.empty() || command.size() < 5)
+	if (command.empty())
 	{
 		msg = ":localhost 461 * PASS :Not enough parameters\r\n";
 		Server::psend(user.getFd().fd, msg.c_str(), msg.length(), 0);
