@@ -150,11 +150,11 @@ void	Message::nickIllegal(User const &user, std::string const nickname) {
 	std::string message = ":";
 
 	message.append(ENV);
-	message.append(" 432 ");
+	message.append(" 476 ");
 	message.append(user.getNickName());
 	message.append(" ");
 	message.append(nickname);
-	message.append(" :Nickname is unavailable: Illegal characters");
+	message.append(" :Bad Channel Mask");
 	message.append(END_CMD);
 	
 	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
