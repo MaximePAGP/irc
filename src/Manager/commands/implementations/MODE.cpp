@@ -159,8 +159,10 @@ static	void	addLimit(std::string limit, Channel &channel, User &user) {
 		return;
 	}
 
-	if (limit.size() < 1 || limit.empty())
+	if (limit.size() < 1 || limit.empty()){
+		Message::InvalidParams(user, "MODE");
 		return;
+	}
 
 	int parsedLimit = atoi(limit.c_str());
 
@@ -361,7 +363,10 @@ void CommandManager::handleMode(std::string param, User &user) {
 	Server const &server = Server::getServer();
 	
 	if (param.empty() || param.size() < 2)
+	{
+		Message::notEnoughParams(user, "MODE");
 		return;
+	}
 
 	std::string canalName = CommandManager::trimFirstParamSpace(param);
 

@@ -61,6 +61,7 @@ class Message
 		static	void	noRegistered(User const &user);
 
 		static	void	joinToMuchChan(User const &user, std::string const &channels);
+		static	void	InvalidParams(User const &user, std::string const &command);
 	};
 
 

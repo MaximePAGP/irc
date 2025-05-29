@@ -384,6 +384,19 @@ void	Message::notEnoughParams(User const &user, std::string const &command) {
 	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
 }
 
+void	Message::InvalidParams(User const &user, std::string const &command) {
+	std::string message = ":";
+	message.append(ENV);
+	message.append(" 696 ");
+	message.append(user.getNickName());
+	message.append(" ");
+	message.append(command);
+	message.append(" :Invalid parameters");
+	message.append(END_CMD);
+
+	Server::psend(user.getFd().fd, message.c_str(), message.size(), 0);
+}
+
 
 void	Message::kickSucces(User const &user, Channel const &channel, std::string const &from, std::string const &target, std::string const reason) {
 	std::string message = ":";
