@@ -100,4 +100,9 @@ void CommandManager::handleKick(std::string param, User &user)
 	channel->removeUserInvitation(*targetUser);
 	channel->removeChanOps(*targetUser);
 	targetUser->removeChannelName(channel->getName());
+
+	if (channel->getCurrentUsers().size() > 0)
+		return;
+	server.removeCanal(*channel);
+	delete channel;
 }
