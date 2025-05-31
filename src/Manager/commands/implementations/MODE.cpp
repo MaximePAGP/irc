@@ -125,6 +125,8 @@ static	void	addChanOp(std::string nickname, Channel &channel, User &user) {
 }
 
 static	void	removedChanOp(std::string nickname, Channel &channel, User &user) {
+	nickname = nickname.substr(1);
+
 	if (channel.getChanOpByNickname(user.getNickName()) == NULL) {
 		Message::youreNotChanOp(channel.getName(), user);
 		return;
