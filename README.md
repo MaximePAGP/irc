@@ -127,4 +127,4 @@ Ces exemples montrent comment interagir avec le serveur IRC. Utilisez un client 
 
 - Léo Ye
 - Rémi Grangeon
-- Maxime Grodin
+- Maxime Grondin
